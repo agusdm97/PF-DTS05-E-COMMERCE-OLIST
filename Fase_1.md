@@ -28,7 +28,7 @@ La tradición de la tienda física y el volumen de ventas ya no son suficientes 
 
 Todo en un solo lugar, industria, importadores, productores, mayoristas, distribuidores, vendedores y compradores compaginados en la sinergia online del comercio electrónico que capta anualmente millones de dólares en ventas. Eso es Olist.
 
-<img src="PF-DTS05-E-COMMERCE-OLIST/src/Olist1.jpg"  height="400">
+<img src="../src/Olist1.jpg"  height="200">
 
 ### 2. OBJETIVOS DEL PROYECTO
 
@@ -60,6 +60,23 @@ Todo en un solo lugar, industria, importadores, productores, mayoristas, distrib
 
 -	Analizar el mercado por segmento de negocio, tipo de perfil y tipo de negocio
 
+**Objetivos del equipo de trabajo**
+
+-->	Aplicar los conocimientos adquiridos de Data Enginner, ML-Machine Learning y Data Analytics en el proyecto final.  
+
+-->	Exigirnos en el desarrollo de un proyecto de data science que se asemeje a un entorno laboral y poder aplicar metodologías de trabajo      colaborativo.
+
+-->	Realizar el análisis exploratorio de los datos y determinar cuales son los features relevantes y hallar valores atípicos que puedan afectar el resultado.
+
+-->	Realizar el proceso de ETL en el que se extraen datos de diferentes fuentes, se analizan, se limpian, normalizan los features, modelado ER y   luego se cargan en un data warehouse para su posterior uso.
+
+-->	Aplicar los modelos de machine learning – ML al proyecto que se consideren útiles en la búsqueda de objetivos claros para al análisis predictivo y prescriptivo.
+
+-->	Realizar y mostrar un Dashboard resultado de la analítica de los datos limpios almacenados en el data warehouse.
+
+-->	Documentar y almacenar cada uno de los pasos del proyecto en un repositorio que permita visualizar las actualizaciones.
+
+<img src="../src/objetivos.jpg"  height="300">  <img src="../src/ETL.jpg"  height="200">
 
 ### 3. ALCANCES
 
