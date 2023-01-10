@@ -28,7 +28,7 @@ La tradición de la tienda física y el volumen de ventas ya no son suficientes 
 
 Todo en un solo lugar, industria, importadores, productores, mayoristas, distribuidores, vendedores y compradores compaginados en la sinergia online del comercio electrónico que capta anualmente millones de dólares en ventas. Eso es Olist.
 
-<img src="/src/Olist1.jpg"  height="400">
+<img src="PF-DTS05-E-COMMERCE-OLIST/src/Olist1.jpg"  height="400">
 
 ### 2. OBJETIVOS DEL PROYECTO
 
