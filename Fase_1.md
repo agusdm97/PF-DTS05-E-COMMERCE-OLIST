@@ -28,7 +28,7 @@ La tradición de la tienda física y el volumen de ventas ya no son suficientes 
 
 Todo en un solo lugar, industria, importadores, productores, mayoristas, distribuidores, vendedores y compradores compaginados en la sinergia online del comercio electrónico que capta anualmente millones de dólares en ventas. Eso es Olist.
 
-<img src="../src/Olist1.jpg"  height="200">
+<img src="../src/Olist1.png"  height="200">
 
 ### 2. OBJETIVOS DEL PROYECTO
 
@@ -76,7 +76,7 @@ Todo en un solo lugar, industria, importadores, productores, mayoristas, distrib
 
 -->	Documentar y almacenar cada uno de los pasos del proyecto en un repositorio que permita visualizar las actualizaciones.
 
-<img src="../src/objetivos.jpg"  height="300">  <img src="../src/ETL.jpg"  height="200">
+<img src="/src/objetivos.jpg"  height="300">  <img src="/src/ETL.jpg"  height="200">
 
 ### 3. ALCANCES
 
