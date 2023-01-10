@@ -1,0 +1,77 @@
+![HenryLogo](https://d31uz8lwfmyn8g.cloudfront.net/Assets/logo-henry-white-lg.png)
+
+### PROYECTO FINAL - OLIST E-COMMERCE
+
+## FASE 1
+
+### TABLA DE CONTENIDO
+
+1.	Entendimiento de la situación
+2.	Objetivos
+3.	Alcances
+4.	Objetivos y KPIs asociados (planteo)
+5.	Repositorio Github
+6.	Solución propuesta
+
+
+### 1. ENTENDIMIENTO DE LA SITUACION
+
+**“Para entender hay que conocer”**.  
+
+Al referirnos a OList debemos saber que es un canal de venta e-commerce que facilita este proceso, ya que con un contrato pone los productos de un minorista al alcance de los millones de visitantes de estos marketplaces de forma rápida, fácil y sin complicaciones. 
+
+La principal necesidad de los vendedores es clara: **Como vender más, mejor y atraer nuevos clientes?** Por esta razón la misión de Olist es:
+
+**“Nacimos para potenciar el comercio minorista digital y brindar oportunidades reales de crecimiento para pequeñas, medianas y grandes empresas. Existimos para eliminar obstáculos y ayudar a los minoristas a vender más. Derribamos barreras y transformamos lo presencial en online, acelerando los resultados para todos los emprendedores que buscan su espacio en internet”**
+
+La tradición de la tienda física y el volumen de ventas ya no son suficientes para mantener los costos de la operación. Olist cuenta además con el servicio de envío de los productos y el seguimiento postventa para resolver cualquier inconveniente con los compradores como reclamos y devoluciones.
+
+Todo en un solo lugar, industria, importadores, productores, mayoristas, distribuidores, vendedores y compradores compaginados en la sinergia online del comercio electrónico que capta anualmente millones de dólares en ventas. Eso es Olist.
+
+<img src="/src/Olist1.jpg"  height="400">
+
+### 2. OBJETIVOS DEL PROYECTO
+
+**Objetivo General**: El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-commerce, en el análisis de los datos obtenidos desde el 2016 al 2018 y se enfocara en la generación de reportes, creación de métricas, aplicación de modelos de machine learning y análisis de las ventas, productos, clientes y vendedores que serán visualizados en un dashboard para ser usados en la toma de decisiones.
+
+**Objetivos Especificos:**
+
+-	Generar un reporte del total de ordenes de venta, productos, vendedores, clientes, y el comparativo de crecimiento de cada uno ellos.
+
+-	Generar un reporte total de los cierres de ventas y los no, que tienen incidencia en los ingresos 
+
+-	Crear un mapa de geolocalización de los vendedores y compradores para observar distancias relativas
+
+-	Crear un comparativo de distancia/costo entre vendedores y compradores
+
+-	Crear un análisis del tiempo de entrega de los productos
+
+-	Generar un reporte de categorización por productos
+
+-	Generar un reporte de análisis y calificación de productos
+
+-	Generar un reporte de los productos por categoría que tienen más ventas
+
+-	Generar un reporte del volumen de ventas por región
+
+-	Analizar las ventas en series de tiempo y preferencias
+
+-	Analizar los métodos de pago y cual es el de mayor preferencia.
+
+-	Analizar el mercado por segmento de negocio, tipo de perfil y tipo de negocio
+
+
+### 3. ALCANCES
+
+En los datasets de Marketplace de e-commerce Olist se realizará un análisis exploratorio de los datos a través del uso de Python para determinar el contenido, estado y uso de los features relevantes que serán utilizados.  
+
+El proyecto abarca cuatro (4) fases que contienen específicamente el contenido y pasos a desarrollar.
+
+**En la Fase 1**: se definen los objetivos, alcances, repositorio del proyecto y una solución al problema. En esta fase utilizaremos metodologías de desarrollo colaborativo, tecnologías e interfaces a utilizar, diseño de entregables, cronograma de tiempos, roles y responsabilidades de cada uno de los integrantes. 
+
+**En la Fase 2**: corresponde al proceso de Data Enginner en el que se inicia la infraestructura del proyecto. En esta fase realizaremos el modelado de los datos, procedimiento de ETL (Extract, Transform, Load), normalización de los features, se define la estructura de data warehouse, la automatización y validación de los datos. Además de la documentación de ello.
+
+**En la Fase 3**: Corresponde al proceso de Data Analytics y Machine Learning (ML) en el que se desarrollara el mockup de visualización, inclusión de métricas, la definición y pruebas de modelos de ML asi como también la preparación del storytelling del proyecto.
+
+**En la Fase 4**: Es la entrega final del Dashboard definitivo y preparación del storytelling del proyecto. Se repasan y realizan los ajustes y pruebas de ello. Además de organizar y actualizar el repositorio y la documentación correspondiente.
+
