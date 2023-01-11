@@ -6,19 +6,18 @@
 
 ### TABLA DE CONTENIDO
 
-1.	Entendimiento de la situación
-2.	Objetivos
-3.	Alcances
-4.	Objetivos y KPIs asociados (planteo)
-5.	Repositorio Github
-6.	Solución propuesta
-
+1. Entendimiento de la situación
+2. Objetivos
+3. Alcances
+4. Objetivos y KPIs asociados (planteo)
+5. Repositorio Github
+6. Solución propuesta
 
 ### 1. ENTENDIMIENTO DE LA SITUACION
 
-**“Para entender hay que conocer”**.  
+**“Para entender hay que conocer”**.
 
-Al referirnos a OList debemos saber que es un canal de venta e-commerce que facilita este proceso, ya que con un contrato pone los productos de un minorista al alcance de los millones de visitantes de estos marketplaces de forma rápida, fácil y sin complicaciones. 
+Al referirnos a OList debemos saber que es un canal de venta e-commerce que facilita este proceso, ya que con un contrato pone los productos de un minorista al alcance de los millones de visitantes de estos marketplaces de forma rápida, fácil y sin complicaciones.
 
 La principal necesidad de los vendedores es clara: **Como vender más, mejor y atraer nuevos clientes?** Por esta razón la misión de Olist es:
 
@@ -34,17 +33,17 @@ Todo en un solo lugar, industria, importadores, productores, mayoristas, distrib
 
 **Objetivos Generales**:
 
-1) Realizar un proceso de Extracción, Transformación y Carga (ETL) de la información relativa al negocio de la plataforma OLIST para la elaboración y análisis de KPI's y métricas que proporcionen información relevante para la toma de decisiones basada en inteligencia de negocios
+1. Realizar un proceso de Extracción, Transformación y Carga (ETL) de la información relativa al negocio de la plataforma OLIST para la elaboración y análisis de KPI's y métricas que proporcionen información relevante para la toma de decisiones basada en inteligencia de negocios
 
-2) Implementar y desplegar modelos de Machine Learning que sirvan de ayuda en análisis predictivos o prescriptivos a los participantes del modelo de negocio de OLIST
+2. Implementar y desplegar modelos de Machine Learning que sirvan de ayuda en análisis predictivos o prescriptivos a los participantes del modelo de negocio de OLIST
 
--------------------------------------------------
+---
 
 El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-commerce, en el análisis de los datos obtenidos desde el 2016 al 2018 y se enfocara en la generación de reportes, creación de métricas, aplicación de modelos de machine learning y análisis de las ventas, productos, clientes y vendedores que serán visualizados en un dashboard para ser usados en la toma de decisiones.
 
 **Objetivos Especificos:**
 
-1.1)  Elaborar un completo análisis exploratorio y arquitectura de datos adecuada, proporcionando los insumos necesarios para la implementación de distintas herramientas como dashboards, algoritmos o modelos de machine learning.
+1.1) Elaborar un completo análisis exploratorio y arquitectura de datos adecuada, proporcionando los insumos necesarios para la implementación de distintas herramientas como dashboards, algoritmos o modelos de machine learning.
 
 1.2) Construir un modelo de visualización analítica que permita sistematizar y monitorear los distintos KPI's y métricas relevantes, asi como encontrar patrones e insights, mejorando la inteligencia de negocios.
 
@@ -52,57 +51,57 @@ El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-comm
 
 2.2) Implementar un modelo de predicción de las ventas considerando la evolución histórica de las mismas.
 
------------------------------------------------------------------------
+---
 
--	Generar un reporte del total de ordenes de venta, productos, vendedores, clientes, y el comparativo de crecimiento de cada uno ellos.
+- Generar un reporte del total de ordenes de venta, productos, vendedores, clientes, y el comparativo de crecimiento de cada uno ellos.
 
--	Generar un reporte total de los cierres de ventas y los no, que tienen incidencia en los ingresos 
+- Generar un reporte total de los cierres de ventas y los no, que tienen incidencia en los ingresos
 
--	Crear un mapa de geolocalización de los vendedores y compradores para observar distancias relativas
+- Crear un mapa de geolocalización de los vendedores y compradores para observar distancias relativas
 
--	Crear un comparativo de distancia/costo entre vendedores y compradores
+- Crear un comparativo de distancia/costo entre vendedores y compradores
 
--	Crear un análisis del tiempo de entrega de los productos
+- Crear un análisis del tiempo de entrega de los productos
 
--	Generar un reporte de categorización por productos
+- Generar un reporte de categorización por productos
 
--	Generar un reporte de análisis y calificación de productos
+- Generar un reporte de análisis y calificación de productos
 
--	Generar un reporte de los productos por categoría que tienen más ventas
+- Generar un reporte de los productos por categoría que tienen más ventas
 
--	Generar un reporte del volumen de ventas por región
+- Generar un reporte del volumen de ventas por región
 
--	Analizar las ventas en series de tiempo y preferencias
+- Analizar las ventas en series de tiempo y preferencias
 
--	Analizar los métodos de pago y cual es el de mayor preferencia.
+- Analizar los métodos de pago y cual es el de mayor preferencia.
 
--	Analizar el mercado por segmento de negocio, tipo de perfil y tipo de negocio
+- Analizar el mercado por segmento de negocio, tipo de perfil y tipo de negocio
 
 **Objetivos del equipo de trabajo**
 
--->	Aplicar los conocimientos adquiridos de Data Enginner, ML-Machine Learning y Data Analytics en el proyecto final.  
+--> Aplicar los conocimientos adquiridos de Data Enginner, ML-Machine Learning y Data Analytics en el proyecto final.
 
--->	Exigirnos en el desarrollo de un proyecto de data science que se asemeje a un entorno laboral y poder aplicar metodologías de trabajo      colaborativo.
+--> Exigirnos en el desarrollo de un proyecto de data science que se asemeje a un entorno laboral y poder aplicar metodologías de trabajo colaborativo.
 
--->	Realizar el análisis exploratorio de los datos y determinar cuales son los features relevantes y hallar valores atípicos que puedan afectar el resultado.
+--> Realizar el análisis exploratorio de los datos y determinar cuales son los features relevantes y hallar valores atípicos que puedan afectar el resultado.
 
--->	Realizar el proceso de ETL en el que se extraen datos de diferentes fuentes, se analizan, se limpian, normalizan los features, modelado ER y   luego se cargan en un data warehouse para su posterior uso.
+--> Realizar el proceso de ETL en el que se extraen datos de diferentes fuentes, se analizan, se limpian, normalizan los features, modelado ER y luego se cargan en un data warehouse para su posterior uso.
 
--->	Aplicar los modelos de machine learning – ML al proyecto que se consideren útiles en la búsqueda de objetivos claros para al análisis predictivo y prescriptivo.
+--> Aplicar los modelos de machine learning – ML al proyecto que se consideren útiles en la búsqueda de objetivos claros para al análisis predictivo y prescriptivo.
 
--->	Realizar y mostrar un Dashboard resultado de la analítica de los datos limpios almacenados en el data warehouse.
+--> Realizar y mostrar un Dashboard resultado de la analítica de los datos limpios almacenados en el data warehouse.
 
--->	Documentar y almacenar cada uno de los pasos del proyecto en un repositorio que permita visualizar las actualizaciones.
+--> Documentar y almacenar cada uno de los pasos del proyecto en un repositorio que permita visualizar las actualizaciones.
 
-<img src="./src/objetivos.jpg"  height="300"> 
+<img src="./src/objetivos.jpg"  height="300">
 
 ### 3. ALCANCES
 
-En los datasets de Marketplace de e-commerce Olist se realizará un análisis exploratorio de los datos a través del uso de Python para determinar el contenido, estado y uso de los features relevantes que serán utilizados.  
+En los datasets de Marketplace de e-commerce Olist se realizará un análisis exploratorio de los datos a través del uso de Python para determinar el contenido, estado y uso de los features relevantes que serán utilizados.
 
 El proyecto abarca cuatro (4) fases que contienen específicamente el contenido y pasos a desarrollar.
 
-**En la Fase 1**: se definen los objetivos, alcances, repositorio del proyecto y una solución al problema. En esta fase utilizaremos metodologías de desarrollo colaborativo, tecnologías e interfaces a utilizar, diseño de entregables, cronograma de tiempos, roles y responsabilidades de cada uno de los integrantes. 
+**En la Fase 1**: se definen los objetivos, alcances, repositorio del proyecto y una solución al problema. En esta fase utilizaremos metodologías de desarrollo colaborativo, tecnologías e interfaces a utilizar, diseño de entregables, cronograma de tiempos, roles y responsabilidades de cada uno de los integrantes.
 
 **En la Fase 2**: corresponde al proceso de Data Enginner en el que se inicia la infraestructura del proyecto. En esta fase realizaremos el modelado de los datos, procedimiento de ETL (Extract, Transform, Load), normalización de los features, se define la estructura de data warehouse, la automatización y validación de los datos. Además de la documentación de ello.
 
@@ -110,3 +109,72 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
 
 **En la Fase 4**: Es la entrega final del Dashboard definitivo y preparación del storytelling del proyecto. Se repasan y realizan los ajustes y pruebas de ello. Además de organizar y actualizar el repositorio y la documentación correspondiente.
 
+### KPIs
+
+- #### Puntualidad de la entrega (PE)
+
+  - **Área:** Logistica
+  - **Objetivo:** Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.
+  - **Variables:**
+    - Número de entregas a tiempo
+    - Número total de entregas
+  - **Fórmula:** $$ \frac{Número\ de\ entregas\ a\ tiempo}{Número\ total\ de\ entregas}\times 100\text{ \%}$$
+  - **Frecuencia de evaluación:** Mensual
+  - **Unidad:** Porcentaje [%]
+  - **Valor objetivo:** 95 [%]
+
+- #### Tiempo total del proceso (TTP)
+
+  - **Área:** Logistica
+  - **Objetivo:** Optimizar los tiempos de compra y envio.
+  - **Variables:**
+    - Fecha de compra
+    - Fecha de recivimiento
+    - Número total de compras (N)
+  - **Fórmula:** $$\sum_{i=1}^{N} \frac{(Fecha\ de\ recibimiento - Fecha\ de\ compra)}{N}\text{ días}$$
+  - **Frecuencia de evaluación:** Mesual
+  - **Unidad:** Dias [d]
+  - **Valor objetivo:** 8 [d]
+
+- #### Precio promedio del flete por densidad de producto (PPF)
+
+  - **Área:** Logistica
+    - **Objetivo:** Evaluar el costo eficiencia del flete, comparando el precio del flete con la densidad del producto.
+    - **Variables:**
+      - Precio del flete
+      - Densidad del producto
+    - **Fórmula:** $$\frac{1}{n} \times\sum_{i=1}^{n} \frac{Precio\ de\ flete}{Densidad\ del\ producto}\text{$\$R/\rho$}$$
+    - **Frecuencia de evaluación:** Mensual
+    - **Unidad:** Reales por densidad [$\$R/\rho$]
+    - **Valor objetivo:** _A definir_
+
+- #### Puntuación neta del promotor (PN)
+
+  - **Área:** Ventas
+    - **Objetivo:** Medir la satisfacción del cliente
+    - **Variables:**
+      - Porcentaje de calificaciones positivas (> 3 estrellas)
+      - Porcentaje de calificaciones negativas (< 3 estrellas)
+    - **Fórmula:** $${Porcentaje\ de\ calificaciones\ positivas} - {Porcentaje\ de\ calificaciones\ negativas}\text{ \%}$$
+    - **Frecuencia de evaluación:** Mensual
+    - **Unidad:** Porcentaje [%]
+    - **Valor objetivo:** 30 [%]
+
+- #### [Nombre del KPI]
+
+  - **Área:** [Nombre del área]
+    - **Objetivo:** [Objetivo del KPI]
+    - **Variables:** [Variables utilizadas]
+    - **Fórmula:** [Fórmula del KPI]
+    - **Frecuencia de evaluación:** [Frecuencia de evaluación del KPI]
+    - **Unidad:** [Unidad del KPI]
+    - **Valor objetivo:** [Valor objetivo del KPI]
+
+- #### [Nombre del KPI]
+  - **Área:** [Nombre del área]
+    - **Objetivo:** [Objetivo del KPI]
+    - **Variables:** [Variables utilizadas]
+    - **Fórmula:** [Fórmula del KPI]
+    - **Frecuencia de evaluación:** [Frecuencia de evaluación del KPI]
+    - **Unidad:** [Unidad del KPI]
+    - **Valor objetivo:** [Valor objetivo del KPI]
