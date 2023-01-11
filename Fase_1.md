@@ -32,9 +32,27 @@ Todo en un solo lugar, industria, importadores, productores, mayoristas, distrib
 
 ### 2. OBJETIVOS DEL PROYECTO
 
-**Objetivo General**: El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-commerce, en el análisis de los datos obtenidos desde el 2016 al 2018 y se enfocara en la generación de reportes, creación de métricas, aplicación de modelos de machine learning y análisis de las ventas, productos, clientes y vendedores que serán visualizados en un dashboard para ser usados en la toma de decisiones.
+**Objetivos Generales**:
+
+1) Realizar un proceso de Extracción, Transformación y Carga (ETL) de la información relativa al negocio de la plataforma OLIST para la elaboración y análisis de KPI's y métricas que proporcionen información relevante para la toma de decisiones basada en inteligencia de negocios
+
+2) Implementar y desplegar modelos de Machine Learning que sirvan de ayuda en análisis predictivos o prescriptivos a los participantes del modelo de negocio de OLIST
+
+-------------------------------------------------
+
+El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-commerce, en el análisis de los datos obtenidos desde el 2016 al 2018 y se enfocara en la generación de reportes, creación de métricas, aplicación de modelos de machine learning y análisis de las ventas, productos, clientes y vendedores que serán visualizados en un dashboard para ser usados en la toma de decisiones.
 
 **Objetivos Especificos:**
+
+1.1)  Elaborar un completo análisis exploratorio y arquitectura de datos adecuada, proporcionando los insumos necesarios para la implementación de distintas herramientas como dashboards, algoritmos o modelos de machine learning.
+
+1.2) Construir un modelo de visualización analítica que permita sistematizar y monitorear los distintos KPI's y métricas relevantes, asi como encontrar patrones e insights, mejorando la inteligencia de negocios.
+
+2.1) Implementar un modelo de recomendación para compradores considerando sus preferencias históricas y de usuarios con perfiles similares
+
+2.2) Implementar un modelo de predicción de las ventas considerando la evolución histórica de las mismas.
+
+-----------------------------------------------------------------------
 
 -	Generar un reporte del total de ordenes de venta, productos, vendedores, clientes, y el comparativo de crecimiento de cada uno ellos.
 
