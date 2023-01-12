@@ -117,13 +117,13 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Objetivo:** Evaluar aumento o disminucion de la variación porcentual del volumen de ventas por mes
     - **Variables:**
       - $V_{actual}$ = volumen de ventas mes actual
-      - $V_{anterior}$ = volumen de vental mes anterior =
+      - $V_{anterior}$ = volumen de vental mes anterior
 
-- **Fórmula:** $$VVV=\frac{V_{actual}-V_{anterior}}{V_{anterior}}\times 100$$
+- **Fórmula:** $$VVV=\frac{V_{actual}-V_{anterior}}{V_{anterior}}\times 100 $$
 
   - **Frecuencia de evaluación:** Mensual
-  - **Unidad:** Reales por densidad [$\$R/\rho$]
-  - **Valor objetivo:** 10%
+  - **Unidad:** Porcetaje [%]
+  - **Valor objetivo:** 2 %
 
 - #### Puntuación neta del promotor (PN)
 
