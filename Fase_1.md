@@ -118,10 +118,12 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Variables:**
       - volumen de ventas mes actual = $V_{actual}$
       - volumen de vental mes anterior = $V_{anterior}$
-- **Fórmula:** $$\frac{V_{actual}-V_{anterior}}{V_anterior}\times 100$$
-    - **Frecuencia de evaluación:** Mensual
-    - **Unidad:** Reales por densidad [$\$R/\rho$]
-    - **Valor objetivo:** 10%
+
+- **Fórmula:** $$\frac{V_{actual}-V_{anterior}}{V_{anterior}}\times 100 \text { \%}$$
+
+  - **Frecuencia de evaluación:** Mensual
+  - **Unidad:** Porcetaje [%]
+  - **Valor objetivo:** 2 %
 
 - #### Puntuación neta del promotor (PN)
 
@@ -148,6 +150,7 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Valor objetivo:** 30 [%]
 
 - #### Tasa de conversión
+
   - **Área:** Marketing
     - **Objetivo:** Medir la tasa de vendedores potenciales que se unen a la empresa
     - **Variables:**
@@ -157,7 +160,6 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Frecuencia de evaluación:** Trimestral
     - **Unidad:** [%]
     - **Valor objetivo:** 15 [%]
-
 
 - #### Puntualidad de la entrega (PE)
 
@@ -184,8 +186,6 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
   - **Unidad:** Dias [d]
   - **Valor objetivo:** 8 [d]
 
-
 - ### SOLUCIÓN PROPUESTA
 
-DASHBOARDS: 
-
+DASHBOARDS:
