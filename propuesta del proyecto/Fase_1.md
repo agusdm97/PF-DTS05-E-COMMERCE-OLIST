@@ -137,9 +137,7 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
   - **Unidad:** Dias [d]
   - **Valor objetivo:** 8 [d]
 
-- ### SOLUCIÓN PROPUESTA
-
-DASHBOARDS:
+- ### SOLUCIÓN Y PROPUESTA DE VALOR
 
 **DATA WAREHOUSE:** Proporciona una arquitectura de datos unificada y actualizable en tiempo real en un esquema batch
 
