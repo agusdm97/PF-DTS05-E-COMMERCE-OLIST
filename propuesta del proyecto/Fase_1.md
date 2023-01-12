@@ -17,17 +17,13 @@
 
 **“Para entender hay que conocer”**.
 
-Al referirnos a OList debemos saber que es un canal de venta e-commerce que facilita este proceso, ya que con un contrato pone los productos de un minorista al alcance de los millones de visitantes de estos marketplaces de forma rápida, fácil y sin complicaciones.
+OList  es un ecosistema de servicios digitales para ventas online. La principal necesidad de los vendedores es clara: **Como vender más, mejor y atraer nuevos clientes?** Por esta razón la misión de Olist es:
 
-La principal necesidad de los vendedores es clara: **Como vender más, mejor y atraer nuevos clientes?** Por esta razón la misión de Olist es:
+**“Nacimos para potenciar el comercio minorista digital y brindar oportunidades reales de crecimiento para pequeñas, medianas y grandes empresas. Existimos para eliminar obstáculos y ayudar a los minoristas a vender más. Derribamos barreras y transformamos lo presencial en online, acelerando los resultados para todos los emprendedores que buscan su espacio en internet”.**
 
-**“Nacimos para potenciar el comercio minorista digital y brindar oportunidades reales de crecimiento para pequeñas, medianas y grandes empresas. Existimos para eliminar obstáculos y ayudar a los minoristas a vender más. Derribamos barreras y transformamos lo presencial en online, acelerando los resultados para todos los emprendedores que buscan su espacio en internet”**
+En este contexto, se nos encomienda realizar labores de consultoría con productos entregables basados en un conjunto de datos suministrados por Olist. Estos corresponden al periodo de tiempo que transcurre entre los años 2016 al 2018 y contienen información relativa a los Departamentos de Ventas, de Logística y de Marketing.
 
-La tradición de la tienda física y el volumen de ventas ya no son suficientes para mantener los costos de la operación. Olist cuenta además con el servicio de envío de los productos y el seguimiento postventa para resolver cualquier inconveniente con los compradores como reclamos y devoluciones.
-
-Todo en un solo lugar, industria, importadores, productores, mayoristas, distribuidores, vendedores y compradores compaginados en la sinergia online del comercio electrónico que capta anualmente millones de dólares en ventas. Eso es Olist.
-
-<img src="./src/Olist1.png"  height="200">
+<img src="../src/Olist1.png"  height="200">
 
 ### 2. OBJETIVOS DEL PROYECTO
 
@@ -36,10 +32,6 @@ Todo en un solo lugar, industria, importadores, productores, mayoristas, distrib
 1. Realizar un proceso de Extracción, Transformación y Carga (ETL) de la información relativa al negocio de la plataforma OLIST para la elaboración y análisis de KPI's y métricas que proporcionen información relevante para la toma de decisiones basada en inteligencia de negocios
 
 2. Implementar y desplegar modelos de Machine Learning que sirvan de ayuda en análisis predictivos o prescriptivos a los participantes del modelo de negocio de OLIST
-
----
-
-El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-commerce, en el análisis de los datos obtenidos desde el 2016 al 2018 y se enfocara en la generación de reportes, creación de métricas, aplicación de modelos de machine learning y análisis de las ventas, productos, clientes y vendedores que serán visualizados en un dashboard para ser usados en la toma de decisiones.
 
 **Objetivos Especificos:**
 
@@ -51,49 +43,8 @@ El equipo de desarrollo de Data Science trabajara en el proyecto de Olist e-comm
 
 2.2) Implementar un modelo de predicción de las ventas considerando la evolución histórica de las mismas.
 
----
 
-- Generar un reporte del total de ordenes de venta, productos, vendedores, clientes, y el comparativo de crecimiento de cada uno ellos.
-
-- Generar un reporte total de los cierres de ventas y los no, que tienen incidencia en los ingresos
-
-- Crear un mapa de geolocalización de los vendedores y compradores para observar distancias relativas
-
-- Crear un comparativo de distancia/costo entre vendedores y compradores
-
-- Crear un análisis del tiempo de entrega de los productos
-
-- Generar un reporte de categorización por productos
-
-- Generar un reporte de análisis y calificación de productos
-
-- Generar un reporte de los productos por categoría que tienen más ventas
-
-- Generar un reporte del volumen de ventas por región
-
-- Analizar las ventas en series de tiempo y preferencias
-
-- Analizar los métodos de pago y cual es el de mayor preferencia.
-
-- Analizar el mercado por segmento de negocio, tipo de perfil y tipo de negocio
-
-**Objetivos del equipo de trabajo**
-
---> Aplicar los conocimientos adquiridos de Data Enginner, ML-Machine Learning y Data Analytics en el proyecto final.
-
---> Exigirnos en el desarrollo de un proyecto de data science que se asemeje a un entorno laboral y poder aplicar metodologías de trabajo colaborativo.
-
---> Realizar el análisis exploratorio de los datos y determinar cuales son los features relevantes y hallar valores atípicos que puedan afectar el resultado.
-
---> Realizar el proceso de ETL en el que se extraen datos de diferentes fuentes, se analizan, se limpian, normalizan los features, modelado ER y luego se cargan en un data warehouse para su posterior uso.
-
---> Aplicar los modelos de machine learning – ML al proyecto que se consideren útiles en la búsqueda de objetivos claros para al análisis predictivo y prescriptivo.
-
---> Realizar y mostrar un Dashboard resultado de la analítica de los datos limpios almacenados en el data warehouse.
-
---> Documentar y almacenar cada uno de los pasos del proyecto en un repositorio que permita visualizar las actualizaciones.
-
-<img src="./src/objetivos.jpg"  height="300">
+<img src="../src/objetivos.jpg"  height="300">
 
 ### 3. ALCANCES
 
