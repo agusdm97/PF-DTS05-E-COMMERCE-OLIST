@@ -116,12 +116,14 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
   - **Área:** Ventas
     - **Objetivo:** Evaluar aumento o disminucion de la variación porcentual del volumen de ventas por mes
     - **Variables:**
-      - volumen de ventas mes actual = $V_{actual}$
-      - volumen de vental mes anterior = $V_{anterior}$
-- **Fórmula:** $$\frac{V_{actual}-V_{anterior}}{V_anterior}\times 100$$
-    - **Frecuencia de evaluación:** Mensual
-    - **Unidad:** Reales por densidad [$\$R/\rho$]
-    - **Valor objetivo:** 10%
+      - $V_{actual}$ = volumen de ventas mes actual
+      - $V_{anterior}$ = volumen de vental mes anterior =
+
+- **Fórmula:** $$VVV=\frac{V_{actual}-V_{anterior}}{V_{anterior}}\times 100$$
+
+  - **Frecuencia de evaluación:** Mensual
+  - **Unidad:** Reales por densidad [$\$R/\rho$]
+  - **Valor objetivo:** 10%
 
 - #### Puntuación neta del promotor (PN)
 
@@ -130,43 +132,43 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Variables:**
       - Porcentaje de calificaciones positivas (> 3 estrellas)
       - Porcentaje de calificaciones negativas (< 3 estrellas)
-    - **Fórmula:** $${Porcentaje\ de\ calificaciones\ positivas} - {Porcentaje\ de\ calificaciones\ negativas}\text{ \%}$$
+    - **Fórmula:** $$PN={{ \%}\ calificaciones\ positivas} - {{ \%}\ calificaciones\ negativas}$$
     - **Frecuencia de evaluación:** Mensual
     - **Unidad:** Porcentaje [%]
     - **Valor objetivo:** 30 [%]
 
-- #### Fidelidad del cliente
+- #### Fidelidad del cliente (FC)
 
   - **Área:** Ventas
     - **Objetivo:** Medir la tasa de clientes que vuelven a comprar dentro de un periodo determinado
     - **Variables:**
-      - Número de clientes que volvieron a realizar compras
-      - Número total de clientes
-    - **Fórmula:** $$\frac{(Número\ de\ clientes\ que\ volvieron\ a\ comprar )}{Número\ total\ de\ compra}\times 100\text{ \%}$$
+      - N° de clientes que volvieron a realizar compras
+      - N° total de clientes
+    - **Fórmula:** $$FC =\frac{N°\ de\ clientes\ que\ volvieron\ a\ comprar}{N°\ total\ de\ compra}\times 100$$
     - **Frecuencia de evaluación:** Trimestral
     - **Unidad:** [%]
     - **Valor objetivo:** 30 [%]
 
-- #### Tasa de conversión
+- #### Tasa de conversión (TC)
+
   - **Área:** Marketing
     - **Objetivo:** Medir la tasa de vendedores potenciales que se unen a la empresa
     - **Variables:**
-      - Número total de contactos convertidos
-      - Número de contactos interesados
-    - **Fórmula:** $$\frac{(Número\ total\ de\ contactos\ convertidos)}{Número\ total\ de\ contactos\ interesados}\times 100\text{ \%}$$
+      - $N°_{convertidos}$ = Número total de contactos convertidos
+      - $N°_{interesados}$ = Número de contactos interesados
+    - **Fórmula:** $$ TC=\left(\frac{N°_{convertidos}}{N°_{interesados}}\right)\times 100$$
     - **Frecuencia de evaluación:** Trimestral
     - **Unidad:** [%]
     - **Valor objetivo:** 15 [%]
-
 
 - #### Puntualidad de la entrega (PE)
 
   - **Área:** Logistica
   - **Objetivo:** Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.
   - **Variables:**
-    - Número de entregas a tiempo
-    - Número total de entregas
-  - **Fórmula:** $$ \frac{Número\ de\ entregas\ a\ tiempo}{Número\ total\ de\ entregas}\times 100\text{ \%}$$
+    - $N°_{entiempo}$ = Número de entregas a tiempo
+    - $N°_{entregas}$ = Número total de entregas
+  - **Fórmula:** $$ PE =\left(\frac{N°_{entiempo}}{N°_{entregas}}\right)\times 100$$
   - **Frecuencia de evaluación:** Mensual
   - **Unidad:** Porcentaje [%]
   - **Valor objetivo:** 95 [%]
@@ -179,13 +181,11 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - Fecha de compra
     - Fecha de recivimiento
     - Número total de compras (N)
-  - **Fórmula:** $$\sum_{i=1}^{N} \frac{(Fecha\ de\ recibimiento - Fecha\ de\ compra)}{N}\text{ días}$$
+  - **Fórmula:** $$ TTP= \frac{1}{N}\sum_{i}^{N}\left(Fecha\ recibimiento - Fecha\ compra \right)_i $$
   - **Frecuencia de evaluación:** Mesual
   - **Unidad:** Dias [d]
   - **Valor objetivo:** 8 [d]
 
-
 - ### SOLUCIÓN PROPUESTA
 
-DASHBOARDS: 
-
+DASHBOARDS:
