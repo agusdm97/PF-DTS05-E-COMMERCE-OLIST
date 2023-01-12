@@ -140,3 +140,11 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
 - ### SOLUCIÓN PROPUESTA
 
 DASHBOARDS:
+
+**DATA WAREHOUSE:** Proporciona una arquitectura de datos unificada y actualizable en tiempo real en un esquema batch
+
+**DASHBOARDS DINÁMICOS:** Permite un seguimiento y monitoreo de KPIs en tiempo real, generarando nuevos insights y reportes actualizados basados en inteligencia de negocios   
+
+**SISTEMA DE RECOMENDACIÓN:** Genera ofertas de productos de interés particular para compradores, aumentando las probabilidades de ventas y retención de clientes 
+
+**SISTEMA DE PREDICCIÓN DE VENTAS FUTURAS:** Ayuda a la gestión estratégica del negocio. Entre otras cosas permite anticiparnos al comportamiento de los consumidores, evaluar el rendimiento de los vendedores y manejar cuestiones lógisticas como el stock o inversiones inteligentes
