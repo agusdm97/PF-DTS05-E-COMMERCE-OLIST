@@ -181,7 +181,7 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - Fecha de compra
     - Fecha de recivimiento
     - Número total de compras (N)
-  - **Fórmula:** $$ TTP= \frac{1}{N}\sum_{i}^{N}\left(Fecha\ recibimiento - Fecha\ compra \right)_i $$
+  - **Fórmula:**  $$  TTP= \frac{1}{N}\sum_{i}^{N}\left(Fecha\ recibimiento - Fecha\ compra \right)_i  $$
   - **Frecuencia de evaluación:** Mesual
   - **Unidad:** Dias [d]
   - **Valor objetivo:** 8 [d]
