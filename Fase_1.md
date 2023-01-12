@@ -160,21 +160,25 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Unidad:** Porcentaje [%]
     - **Valor objetivo:** 30 [%]
 
-- #### [Nombre del KPI]
+- #### Fidelidad del cliente
 
-  - **Área:** [Nombre del área]
-    - **Objetivo:** [Objetivo del KPI]
-    - **Variables:** [Variables utilizadas]
-    - **Fórmula:** [Fórmula del KPI]
-    - **Frecuencia de evaluación:** [Frecuencia de evaluación del KPI]
-    - **Unidad:** [Unidad del KPI]
-    - **Valor objetivo:** [Valor objetivo del KPI]
+  - **Área:** Ventas
+    - **Objetivo:** Medir la tasa de clientes que vuelven a comprar dentro de un periodo determinado
+    - **Variables:**
+      - Número de clientes que volvieron a realizar compras
+      - Número total de clientes
+    - **Fórmula:** $$\frac{(Número\ de\ clientes\ que\ volvieron\ a\ comprar )}{Número\ total\ de\ compra}\times 100\text{ \%}$$
+    - **Frecuencia de evaluación:** Trimestral
+    - **Unidad:** [%]
+    - **Valor objetivo:** 30 [%]
 
-- #### [Nombre del KPI]
-  - **Área:** [Nombre del área]
-    - **Objetivo:** [Objetivo del KPI]
-    - **Variables:** [Variables utilizadas]
-    - **Fórmula:** [Fórmula del KPI]
-    - **Frecuencia de evaluación:** [Frecuencia de evaluación del KPI]
-    - **Unidad:** [Unidad del KPI]
-    - **Valor objetivo:** [Valor objetivo del KPI]
+- #### Tasa de conversión
+  - **Área:** Marketing
+    - **Objetivo:** Medir la tasa de vendedores potenciales que se unen a la empresa
+    - **Variables:**
+      - Número total de contactos convertidos
+      - Número de contactos interesados
+    - **Fórmula:** $$\frac{(Número\ total\ de\ contactos\ convertidos)}{Número\ total\ de\ contactos\ interesados}\times 100\text{ \%}$$
+    - **Frecuencia de evaluación:** Trimestral
+    - **Unidad:** [%]
+    - **Valor objetivo:** 15 [%]
