@@ -111,42 +111,17 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
 
 ### KPIs
 
-- #### Puntualidad de la entrega (PE)
+- #### Variación porcentual del volumen de ventas por mes (VVV)
 
-  - **Área:** Logistica
-  - **Objetivo:** Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.
-  - **Variables:**
-    - Número de entregas a tiempo
-    - Número total de entregas
-  - **Fórmula:** $$ \frac{Número\ de\ entregas\ a\ tiempo}{Número\ total\ de\ entregas}\times 100\text{ \%}$$
-  - **Frecuencia de evaluación:** Mensual
-  - **Unidad:** Porcentaje [%]
-  - **Valor objetivo:** 95 [%]
-
-- #### Tiempo total del proceso (TTP)
-
-  - **Área:** Logistica
-  - **Objetivo:** Optimizar los tiempos de compra y envio.
-  - **Variables:**
-    - Fecha de compra
-    - Fecha de recivimiento
-    - Número total de compras (N)
-  - **Fórmula:** $$\sum_{i=1}^{N} \frac{(Fecha\ de\ recibimiento - Fecha\ de\ compra)}{N}\text{ días}$$
-  - **Frecuencia de evaluación:** Mesual
-  - **Unidad:** Dias [d]
-  - **Valor objetivo:** 8 [d]
-
-- #### Precio promedio del flete por densidad de producto (PPF)
-
-  - **Área:** Logistica
-    - **Objetivo:** Evaluar el costo eficiencia del flete, comparando el precio del flete con la densidad del producto.
+  - **Área:** Ventas
+    - **Objetivo:** Evaluar aumento o disminucion de la variación porcentual del volumen de ventas por mes
     - **Variables:**
-      - Precio del flete
-      - Densidad del producto
-    - **Fórmula:** $$\frac{1}{n} \times\sum_{i=1}^{n} \frac{Precio\ de\ flete}{Densidad\ del\ producto}\text{$\$R/\rho$}$$
+      - volumen de ventas mes actual = $V_{actual}$
+      - volumen de vental mes anterior = $V_{anterior}$
+- **Fórmula:** $$\frac{V_{actual}-V_{anterior}}{V_anterior}\times 100$$
     - **Frecuencia de evaluación:** Mensual
     - **Unidad:** Reales por densidad [$\$R/\rho$]
-    - **Valor objetivo:** _A definir_
+    - **Valor objetivo:** 10%
 
 - #### Puntuación neta del promotor (PN)
 
@@ -182,3 +157,35 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - **Frecuencia de evaluación:** Trimestral
     - **Unidad:** [%]
     - **Valor objetivo:** 15 [%]
+
+
+- #### Puntualidad de la entrega (PE)
+
+  - **Área:** Logistica
+  - **Objetivo:** Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.
+  - **Variables:**
+    - Número de entregas a tiempo
+    - Número total de entregas
+  - **Fórmula:** $$ \frac{Número\ de\ entregas\ a\ tiempo}{Número\ total\ de\ entregas}\times 100\text{ \%}$$
+  - **Frecuencia de evaluación:** Mensual
+  - **Unidad:** Porcentaje [%]
+  - **Valor objetivo:** 95 [%]
+
+- #### Tiempo total del proceso (TTP)
+
+  - **Área:** Logistica
+  - **Objetivo:** Optimizar los tiempos de compra y envio.
+  - **Variables:**
+    - Fecha de compra
+    - Fecha de recivimiento
+    - Número total de compras (N)
+  - **Fórmula:** $$\sum_{i=1}^{N} \frac{(Fecha\ de\ recibimiento - Fecha\ de\ compra)}{N}\text{ días}$$
+  - **Frecuencia de evaluación:** Mesual
+  - **Unidad:** Dias [d]
+  - **Valor objetivo:** 8 [d]
+
+
+- ### SOLUCIÓN PROPUESTA
+
+DASHBOARDS: 
+
