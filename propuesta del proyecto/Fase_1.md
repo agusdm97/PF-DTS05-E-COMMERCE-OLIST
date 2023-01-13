@@ -168,7 +168,7 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
 
 Este cronograma detalla las tareas e hitos importantes del proyecto, dividido en fases de una semana y culminando en la cuarta fase, siguiendo la metodología Scrum. Cada sprint tiene como objetivo alcanzar metas específicas del proyecto y culmina con una reunión de revisión para evaluar el trabajo realizado en conjunto con el Product Owner. Por último, durante esta fase el equipo diariamente se congrega en una reunión de stand-up para revisar el progreso y identificar cualquier problema y planificar el próximo sprint.
 
-## Fase 1:Propuesta de proyecto 
+#### Fase 1:Propuesta de proyecto 
 
 - [x] Entendimiento de la situación actual (09/01/2022)
 - [x] Definición de objetivo y alcance del proyecto (09/01/2022)
@@ -179,7 +179,7 @@ Este cronograma detalla las tareas e hitos importantes del proyecto, dividido en
 - [x] Elección de las tecnologías a utilizar (11/01/2022)
 - [x] Elaboración de entregable (11/01/2022)
 
-## Fase 2: Data Engineering 
+#### Fase 2: Data Engineering 
 
 - [ ] Desarrollo de ETL (16/01/2022)
 - [ ] Diseño del modelo ER (17/01/2022)
@@ -187,13 +187,13 @@ Este cronograma detalla las tareas e hitos importantes del proyecto, dividido en
 - [ ] Diseño del pipeline de ETL (18/01/2022)
 - [ ] Documentación (20/01/2022)
 
-## Fase 3: Data Analytics + ML 
+#### Fase 3: Data Analytics + ML 
 
 - [ ] Diseño e implementación del dashboard (23/01/2022)
 - [ ] Diseño e implementación de modelos de ML (23/01/2022)
 - [ ] Elaboración de la documentación (26/01/2022)
 
-## Fase 4: Retoques finales 
+#### Fase 4: Retoques finales 
 
 - [ ] Finalización del proyecto (30/01/2022)
 
