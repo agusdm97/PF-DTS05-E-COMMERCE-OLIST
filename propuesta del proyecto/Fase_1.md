@@ -1,6 +1,6 @@
 ![HenryLogo](https://d31uz8lwfmyn8g.cloudfront.net/Assets/logo-henry-white-lg.png)
 
-### PROYECTO FINAL - OLIST E-COMMERCE
+# PROYECTO FINAL - OLIST E-COMMERCE
 
 ## FASE 1
 
@@ -8,22 +8,23 @@
 
 1. Entendimiento de la situación
 2. Objetivos
-3. Alcances
-4. Objetivos y KPIs asociados (planteo)
-5. Repositorio Github
-6. Solución propuesta
+3. Alcance
+4. Análisis preliminar de los datos
+5. Stack tecnológico
+6. KPIs
+7. Solución propuesta
 
 ### 1. ENTENDIMIENTO DE LA SITUACION
 
 **“Para entender hay que conocer”**.
 
-OList  es un ecosistema de servicios digitales para ventas online. La principal necesidad de los vendedores es clara: **Como vender más, mejor y atraer nuevos clientes?** Por esta razón la misión de Olist es:
+OList es un ecosistema de servicios digitales para ventas online. La principal necesidad de los vendedores es clara: **Como vender más, mejor y atraer nuevos clientes?** Por esta razón la misión de Olist es:
 
 **“Nacimos para potenciar el comercio minorista digital y brindar oportunidades reales de crecimiento para pequeñas, medianas y grandes empresas. Existimos para eliminar obstáculos y ayudar a los minoristas a vender más. Derribamos barreras y transformamos lo presencial en online, acelerando los resultados para todos los emprendedores que buscan su espacio en internet”.**
 
 En este contexto, se nos encomienda realizar labores de consultoría con productos entregables basados en un conjunto de datos suministrados por Olist. Estos corresponden al periodo de tiempo que transcurre entre los años 2016 al 2018 y contienen información relativa a los Departamentos de Ventas, de Logística y de Marketing.
 
-<img src="../src/Olist1.png"  height="200">
+![Logo Olist](../src/Olist1.png)
 
 ### 2. OBJETIVOS DEL PROYECTO
 
@@ -43,10 +44,7 @@ En este contexto, se nos encomienda realizar labores de consultoría con product
 
 2.2) Implementar un modelo de predicción de las ventas considerando la evolución histórica de las mismas.
 
-
-<img src="../src/objetivos.jpg"  height="300">
-
-### 3. ALCANCES
+### 3. ALCANCE
 
 En los datasets de Marketplace de e-commerce Olist se realizará un análisis exploratorio de los datos a través del uso de Python para determinar el contenido, estado y uso de los features relevantes que serán utilizados.
 
@@ -60,7 +58,33 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
 
 **En la Fase 4**: Es la entrega final del Dashboard definitivo y preparación del storytelling del proyecto. Se repasan y realizan los ajustes y pruebas de ello. Además de organizar y actualizar el repositorio y la documentación correspondiente.
 
-### KPIs
+### 4. ANALISIS PRELIMINAR DE LOS DATOS
+
+En el análisis preliminar de los datos en este proyecto, se llevó a cabo una revisión exhaustiva de los diferentes conjuntos de datos utilizados. A continuación, se presentan las conclusiones obtenidas:
+
+- En el dataset de `geolocation` se encontraron valores en las columnas de latitud y longitud que no pertenecen a Brasil. Además, los nombres de las ciudades se encuentran poco normalizados. Para solucionar este problema, se obtuvieron datos de una fuente externa y se reemplazaron los valores incorrectos en base al código postal.
+
+- En el dataset de `products` se encontraron valores nulos. Sin embargo, estos valores pertenecen a filas enteras de datos nulos, por lo que la solución más adecuada sería simplemente eliminar estas filas.
+
+- En el dataset de `closed deals` se detectaron outliers en la columna de ventas mensuales. Se recomienda analizar estos outliers y determinar cómo proceder con ellos para garantizar la precisión de los resultados finales del proyecto.
+
+En resumen, el análisis preliminar de los datos permitió identificar problemas en los diferentes conjuntos de datos utilizados. Se han propuesto soluciones para corregir estos problemas y se han señalado áreas que requieren una mayor investigación para garantizar la precisión de los resultados finales del proyecto.
+
+### 5. STACK TECNOLOGICO
+
+Es importante destacar que el gráfico representa las tecnologías utilizadas en cada etapa del proyecto y su relación entre ellas, de esta manera se puede ver de manera visual y sencilla como cada tecnología se enlaza con otra para llevar a cabo el proyecto.
+
+- Los datos originales del proyecto están en formato .csv y se contempla la opción de carga incremental para futuros datos que serían provistos en el mismo formato.
+
+- Luego, se utiliza Apache Airflow para programar la ejecución de los programas de Python encargados de extraer, transformar y cargar los datos originales en el Data Warehouse. Esto permite la automatización del proceso de ETL y la ejecución en paralelo de los programas de Python, lo que aumenta la velocidad y eficiencia del proceso. Además, Apache Airflow permite monitorizar el estado de los trabajos y recibir notificaciones en caso de errores o fallos en el proceso.
+
+- El Data Warehouse es un sistema de almacenamiento de datos específicamente diseñado para el análisis de datos. En este proyecto se utiliza MySQL, el cual permite acceder y analizar los datos de manera eficiente. Esto permite a los usuarios obtener información valiosa y tomar decisiones informadas.
+
+- Estos datos son luego utilizados tanto para la elaboración de modelos de aprendizaje automático como para la elaboración de un dashboard, el cual se utiliza para visualizar y analizar los datos de manera clara y concisa, permitiendo a los usuarios obtener información valiosa y tomar decisiones informadas.
+
+![Stack tecnológico](../src/stack_tecnologico.png)
+
+### 6. KPIs
 
 - #### Variación porcentual del volumen de ventas por mes (VVV)
 
@@ -74,7 +98,7 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
 
   - **Frecuencia de evaluación:** Mensual
   - **Unidad:** Porcetaje [%]
-  - **Valor objetivo:** 2 %
+  - **Valor objetivo:** 2 [%]
 
 - #### Puntuación neta del promotor (PN)
 
@@ -132,19 +156,23 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
     - Fecha de compra
     - Fecha de recivimiento
     - Número total de compras (N)
-  - **Fórmula:**  $$  TTP= \frac{1}{N}\sum_{i}^{N}\left(Fecha\ recibimiento - Fecha\ compra \right)_i  $$
+  - **Fórmula:** $$ TTP= \frac{1}{N}\sum_{i}^{N}\left(Fecha\ recibimiento - Fecha\ compra \right)_i $$
   - **Frecuencia de evaluación:** Mesual
   - **Unidad:** Dias [d]
   - **Valor objetivo:** 8 [d]
 
-- ### SOLUCIÓN PROPUESTA
+
+### 7. CRONOGRAMA
+
+[ACA VA LO TUYO CARLOS]
+### 8. SOLUCION PROPUESTA
 
 DASHBOARDS:
 
 **DATA WAREHOUSE:** Proporciona una arquitectura de datos unificada y actualizable en tiempo real en un esquema batch
 
-**DASHBOARDS DINÁMICOS:** Permite un seguimiento y monitoreo de KPIs en tiempo real, generarando nuevos insights y reportes actualizados basados en inteligencia de negocios   
+**DASHBOARDS DINÁMICOS:** Permite un seguimiento y monitoreo de KPIs en tiempo real, generarando nuevos insights y reportes actualizados basados en inteligencia de negocios
 
-**SISTEMA DE RECOMENDACIÓN:** Genera ofertas de productos de interés particular para compradores, aumentando las probabilidades de ventas y retención de clientes 
+**SISTEMA DE RECOMENDACIÓN:** Genera ofertas de productos de interés particular para compradores, aumentando las probabilidades de ventas y retención de clientes
 
 **SISTEMA DE PREDICCIÓN DE VENTAS FUTURAS:** Ayuda a la gestión estratégica del negocio. Entre otras cosas permite anticiparnos al comportamiento de los consumidores, evaluar el rendimiento de los vendedores y manejar cuestiones lógisticas como el stock o inversiones inteligentes
