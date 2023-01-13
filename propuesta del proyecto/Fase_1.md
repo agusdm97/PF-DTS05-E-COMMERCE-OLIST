@@ -79,9 +79,9 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
 
 - Luego, se utiliza Apache Airflow para programar la ejecución de los programas de Python encargados de extraer, transformar y cargar los datos originales en el Data Warehouse. Esto permite la automatización del proceso de ETL y la ejecución en paralelo de los programas de Python, lo que aumenta la velocidad y eficiencia del proceso. Además, Apache Airflow permite monitorizar el estado de los trabajos y recibir notificaciones en caso de errores o fallos en el proceso.
 
-- El Data Warehouse es un sistema de almacenamiento de datos específicamente diseñado para el análisis de datos. En este proyecto se utiliza MySQL, el cual permite acceder y analizar los datos de manera eficiente. Esto permite a los usuarios obtener información valiosa y tomar decisiones informadas.
+- El Data Warehouse es un sistema de almacenamiento de datos específicamente diseñado para el análisis de datos. En este proyecto se utiliza MySQL, el cual permite acceder y analizar los datos de manera eficiente. Esto permite obtener información valiosa para la toma de decisiones informadas.
 
-- Estos datos son luego utilizados tanto para la elaboración de modelos de aprendizaje automático como para la elaboración de un dashboard, el cual se utiliza para visualizar y analizar los datos de manera clara y concisa, permitiendo a los usuarios obtener información valiosa y tomar decisiones informadas.
+- Estos datos son luego utilizados tanto para la elaboración de modelos de aprendizaje automático como para la elaboración de un dashboard, el cual se utiliza para visualizar y analizar los datos de manera clara y concisa.
 
 ![Stack tecnológico](../src/stack_tecnologico.png)
 
