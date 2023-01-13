@@ -12,7 +12,8 @@
 4. Análisis preliminar de los datos
 5. Stack tecnológico
 6. KPIs
-7. Solución propuesta
+7. Cronograma
+8. Solución propuesta
 
 ### 1. ENTENDIMIENTO DE LA SITUACION
 
@@ -30,7 +31,7 @@ En este contexto, se nos encomienda realizar labores de consultoría con product
 
 **Objetivos Generales**:
 
-1. Realizar un proceso de Extracción, Transformación y Carga (ETL) de la información relativa al negocio de la plataforma OLIST para la elaboración y análisis de KPI's y métricas que proporcionen información relevante para la toma de decisiones basada en inteligencia de negocios
+1. Realizar un proceso de Extracción, Transformación y Carga (ETL) de la información relativa al negocio de la plataforma OLIST para la elaboración y análisis de KPI's y métricas que proporcionen información relevante para la toma de decisiones.
 
 2. Implementar y desplegar modelos de Machine Learning que sirvan de ayuda en análisis predictivos o prescriptivos a los participantes del modelo de negocio de OLIST
 
@@ -38,7 +39,7 @@ En este contexto, se nos encomienda realizar labores de consultoría con product
 
 1.1) Elaborar un completo análisis exploratorio y arquitectura de datos adecuada, proporcionando los insumos necesarios para la implementación de distintas herramientas como dashboards, algoritmos o modelos de machine learning.
 
-1.2) Construir un modelo de visualización analítica que permita sistematizar y monitorear los distintos KPI's y métricas relevantes, asi como encontrar patrones e insights, mejorando la inteligencia de negocios.
+1.2) Construir un modelo de visualización analítica que permita sistematizar y monitorear los distintos KPI's y métricas relevantes, asi como encontrar patrones e insights.
 
 2.1) Implementar un modelo de recomendación para compradores considerando sus preferencias históricas y de usuarios con perfiles similares
 
@@ -167,7 +168,6 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
 [ACA VA LO TUYO CARLOS]
 ### 8. SOLUCION PROPUESTA
 
-DASHBOARDS:
 
 **DATA WAREHOUSE:** Proporciona una arquitectura de datos unificada y actualizable en tiempo real en un esquema batch
 
