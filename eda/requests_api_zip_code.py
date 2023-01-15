@@ -5,16 +5,16 @@ from dotenv import load_dotenv
 import os
 
 
-# Carga de variables de entorno
+# Carga de variables de entorno ubicadas en el archivo .env (puede obtener sus credenciales en https://www.back4app.com/database/back4app/brazil-zip-code-database)
 load_dotenv()
 
-# Parametros de consulta de API
+# Parámetros de consulta de API
 skip = 0
 LIMIT = 100
 X_PARSE_APPLICATION_ID = os.getenv("X_PARSE_APPLICATION_ID")
 X_PARSE_REST_API_KEY = os.getenv("X_PARSE_REST_API_KEY")
 
-# Parametros del bucle
+# Parámetros del bucle
 data_empty = False
 
 # Listas de salida de datos
@@ -26,12 +26,12 @@ city_name = []
 while not data_empty:
     url = f"https://parseapi.back4app.com/classes/Worldzipcode_BR?skip={skip}&limit={LIMIT}&keys=geoPosition,placeName,postalCode"
     headers = {
-        "X-Parse-Application-Id": X_PARSE_APPLICATION_ID,  # ID de la applicación
+        "X-Parse-Application-Id": X_PARSE_APPLICATION_ID,  # ID de la aplicación
         "X-Parse-REST-API-Key": X_PARSE_REST_API_KEY,  # REST API key
     }
     data = json.loads(
         requests.get(url, headers=headers).content.decode("utf-8")
-    )  # Here you have the data that you need
+    )  # Respuesta de la API
     skip += 100
 
     # Chequeo de respuesta de la API en blanco
@@ -57,5 +57,5 @@ df = pd.DataFrame(
     }
 )
 
-# Guradado de los datos en un archivo csv
+# Guardado de los datos en un archivo csv
 df.to_csv(path_or_buf="datasets/br_zip_code.csv", index=False)
