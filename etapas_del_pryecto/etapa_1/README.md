@@ -25,7 +25,7 @@ OList es un ecosistema de servicios digitales para ventas online. La principal n
 
 En este contexto, se nos encomienda realizar labores de consultoría con productos entregables basados en un conjunto de datos suministrados por Olist. Estos corresponden al periodo de tiempo que transcurre entre los años 2016 al 2018 y contienen información relativa a los Departamentos de Ventas, de Logística y de Marketing.
 
-![Logo Olist](../src/Olist1.png)
+![Logo Olist](../_src/Olist1.png)
 
 ### 2. OBJETIVOS DEL PROYECTO
 
@@ -35,7 +35,7 @@ En este contexto, se nos encomienda realizar labores de consultoría con product
 
 2. Implementar y desplegar modelos de Machine Learning que sirvan de ayuda en análisis predictivos o prescriptivos a los participantes del modelo de negocio de OLIST
 
-**Objetivos Especificos:**
+**Objetivos Específicos:**
 
 1.1) Elaborar un completo análisis exploratorio y arquitectura de datos adecuada, proporcionando los insumos necesarios para la implementación de distintas herramientas como dashboards, algoritmos o modelos de machine learning.
 
@@ -53,7 +53,7 @@ El proyecto abarca cuatro (4) fases que contienen específicamente el contenido 
 
 **En la Fase 1**: se definen los objetivos, alcances, repositorio del proyecto y una solución al problema. En esta fase utilizaremos metodologías de desarrollo colaborativo, tecnologías e interfaces a utilizar, diseño de entregables, cronograma de tiempos, roles y responsabilidades de cada uno de los integrantes.
 
-**En la Fase 2**: corresponde al proceso de Data Enginner en el que se inicia la infraestructura del proyecto. En esta fase realizaremos el modelado de los datos, procedimiento de ETL (Extract, Transform, Load), normalización de los features, se define la estructura de data warehouse, la automatización y validación de los datos. Además de la documentación de ello.
+**En la Fase 2**: corresponde al proceso de Data Engineer en el que se inicia la infraestructura del proyecto. En esta fase realizaremos el modelado de los datos, procedimiento de ETL (Extract, Transform, Load), normalización de los features, se define la estructura de data warehouse, la automatización y validación de los datos. Además de la documentación de ello.
 
 **En la Fase 3**: Corresponde al proceso de Data Analytics y Machine Learning (ML) en el que se desarrollara el mockup de visualización, inclusión de métricas, la definición y pruebas de modelos de ML asi como también la preparación del storytelling del proyecto.
 
@@ -83,22 +83,22 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
 
 - Estos datos son luego utilizados tanto para la elaboración de modelos de aprendizaje automático como para la elaboración de un dashboard, el cual se utiliza para visualizar y analizar los datos de manera clara y concisa.
 
-![Stack tecnológico](../src/stack_tecnologico.png)
+![Stack tecnológico](../_src/stack_tecnologico.png)
 
 ### 6. KPIs
 
 - #### Variación porcentual del volumen de ventas por mes (VVV)
 
   - **Área:** Ventas
-    - **Objetivo:** Evaluar aumento o disminucion de la variación porcentual del volumen de ventas por mes
+    - **Objetivo:** Evaluar aumento o disminución de la variación porcentual del volumen de ventas por mes
     - **Variables:**
       - $V_{actual}$ = volumen de ventas mes actual
-      - $V_{anterior}$ = volumen de vental mes anterior
+      - $V_{anterior}$ = volumen de ventas mes anterior
 
 - **Fórmula:** $$VVV=\frac{V_{actual}-V_{anterior}}{V_{anterior}}\times 100 $$
 
   - **Frecuencia de evaluación:** Mensual
-  - **Unidad:** Porcetaje [%]
+  - **Unidad:** Porcentaje [%]
   - **Valor objetivo:** 2 [%]
 
 - #### Puntuación neta del promotor (PN)
@@ -139,26 +139,26 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
 
 - #### Puntualidad de la entrega (PE)
 
-  - **Área:** Logistica
+  - **Área:** Logística
   - **Objetivo:** Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.
   - **Variables:**
-    - $N°_{entiempo}$ = Número de entregas a tiempo
+    - $N°_{en\ tiempo}$ = Número de entregas a tiempo
     - $N°_{entregas}$ = Número total de entregas
-  - **Fórmula:** $$ PE =\left(\frac{N°_{entiempo}}{N°_{entregas}}\right)\times 100$$
+  - **Fórmula:** $$ PE =\left(\frac{N°_{en\ tiempo}}{N°_{entregas}}\right)\times 100$$
   - **Frecuencia de evaluación:** Mensual
   - **Unidad:** Porcentaje [%]
   - **Valor objetivo:** 95 [%]
 
 - #### Tiempo total del proceso (TTP)
 
-  - **Área:** Logistica
-  - **Objetivo:** Optimizar los tiempos de compra y envio.
+  - **Área:** Logística
+  - **Objetivo:** Optimizar los tiempos de compra y envío.
   - **Variables:**
     - Fecha de compra
-    - Fecha de recivimiento
+    - Fecha de recibimiento
     - Número total de compras (N)
   - **Fórmula:** $$ TTP= \frac{1}{N}\sum_{i}^{N}\left(Fecha\ recibimiento - Fecha\ compra \right)_i $$
-  - **Frecuencia de evaluación:** Mesual
+  - **Frecuencia de evaluación:** Mensual
   - **Unidad:** Dias [d]
   - **Valor objetivo:** 8 [d]
 
@@ -173,8 +173,8 @@ Este cronograma detalla las tareas e hitos importantes del proyecto, dividido en
 - [x] Entendimiento de la situación actual (09/01/2022)
 - [x] Definición de objetivo y alcance del proyecto (09/01/2022)
 - [x] Definición de la metodología de trabajo (10/01/2022)
-- [x] Definicion de Roles del equipo (10/01/2022)
-- [x] Analisis preliminar de los datos (11/01/2022)
+- [x] Definición de Roles del equipo (10/01/2022)
+- [x] Análisis preliminar de los datos (11/01/2022)
 - [x] Elaboración de KPIs (11/01/2022)
 - [x] Elección de las tecnologías a utilizar (11/01/2022)
 - [x] Elaboración de entregable (11/01/2022)
@@ -197,14 +197,16 @@ Este cronograma detalla las tareas e hitos importantes del proyecto, dividido en
 
 - [ ] Finalización del proyecto (30/01/2022)
 
+#### Diagrama de Gantt 
 
+![Diagrama de Gantt](../_src/diagrama_de_gantt.png)
 ### 8. SOLUCION PROPUESTA
 
 
 **DATA WAREHOUSE:** Proporciona una arquitectura de datos unificada y actualizable en tiempo real en un esquema batch
 
-**DASHBOARDS DINÁMICOS:** Permite un seguimiento y monitoreo de KPIs en tiempo real, generarando nuevos insights y reportes actualizados basados en inteligencia de negocios
+**DASHBOARDS DINÁMICOS:** Permite un seguimiento y monitoreo de KPIs en tiempo real, generando nuevos insights y reportes actualizados basados en inteligencia de negocios
 
 **SISTEMA DE RECOMENDACIÓN:** Genera ofertas de productos de interés particular para compradores, aumentando las probabilidades de ventas y retención de clientes
 
-**SISTEMA DE PREDICCIÓN DE VENTAS FUTURAS:** Ayuda a la gestión estratégica del negocio. Entre otras cosas permite anticiparnos al comportamiento de los consumidores, evaluar el rendimiento de los vendedores y manejar cuestiones lógisticas como el stock o inversiones inteligentes
+**SISTEMA DE PREDICCIÓN DE VENTAS FUTURAS:** Ayuda a la gestión estratégica del negocio. Entre otras cosas permite anticiparnos al comportamiento de los consumidores, evaluar el rendimiento de los vendedores y manejar cuestiones logísticas como el stock o inversiones inteligentes

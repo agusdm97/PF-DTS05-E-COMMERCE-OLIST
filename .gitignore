@@ -131,3 +131,6 @@ dmypy.json
 # VSC Workspace
 *.code-Workspace
 *.vscode
+
+# MySQL volume
+mysql_volume
