@@ -1,0 +1,12 @@
+services:
+  db-mysql:
+    container_name: mysql_data_warehouse
+    image: mysql:8.0
+    volumes:
+      - ./data_warehouse/mysql_volume:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: "data_warehouse_olist"
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3307:3306
+
