@@ -99,7 +99,7 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
 
   - **Frecuencia de evaluación:** Mensual
   - **Unidad:** Porcentaje [%]
-  - **Valor objetivo:** 2 [%]
+  - **Valor objetivo:** 10 [%]
 
 - #### Puntuación neta del promotor (PN)
 
@@ -107,11 +107,11 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
     - **Objetivo:** Medir la satisfacción del cliente
     - **Variables:**
       - Porcentaje de calificaciones positivas (> 3 estrellas)
-      - Porcentaje de calificaciones negativas (< 3 estrellas)
+      - Porcentaje de calificaciones negativas (<= 3 estrellas)
     - **Fórmula:** $$PN={{ \%}\ calificaciones\ positivas} - {{ \%}\ calificaciones\ negativas}$$
     - **Frecuencia de evaluación:** Mensual
     - **Unidad:** Porcentaje [%]
-    - **Valor objetivo:** 30 [%]
+    - **Valor objetivo:** 60 [%]
 
 - #### Fidelidad del cliente (FC)
 
@@ -123,7 +123,7 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
     - **Fórmula:** $$FC =\frac{N°\ de\ clientes\ que\ volvieron\ a\ comprar}{N°\ total\ de\ compra}\times 100$$
     - **Frecuencia de evaluación:** Trimestral
     - **Unidad:** [%]
-    - **Valor objetivo:** 30 [%]
+    - **Valor objetivo:** 5 [%]
 
 - #### Tasa de conversión (TC)
 
