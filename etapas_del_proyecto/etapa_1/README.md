@@ -120,7 +120,7 @@ Es importante destacar que el gráfico representa las tecnologías utilizadas en
     - **Variables:**
       - N° de clientes que volvieron a realizar compras
       - N° total de clientes
-    - **Fórmula:** $$FC =\frac{N°\ de\ clientes\ que\ volvieron\ a\ comprar}{N°\ total\ de\ compra}\times 100$$
+    - **Fórmula:** $$FC =\frac{N°\ de\ clientes\ que\ volvieron\ a\ comprar}{N°\ total\ de\ clientes}\times 100$$
     - **Frecuencia de evaluación:** Trimestral
     - **Unidad:** [%]
     - **Valor objetivo:** 5 [%]
