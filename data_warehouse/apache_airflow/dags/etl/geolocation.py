@@ -32,26 +32,21 @@ def etl(
             "geolocation_state",
         ],
     )
+
     # Leer archivo CSV de códigos postales
     df_zip_codes = pd.read_csv(filepath_or_buffer=zip_code_data_path)
 
-    # Extraer el prefijo de código postal y ordenar el dataframe
-    df_zip_codes["zip_code_prefix"] = df_zip_codes["zip_code"].str.split(
-        "-", expand=True
-    )[0]
-    df_zip_codes.drop(columns=["zip_code"], inplace=True)
-    df_zip_codes["zip_code_prefix"] = pd.to_numeric(df_zip_codes["zip_code_prefix"])
-    df_zip_codes.sort_values(by="zip_code_prefix", inplace=True)
-
-    df_zip_codes["zip_code_prefix_shift"] = df_zip_codes["zip_code_prefix"].shift(
-        periods=-1, fill_value=999999
-    )
+    # Extraer el prefijo de código postal
+    df_zip_codes["zip_code"] = df_zip_codes["zip_code"].str.split("-", expand=True)[0]
+    df_zip_codes["zip_code"] = pd.to_numeric(df_zip_codes["zip_code"])
 
     # Leer archivo CSV de clientes
     df_customers = pd.read_csv(
         filepath_or_buffer=customer_data_path,
         usecols=["customer_zip_code_prefix", "customer_state"],
     )
+
+    # Filtra los clientes que no tienen zip_code en geolocations
     df_customers_missing = df_customers[
         ~df_customers["customer_zip_code_prefix"].isin(
             df_geolocations["geolocation_zip_code_prefix"]
@@ -64,6 +59,8 @@ def etl(
         filepath_or_buffer=seller_data_path,
         usecols=["seller_zip_code_prefix", "seller_state"],
     )
+
+    # Filtra los vendedores que no tienen zip_code en geolocations
     df_sellers_missing = df_sellers[
         ~df_sellers["seller_zip_code_prefix"].isin(
             df_geolocations["geolocation_zip_code_prefix"]
@@ -76,7 +73,7 @@ def etl(
         objs=[df_geolocations, df_customers_missing, df_sellers_missing]
     )
 
-    # Asignar valores de clientes y vendedores faltantes a geolocations
+    # Asignar valores de clientes faltantes a geolocations
     filter_ = (
         df_geolocations["geolocation_zip_code_prefix"].isna()
         & df_geolocations["customer_zip_code_prefix"].notna()
@@ -88,6 +85,7 @@ def etl(
         filter_, "customer_state"
     ]
 
+    # Asignar valores de vendedores faltantes a geolocations
     filter_ = (
         df_geolocations["geolocation_zip_code_prefix"].isna()
         & df_geolocations["seller_zip_code_prefix"].notna()
@@ -110,25 +108,22 @@ def etl(
         inplace=True,
     )
 
-    # Iterar sobre el dataframe de códigos postales para asignar coordenadas
-    for row in df_zip_codes.iterrows():
-        filter_ = (
-            df_geolocations["geolocation_zip_code_prefix"] >= row[1]["zip_code_prefix"]
-        ) & (
-            df_geolocations["geolocation_zip_code_prefix"]
-            < row[1]["zip_code_prefix_shift"]
-        )
-        df_geolocations.loc[filter_, "geolocation_zip_code_prefix_range"] = row[1][
-            "zip_code_prefix"
-        ]
+    # Cambia el tipo de float64 a int64
+    df_geolocations["geolocation_zip_code_prefix"] = df_geolocations[
+        "geolocation_zip_code_prefix"
+    ].astype("int64")
+
+    # Ordenar los dataframes
+    df_zip_codes.sort_values(by="zip_code", inplace=True)
+    df_geolocations.sort_values(by="geolocation_zip_code_prefix", inplace=True)
 
     # Unir dataframes
-    df = pd.merge(
+    df = pd.merge_asof(
         left=df_geolocations,
         right=df_zip_codes,
-        how="left",
-        left_on="geolocation_zip_code_prefix_range",
-        right_on="zip_code_prefix",
+        left_on="geolocation_zip_code_prefix",
+        right_on="zip_code",
+        direction="backward",
     )
 
     del df_geolocations
@@ -137,25 +132,26 @@ def etl(
     # Eliminar columnas innecesarias
     df.drop(
         columns=[
-            "zip_code_prefix",
-            "zip_code_prefix_shift",
-            "geolocation_zip_code_prefix_range",
+            "zip_code",
         ],
         inplace=True,
     )
-    # Buscar outliers en las columnas de latitud y longitud y
-    # reemplazarlos por los valores correctos
+
+    # Reemplazarla valores faltantes en las columnas de latitud y longitud
     filter_ = df["geolocation_lat"].isna() & df["geolocation_lng"].isna()
 
     df.loc[filter_, "geolocation_lat"] = df.loc[filter_, "latitude"]
     df.loc[filter_, "geolocation_lng"] = df.loc[filter_, "longitude"]
 
+    # Calcula la variación porcentual de los valores originales con los de referencia
     df["latitude_%"] = (
         abs((df["geolocation_lat"] - df["latitude"]) / df["latitude"]) * 100
     )
     df["longitude_%"] = (
         abs((df["geolocation_lng"] - df["longitude"]) / df["longitude"]) * 100
     )
+
+    # Reemplaza los valores que difieren mas de un 1% con los valores de referencia
     filter_ = df["latitude_%"] > 1
     df.loc[filter_, "geolocation_lat"] = df.loc[filter_, "latitude"]
 
