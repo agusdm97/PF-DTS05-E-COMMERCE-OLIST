@@ -65,6 +65,14 @@ JOIN orders o ON(oi.order_id = o.id)
 JOIN calendario c ON(c.Fecha = o.purchase_timestamp)
 group by c.anio
 ;
+
+select c.anio, c.trimestre, sum(oi.price) as total
+from order_items oi
+JOIN orders o ON(oi.order_id = o.id)
+JOIN calendario c ON(c.Fecha = o.purchase_timestamp)
+group by c.anio, c.trimestre
+order by anio asc 
+;
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*
 Genera los datos para la grafica de ingresos por ciudad
@@ -80,6 +88,48 @@ limit 20
 ;
 /*---------------------------------------------------------------------------------------------------------------------*/
 /*
-
+Genera la visualizacion de los productos categorizados
 */
+select p.category_name, sum(oi.price) as total
+from order_items oi
+JOIN products p ON(oi.product_id = p.id)
+group by p.category_name
+order by total desc
+limit 10
+;
+/*---------------------------------------------------------------------------------------------------------------------*/
+/*
+Genera la visualizacion de vendedores y sus ventas por estado y ciudad
+*/
+select g.latitude, g.longitude, g.state, sum(oi.price) as total
+from order_items oi
+JOIN sellers s ON(s.id = oi.seller_id) 
+JOIN geolocations g ON(s.zip_code = g.zip_code)
+group by g.latitude, g.longitude, g.state
+order by total desc
+;
+/*---------------------------------------------------------------------------------------------------------------------*/
+/*
+Genera la visualizacion de ingresos por estado
+*/
+select g.state, sum(oi.price) as total
+from order_items oi
+JOIN orders o ON(oi.order_id = o.id)
+JOIN customers c ON(c.id = o.customer_id )
+JOIN geolocations g ON(g.zip_code = c.zip_code)
+group by g.state
+order by total desc
+limit 5
+; 
+
+
+
+
+
+
+
+
+
+
+
 
