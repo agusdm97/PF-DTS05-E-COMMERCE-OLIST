@@ -67,7 +67,7 @@ DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
 st.sidebar.title('Navegador de Opciones')
 uploaded_file = st.sidebar.file_uploader('Cargue su DATASET aqui(Opcional)')
 
-options = st.sidebar.radio('Paginas', options=['Panel Gral', 'Sellers-Customers', 'Payments-Delivery', 'Marketing-MPayments','Reviews', 'KPIs'
+options = st.sidebar.radio('Paginas', options=['Panel General', 'Sellers-Customers', 'Payments-Delivery', 'Marketing-Method Payments','Reviews', 'KPIs'
                             
 ])
 
@@ -130,6 +130,9 @@ total_ingresos = round(dataset['price'].sum(), 2)
 # Visualizacion de la cantidad de vendedores
 cant_vendedores = round(dataset['seller_id'].nunique(), 0)
 #--------------------------------------------------------------------------------------#
+cant_customers = round(dataset6['unique_id'].nunique(), 0)
+
+#--------------------------------------------------------------------------------------#
 # Visualizacion de la cantidad de ordenes de venta
 cant_ordenes = round(dataset['order_id'].count(), 0)
 #--------------------------------------------------------------------------------------#
@@ -178,6 +181,7 @@ with right_column:
 #           3. parte de la visualizacion
 #               - Cantidad de Vendedores
 #               - Cantidad de Ordenes de Venta
+#                - Cantidad de Clientes
 #               
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
@@ -190,7 +194,8 @@ with left_column:
     st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_vendedores), unsafe_allow_html=True)
 
 with middle_column:
-    st.markdown('')    
+    st.subheader('Cantidad Clientes')
+    st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_customers), unsafe_allow_html=True)    
 
 with right_column:
     st.subheader('Cantidad de Ordenes')
@@ -602,6 +607,21 @@ def kpi():
         st.header('Presupuesto Total')
         {total_presupuesto}
 
+
+    left_column, middle_column, right_column = st.columns(3)
+    st.markdown('***')
+    with left_column:
+      st.subheader('Cantidad Vendedores')
+      #st.subheader("Reales $ {:,.2f}".format(total_ingresos))
+      st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_vendedores), unsafe_allow_html=True)
+
+    with middle_column:
+        st.subheader('Cantidad Clientes')
+        st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_customers), unsafe_allow_html=True)    
+
+    with right_column:
+        st.subheader('Cantidad de Ordenes')
+        st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_ordenes), unsafe_allow_html=True)
 
 
 #{"Pelis":int(peliculas), "Series":int(series)}
