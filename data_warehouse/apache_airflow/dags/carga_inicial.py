@@ -3,7 +3,7 @@ from airflow.operators.python import PythonOperator
 from datetime import datetime, timedelta
 import sqlalchemy as sql
 
-from etl import (
+from etl_module import (
     geolocation,
     customer,
     seller,

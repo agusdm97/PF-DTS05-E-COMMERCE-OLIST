@@ -2,7 +2,7 @@ version: '3'
 x-airflow-common:
   &airflow-common
   
-  image: ${AIRFLOW_IMAGE_NAME:-custom_airflow:latest}
+  image: ${AIRFLOW_IMAGE_NAME:-extended_airflow:latest}
   
   environment:
     &airflow-common-env
