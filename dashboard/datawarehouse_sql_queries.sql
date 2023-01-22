@@ -121,6 +121,48 @@ group by g.state
 order by total desc
 limit 5
 ; 
+/*---------------------------------------------------------------------------------------------------------------------*/
+/*
+columna de agregacion en orders_items. 
+Se agrega la columna de purchase_timestamp
+
+*/
+/* Elimino la columna purchase_timesatmp me equivoque en el nombre. Luego la creo de nuevo*/
+ALTER TABLE `data_warehouse_olist`.`order_items` 
+DROP COLUMN `purchase_timesatmp`;
+
+ALTER TABLE `order_items` ADD `purchase_timestamp` date AFTER `freight_value`;  # Se crea un nuevo campo de purchase_timestamp para la tabla
+
+/*
+EN ESTA PASO CON EL UPDATE ACTUALIZAMOS LA COLUMNA purchase_timestamp DE LA TABLA order items
+UTILIZANDO UN JOIN ENTRE LAS TABLAS order_items Y orders CON LA COLUMNA id
+Y AL FINAL CON EL SET ASIGNAMOS LOS VALORES
+
+*/
+UPDATE order_items oi
+JOIN orders o ON (oi.order_id = o.id)
+SET oi.purchase_timestamp = o.purchase_timestamp
+;
+/*
+Aqui vamos a agrupar las ordenes sumas por mes
+
+*/
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
+
+
+SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
+    FROM (
+        SELECT o.purchase_timestamp, sum(i.price) AS total
+        FROM orders AS o
+        RIGHT JOIN order_items AS i ON (o.id = i.order_id)
+        WHERE o.status != "canceled" AND o.status != "unavailable"
+        GROUP BY o.id
+    ) AS s
+    GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
+    HAVING year(s.purchase_timestamp) = 2017
+    ;
+
+
 
 
 

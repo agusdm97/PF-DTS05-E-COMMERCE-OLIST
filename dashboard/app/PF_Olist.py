@@ -151,6 +151,28 @@ total_vend = vendedores_state['total']
 ventas_state = pd.read_sql('select g.state, sum(oi.price) as total from order_items oi JOIN orders o ON(oi.order_id = o.id) JOIN customers c ON(c.id = o.customer_id ) JOIN geolocations g ON(g.zip_code = c.zip_code) group by g.state order by total desc limit 5 ;', con=engine)
 estados = ventas_state['state']
 valores_state = ventas_state['total']
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPIs
+#               - Variación porcentual del volumen de ventas por mes
+#               - 
+#               - Total Flete
+#               - Total ingresos
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPI
+#           A. Variación porcentual del volumen de ventas por mes
+#               
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+kpi_variacionVentas = pd.read_sql('SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total FROM (SELECT o.purchase_timestamp, sum(i.price) AS total FROM orders AS o RIGHT JOIN order_items AS i ON (o.id = i.order_id) WHERE o.status != "canceled" AND o.status != "unavailable" GROUP BY o.id ) AS s GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp) HAVING year(s.purchase_timestamp) = 2017 order by fecha asc ;', con=engine)
+kpi_variacionVentas['dif_perc'] = kpi_variacionVentas['price'].pct_change()
+kpi_variacionVentas['dif_perc'].map(lambda x:format(x,'.2%'))
+
+
+
 
 
 #--------------------------------------------------------------------------------------#
@@ -593,16 +615,20 @@ def barras():
 
 #-------------------------------------------------------------------------------#
 def kpi():
-    st.subheader('KPIs')
-    total_ventas = (dataset['Facturado'].sum())
-    total_presupuesto = (dataset['Presupuesto'].sum())
+    st.header('KPIs')
+    
 
-    left_column, right_column = st.columns(2)
+    left_column, middle_colum, right_column = st.columns(3)
 
     st.markdown('***')
     with left_column:
+        st.header('KPI Venta Agrupada por mes 2017')
+        st.dataframe(kpi_variacionVentas)
+
+    with middle_colum:
         st.header('Venta Total')
-        {total_ventas}
+        st.dataframe(kpi_variacionVentas)
+
     with right_column:
         st.header('Presupuesto Total')
         {total_presupuesto}
@@ -655,7 +681,7 @@ elif options == 'Barras':
 elif options == 'Lineas':
     st.text('Grafico de Lineas')
     lines1()
-elif options == 'kpi':
+elif options == 'KPIs':
     st.text('Muestra KPI')
     kpi()
 
