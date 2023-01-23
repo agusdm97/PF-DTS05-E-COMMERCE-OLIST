@@ -2,7 +2,7 @@ version: '3'
 x-airflow-common:
   &airflow-common
   
-  image: ${AIRFLOW_IMAGE_NAME:-custom_airflow:latest}
+  image: ${AIRFLOW_IMAGE_NAME:-extended_airflow:latest}
   
   environment:
     &airflow-common-env
@@ -10,7 +10,7 @@ x-airflow-common:
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
-    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'false'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth'
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
@@ -18,7 +18,6 @@ x-airflow-common:
     - ./data_warehouse/apache_airflow/dags:/opt/airflow/dags
     - ./data_warehouse/apache_airflow/logs:/opt/airflow/logs
     - ./data_warehouse/apache_airflow/plugins:/opt/airflow/plugins
-    - ./data_warehouse/datasets:/opt/airflow/datasets
 
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
@@ -27,9 +26,12 @@ x-airflow-common:
       condition: service_healthy
     mysql:
       condition: service_healthy
+    minio:
+      condition: service_healthy
     
 services:
   postgres:
+    container_name: airflow_db
     image: postgres:13
     environment:
       POSTGRES_USER: airflow
@@ -58,9 +60,29 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+  
+  minio:
+    container_name: minio
+    image: minio/minio:latest
+    volumes:
+      - minio-data-volume:/data/minio
+    environment:
+      - MINIO_ROOT_USER=root
+      - MINIO_ROOT_PASSWORD=password
+      - MINIO_VOLUMES=minio-data-volume/data
+    command: minio server --console-address ":9090"
+    ports:
+      - 9000:9000
+      - 9090:9090
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      timeout: 5s
+      retries: 5
+    restart: always
 
   airflow-webserver:
     <<: *airflow-common
+    container_name: airflow_webserver
     command: webserver
     ports:
       - 8080:8080
@@ -77,6 +99,7 @@ services:
 
   airflow-scheduler:
     <<: *airflow-common
+    container_name: airflow_scheduler
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
@@ -91,6 +114,7 @@ services:
 
   airflow-triggerer:
     <<: *airflow-common
+    container_name: airflow_triggerer
     command: triggerer
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
@@ -105,6 +129,7 @@ services:
 
   airflow-init:
     <<: *airflow-common
+    container_name: airflow_init
     entrypoint: /bin/bash
     # yamllint disable rule:line-length
     command:
@@ -187,7 +212,6 @@ services:
     environment:
       <<: *airflow-common-env
       CONNECTION_CHECK_MAX_COUNT: "0"
-    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
     command:
       - bash
       - -c
@@ -196,3 +220,4 @@ services:
 volumes:
   postgres-db-volume:
   mysql-db-volume:
+  minio-data-volume:
