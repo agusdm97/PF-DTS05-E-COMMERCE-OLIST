@@ -22,7 +22,6 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
     # Renombrar las columnas
     df.rename(
         columns={
-            "customer_id": "id",
             "customer_unique_id": "unique_id",
             "customer_zip_code_prefix": "zip_code",
         },
@@ -35,10 +34,10 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
         conn.execute(
             """         
             CREATE TABLE IF NOT EXISTS `data_warehouse_olist`.`customers` (
-                `id` VARCHAR(45) NOT NULL,
+                `customer_id` VARCHAR(45) NOT NULL,
                 `unique_id` VARCHAR(45) NOT NULL,
                 `zip_code` INT NOT NULL,
-                PRIMARY KEY (`id`),
+                PRIMARY KEY (`customer_id`),
                 FOREIGN KEY (`zip_code`) REFERENCES `data_warehouse_olist`.`geolocations` (`zip_code`)
                 );
                 """

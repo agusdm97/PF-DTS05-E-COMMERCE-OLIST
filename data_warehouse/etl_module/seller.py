@@ -19,9 +19,7 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
     )
 
     # Renombrar columnas
-    df.rename(
-        columns={"seller_id": "id", "seller_zip_code_prefix": "zip_code"}, inplace=True
-    )
+    df.rename(columns={"seller_zip_code_prefix": "zip_code"}, inplace=True)
 
     # Conectarse a la base de datos
     with engine.connect() as conn:
@@ -29,9 +27,9 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
         conn.execute(
             """         
             CREATE TABLE IF NOT EXISTS `data_warehouse_olist`.`sellers` (
-                `id` VARCHAR(45) NOT NULL,
+                `seller_id` VARCHAR(45) NOT NULL,
                 `zip_code` INT NOT NULL,
-                PRIMARY KEY (`id`),
+                PRIMARY KEY (`seller_id`),
                 FOREIGN KEY (`zip_code`) REFERENCES `data_warehouse_olist`.`geolocations` (`zip_code`)
                 );
                 """

@@ -28,7 +28,6 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
     # Renombrar columnas
     df.rename(
         columns={
-            "review_id": "id",
             "review_score": "score",
             "review_comment_title": "comment_title",
             "review_comment_message": "comment_message",
@@ -42,12 +41,12 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
         conn.execute(
             """         
             CREATE TABLE IF NOT EXISTS `data_warehouse_olist`.`order_reviews` (
-                `id` VARCHAR(45) NOT NULL,
+                `review_id` VARCHAR(45) NOT NULL,
                 `order_id` VARCHAR(45) NOT NULL,
                 `score` INT NOT NULL,
                 `comment_title` VARCHAR(55),
                 `comment_message` VARCHAR(255),
-                FOREIGN KEY (`order_id`) REFERENCES `data_warehouse_olist`.`orders` (`id`)
+                FOREIGN KEY (`order_id`) REFERENCES `data_warehouse_olist`.`orders` (`order_id`)
                 );
                 """
         )

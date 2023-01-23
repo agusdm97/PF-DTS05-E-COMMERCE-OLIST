@@ -42,7 +42,7 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
                 `business_segment` VARCHAR(45) NOT NULL,
                 `lead_type` VARCHAR(45) NOT NULL,
                 `business_type` VARCHAR(45) NOT NULL,
-                FOREIGN KEY (`mql_id`) REFERENCES `data_warehouse_olist`.`marketing_qualified_leads` (`id`)
+                FOREIGN KEY (`mql_id`) REFERENCES `data_warehouse_olist`.`marketing_qualified_leads` (`mql_id`)
                 );
                 """
         )

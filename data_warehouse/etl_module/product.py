@@ -30,7 +30,6 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
     # Renombrar columnas
     df.rename(
         columns={
-            "product_id": "id",
             "product_category_name": "category_name",
             "product_photos_qty": "photos_qty",
             "product_weight_g": "weight_g",
@@ -55,14 +54,14 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
         conn.execute(
             """         
             CREATE TABLE IF NOT EXISTS `data_warehouse_olist`.`products` (
-                `id` VARCHAR(45) NOT NULL,
+                `product_id` VARCHAR(45) NOT NULL,
                 `category_name` VARCHAR(50) NOT NULL,
                 `photos_qty` INT NOT NULL,
                 `weight_g` INT NOT NULL,
                 `length_cm` INT NOT NULL,
                 `height_cm` INT NOT NULL,
                 `width_cm` INT NOT NULL,
-                PRIMARY KEY (`id`)
+                PRIMARY KEY (`product_id`)
                 );
                 """
         )
