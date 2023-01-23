@@ -38,7 +38,7 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
                 `type` VARCHAR(45) NOT NULL,
                 `installments` INT NOT NULL,
                 `value` DECIMAL (10,2) NOT NULL,
-                FOREIGN KEY (`order_id`) REFERENCES `data_warehouse_olist`.`orders` (`id`)
+                FOREIGN KEY (`order_id`) REFERENCES `data_warehouse_olist`.`orders` (`order_id`)
                 );
                 """
         )

@@ -20,9 +20,6 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
         parse_dates=["first_contact_date"],
     )
 
-    # Renombrar columna mql_id a id
-    df.rename(columns={"mql_id": "id"}, inplace=True)
-
     # Rellenar valores faltantes en la columna origin
     df["origin"].fillna("other", inplace=True)
 
@@ -32,10 +29,10 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
         conn.execute(
             """         
             CREATE TABLE IF NOT EXISTS `data_warehouse_olist`.`marketing_qualified_leads` (
-                `id` VARCHAR(45) NOT NULL,
+                `mql_id` VARCHAR(45) NOT NULL,
                 `first_contact_date` DATE NOT NULL,
                 `origin` VARCHAR(45) NOT NULL,
-                PRIMARY KEY (`id`)
+                PRIMARY KEY (`mql_id`)
                 );
                 """
         )
