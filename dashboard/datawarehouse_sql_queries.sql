@@ -143,8 +143,19 @@ UPDATE order_items oi
 JOIN orders o ON (oi.order_id = o.id)
 SET oi.purchase_timestamp = o.purchase_timestamp
 ;
+
 /*
-Aqui vamos a agrupar las ordenes sumas por mes
+
+AREA DE CONSULTAS DE LOS KPIs
+
+*/
+
+
+/*
+KPI - Variación porcentual del volumen de ventas por mes
+
+Consulta de las ordenes agrupadas por mes del año 2017 y que calcula
+el total de ventas para hallar la variacion
 
 */
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
@@ -161,17 +172,103 @@ SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
     GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
     HAVING year(s.purchase_timestamp) = 2017
     ;
+/*
+KPI - Variación porcentual del volumen de ventas por mes
+
+Puntuación neta del promotor
+
+*/
+select score 
+from order_reviews
+where score > 3
+;
+select score 
+from order_reviews
+where score <= 3
+;
+
+/*
+KPI - Fidelidad del cliente
+
+Medir la tasa de clientes que vuelven a comprar dentro de un periodo determinado
+
+*/
+select o.purchase_timestamp AS fecha
+from orders as o
+join customers cu ON(cu.id = o.customer_id)
 
 
+;
+SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
+    FROM (
+        SELECT o.purchase_timestamp, sum(i.price) AS total
+        FROM orders AS o
+        RIGHT JOIN order_items AS i ON (o.id = i.order_id)
+        WHERE o.status != "canceled" AND o.status != "unavailable"
+        GROUP BY o.id
+    ) AS s
+    GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
+    HAVING year(s.purchase_timestamp) = 2017
+    ;
 
+/*
+KPI - Tasa de Conversión
 
+Medir la tasa de vendedores potenciales que se unen a la empresa
 
+*/
+select mql_id, max(won_date) as maximo
+from closed_deals
+;
+select count(id) as interesados
+from marketing_qualified_leads
+;
+select count(mql_id) as cerrados
+from closed_deals
+;
 
+/*
+KPI - Puntualidad de la entrega
 
+Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.
 
+*/
+select * 
+from orders as o
+where o.status = 'delivered'
+;
 
+select *
+from orders
+where estimated_delivery_date > delivered_customer_date 
+having status = 'delivered'
+;
 
+select * from orders;
 
+/*
+KPI - Tiempo total del proceso (TTP)
+
+Optimizar los tiempos de compra y envío.
+
+*/
+
+select *, (delivered_customer_date - purchase_timestamp) as tiempo_total
+from orders
+where status = 'delivered'
+;
+
+select *, avg(delivered_customer_date - purchase_timestamp) as tiempo_total
+from orders
+where status = 'delivered'
+GROUP BY year(purchase_timestamp), month(purchase_timestamp)
+;
+
+select o.status, avg(o.delivered_customer_date - o.purchase_timestamp) as tiempo_total
+from orders as o
+GROUP BY year(o.purchase_timestamp), month(o.purchase_timestamp)
+having status = 'delivered'
+;
 
 
 
