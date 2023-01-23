@@ -5,6 +5,7 @@ import sqlalchemy as sql
 from minio import Minio
 from minio.error import S3Error
 from time import sleep
+import os
 
 from etl_module import (
     geolocation,
@@ -75,6 +76,9 @@ def geolocation_etl(paths, engine):
         engine=engine,
     )
 
+    os.unlink(paths.get("geolocations"))
+    os.unlink(paths.get("zip_codes"))
+
 
 def marketing_qualified_leads_etl(paths, engine):
 
@@ -82,6 +86,8 @@ def marketing_qualified_leads_etl(paths, engine):
         data_path=paths.get("marketing_qualified_leads"),
         engine=engine,
     )
+
+    os.unlink(paths.get("marketing_qualified_leads"))
 
 
 def products_etl(paths, engine):
@@ -91,6 +97,8 @@ def products_etl(paths, engine):
         engine=engine,
     )
 
+    os.unlink(paths.get("products"))
+
 
 def closed_deals_etl(paths, engine):
 
@@ -98,6 +106,8 @@ def closed_deals_etl(paths, engine):
         data_path=paths.get("closed_deals"),
         engine=engine,
     )
+
+    os.unlink(paths.get("closed_deals"))
 
 
 def customers_etl(paths, engine):
@@ -107,6 +117,8 @@ def customers_etl(paths, engine):
         engine=engine,
     )
 
+    os.unlink(paths.get("customers"))
+
 
 def sellers_etl(paths, engine):
 
@@ -114,6 +126,8 @@ def sellers_etl(paths, engine):
         data_path=paths.get("sellers"),
         engine=engine,
     )
+
+    os.unlink(paths.get("sellers"))
 
 
 def orders_etl(paths, engine):
@@ -123,6 +137,8 @@ def orders_etl(paths, engine):
         engine=engine,
     )
 
+    os.unlink(paths.get("orders"))
+
 
 def order_items_etl(paths, engine):
 
@@ -130,6 +146,8 @@ def order_items_etl(paths, engine):
         data_path=paths.get("order_items"),
         engine=engine,
     )
+
+    os.unlink(paths.get("order_items"))
 
 
 def order_payments_etl(paths, engine):
@@ -139,6 +157,8 @@ def order_payments_etl(paths, engine):
         engine=engine,
     )
 
+    os.unlink(paths.get("order_payments"))
+
 
 def order_reviews_etl(paths, engine):
 
@@ -146,6 +166,8 @@ def order_reviews_etl(paths, engine):
         data_path=paths.get("order_reviews"),
         engine=engine,
     )
+
+    os.unlink(paths.get("order_reviews"))
 
 
 default_args = {
@@ -161,7 +183,7 @@ op_kwargs = {
 
 with DAG(
     dag_id="carga_inicial",
-    description="DAG inicial de la ETL",
+    description="DAG de carga inicial de la ETL",
     start_date=datetime(2023, 1, 1),
     schedule_interval="@once",
     default_args=default_args,
