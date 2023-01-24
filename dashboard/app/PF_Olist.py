@@ -71,15 +71,15 @@ if uploaded_file:
 #--------------------------------------------------------------------------------------#
 #st.subheader('Dataset de Análisis')
 dataset = pd.read_sql('order_items', con=engine)
-dataset1 = pd.read_sql('orders', con=engine)
-dataset2 = pd.read_sql('order_payments', con=engine)
-dataset3 = pd.read_sql('order_reviews', con=engine)
+#dataset1 = pd.read_sql('orders', con=engine)
+#dataset2 = pd.read_sql('order_payments', con=engine)
+#dataset3 = pd.read_sql('order_reviews', con=engine)
 dataset4 = pd.read_sql('products', con=engine)
-dataset5 = pd.read_sql('sellers', con=engine)
+#dataset5 = pd.read_sql('sellers', con=engine)
 dataset6 = pd.read_sql('customers', con=engine)
-dataset7 = pd.read_sql('closed_deals', con=engine)
-dataset8 = pd.read_sql('marketing_qualified_leads', con=engine)
-dataset9 = pd.read_sql('geolocations', con=engine)
+#dataset7 = pd.read_sql('closed_deals', con=engine)
+#dataset8 = pd.read_sql('marketing_qualified_leads', con=engine)
+#dataset9 = pd.read_sql('geolocations', con=engine)
 
 
 
@@ -91,8 +91,8 @@ dataset9 = pd.read_sql('geolocations', con=engine)
 #st.text('A continuación se observara los resultados del análisis')
 st.markdown('***')
 #--------------------------------------------------------------------------------------#
-#               CONSULTAS GENERALES          
-#              1. Area de consultaS a la base de datos
+#              1.CONSULTAS GENERALES          
+#               - Area de consultaS a la base de datos
 #               - Ingresos por año
 #               - Ingresos por ciudad
 #               - Categorizacion de productos x ingresos
@@ -382,14 +382,9 @@ Pe
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           7. Dashboard visualizacion grafica de shatter
-#               - Ingresos por Categoria de Producto
+#           
 #               
 #               
-
-
-
-
 #-------------------------------------------------------------------------------------#
 
 
@@ -400,22 +395,19 @@ Pe
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           7. Funciones que visualizan el NAVEGADOR de Opciones
-#               - Home
+#           3. Funciones que visualizan el NAVEGADOR de Opciones
+#               
 #               - Panel General
 #               - Seller - Customers
-#               - Vendedores
-#               - Clientes
-#               - Marketing
-#               - Metodos de pago
-#               - Reviews
-#               - Delivery
+#               - Method Payments - Delivery
+#               - Marketing - Review
+#               - KPIs
+#               
 #               
 #--------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------#
 #@st.cache(persist=True)
-@st.cache
 def Panel():
     st.header('Visualizacion de Datos Generales')
     st.text('A continuación se observara los resultados del análisis')
@@ -423,7 +415,7 @@ def Panel():
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           2. parte de la visualizacion
+#           1. parte de la visualizacion
 #               - Total ingresos mas el flete
 #               - Total Flete
 #               - Total ingresos
@@ -446,7 +438,7 @@ def Panel():
         st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">Reales ${:,.2f}</p>'.format(total), unsafe_allow_html=True)
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           3. parte de la visualizacion
+#           2. parte de la visualizacion
 #               - Cantidad de Vendedores
 #               - Cantidad de Ordenes de Venta
 #               - Cantidad de Clientes
@@ -486,7 +478,7 @@ def Panel():
 
     #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           4. Dashboard visualizacion grafica de lineas
+#           3. Dashboard visualizacion grafica de lineas
 #               - Grafica de ingresos x año
 #               
 #               
@@ -510,7 +502,7 @@ def Panel():
 
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           5. Dashboard visualizacion grafica de barras
+#           4. Dashboard visualizacion grafica de barras
 #               - Ingresos por Ciudad
 #               
 #               
@@ -531,7 +523,7 @@ def Panel():
         )
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           6. Dashboard visualizacion grafica de funnel
+#           5. Dashboard visualizacion grafica de funnel
 #               - Ingresos por Categoria de Producto
 #               
 #               
@@ -564,7 +556,7 @@ def Panel():
 
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           8. Dashboard visualizacion grafica de pie
+#           6. Dashboard visualizacion grafica de pie
 #               - Ingresos por estado
 #               
 #               
@@ -701,12 +693,14 @@ def Productos(categoria_produ):
 #-------------------------------------------------------------------------------#
 #              FUNCION Customers-Sellers
 #-------------------------------------------------------------------------------#
+#@st.cache(persist=True)
 def Vendedores():
+    
     st.header('Visualizacion de análisis de Vendedores y Clientes')
     st.text('A continuación se observara los resultados del análisis')
     st.markdown('***')
 #------------------------------------------------------------------------------#
-#       - Grafica de Clientes por estado
+#       1. Grafica de Clientes por estado
 #------------------------------------------------------------------------------#
     fig_clientes_estado = px.bar(
         clientes_estado,
@@ -722,7 +716,7 @@ def Vendedores():
         xaxis = dict(showgrid=False)
         )
 #------------------------------------------------------------------------------#
-#       - Grafica de Vendedores por estado
+#       2. Grafica de Vendedores por estado
 #------------------------------------------------------------------------------#
 
     fig_vendedores_estado = px.bar(
@@ -739,14 +733,14 @@ def Vendedores():
         xaxis = dict(showgrid=False)
         )
 #------------------------------------------------------------------------------#
-#       - Ubicaciones de las graficas
+#       3. Ubicaciones de las graficas
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
     left_column.plotly_chart(fig_clientes_estado, use_container_width=True) 
     #middle_column.plotly_chart(fig, use_container_width=True)
     right_column.plotly_chart(fig_vendedores_estado, use_container_width=True)
 #------------------------------------------------------------------------------#
-#       - Grafica de ordenes agrupadas por mes
+#       4. Grafica de ordenes agrupadas por mes
 #------------------------------------------------------------------------------#
     fig_ordenes_mes = px.bar(
         ordenes_mes,
@@ -762,15 +756,14 @@ def Vendedores():
         xaxis = dict(showgrid=False)
         )    
 #------------------------------------------------------------------------------#
-#       - Grafica de pie
+#       5. Grafica de pie
 #------------------------------------------------------------------------------#
-    fig_pie = px.pie(values=valores, names=estatus, title='Relacion estado de ordenes agrupadas por año', color_discrete_sequence=px.colors.sequential.Magenta)
+    fig_pie = px.pie(values=valores, names=estatus, title='Relacion estado de ordenes agrupadas por año', color_discrete_sequence=px.colors.sequential.Viridis)
 #------------------------------------------------------------------------------#
-#       - Grafica de pie
+#      
 #------------------------------------------------------------------------------#    
-    
 #------------------------------------------------------------------------------#
-#       - Ubicaciones de las graficas
+#       6. Ubicaciones de las graficas
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
     left_column.plotly_chart(fig_ordenes_mes, use_container_width=True) 
@@ -785,7 +778,7 @@ def Method():
     st.text('A continuación se observara los resultados del análisis')
     st.markdown('***')
 #------------------------------------------------------------------------------#
-#       - Grafica de pie
+#       1. Grafica de pie
 #------------------------------------------------------------------------------#
     fig_pie = px.pie(values=cantidad, names=tipo, title='Número de pagos por tipo', color_discrete_sequence=px.colors.sequential.Inferno)
 #------------------------------------------------------------------------------#
@@ -793,7 +786,7 @@ def Method():
 #------------------------------------------------------------------------------#     
 
 #------------------------------------------------------------------------------#
-#       - Grafica de Clientes por estado
+#       2. Grafica de Clientes por estado
 #------------------------------------------------------------------------------#
     fig_clientes_estado = px.bar(
         clientes_estado,
@@ -809,7 +802,7 @@ def Method():
         xaxis = dict(showgrid=False)
         )
 #------------------------------------------------------------------------------#
-#       - Grafica de Vendedores por estado
+#       3. Grafica de Vendedores por estado
 #------------------------------------------------------------------------------#
 
     fig_vendedores_estado = px.bar(
@@ -826,7 +819,7 @@ def Method():
         xaxis = dict(showgrid=False)
         )
 #------------------------------------------------------------------------------#
-#       - Ubicaciones de las graficas
+#       4. Ubicaciones de las graficas
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
     left_column.plotly_chart(fig_pie, use_container_width=True)
@@ -834,7 +827,7 @@ def Method():
     #middle_column.plotly_chart(fig, use_container_width=True)
     
 #------------------------------------------------------------------------------#
-#       - Grafica de ordenes agrupadas por mes
+#       5. Grafica de ordenes agrupadas por mes
 #------------------------------------------------------------------------------#
     fig_ordenes_mes = px.bar(
         ordenes_mes,
@@ -849,13 +842,9 @@ def Method():
         plot_bgcolor = "rgba(0,0,0,0)",
         xaxis = dict(showgrid=False)
         )    
-   
-    
-    
-    
     
 #------------------------------------------------------------------------------#
-#       - Ubicaciones de las graficas
+#       6. Ubicaciones de las graficas
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
     left_column.plotly_chart(fig_ordenes_mes, use_container_width=True) 
@@ -866,9 +855,7 @@ def Method():
 #-------------------------------------------------------------------------------#
 #               CLIENTES POR ESTADO
 #-------------------------------------------------------------------------------#
-
-
-    
+  
 
 
 #-------------------------------------------------------------------------------#
@@ -1001,6 +988,7 @@ def kpi():
     st.header('KPIs')
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">1. Variación porcentual del volumen de ventas por mes año 2017</p>', unsafe_allow_html=True)
     #st.subheader('Variación porcentual del volumen de ventas por mes año 2017')
+    st.text('Objetivo: Evaluar aumento o disminucion de la variación porcentual del volumen de ventas por mes')
 
     left_column, middle_colum, right_column = st.columns(3)
 
@@ -1021,54 +1009,62 @@ def kpi():
 
     st.markdown('***')
 #-------------------------------------------------------------------------------#
-
+#-------------------------------------------------------------------------------#
+#               2. kpi - PUNTUACION NETA DEL PROMOTOR
+#-------------------------------------------------------------------------------#
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">2. Puntuación neta del promotor</p>', unsafe_allow_html=True)
-
+    st.text('Objetivo: Medir la satisfacción del cliente')
 
     left_column, middle_column, right_column = st.columns(3)
-    st.markdown('***')
+    
     with left_column:
       st.subheader('Cantidad Calificaciones Positivas')
       st.text('Esta calificación es de score > 3')
       #st.subheader("Reales $ {:,.2f}".format(total_ingresos))
       #st.subheader("Reales $ {:,.2f}".format(kpn))
-      st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(kpn), unsafe_allow_html=True)
+    #  st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(kpn), unsafe_allow_html=True)
 
     with middle_column:
         st.subheader('Cantidad Calificaciones Negativas')
         st.text('Esta calificación es de score <= 3')
-        st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(nkpn), unsafe_allow_html=True)    
+    #   st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(nkpn), unsafe_allow_html=True)    
 
     with right_column:
         st.subheader('Puntuación Neta')
         st.text('Satisfacción del cliente')
-        st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(pn), unsafe_allow_html=True)
+    #    st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(pn), unsafe_allow_html=True)
+
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Positivas:", kpn, "90000")
+    col2.metric("Negativas",  nkpn, "-10000")
+    col3.metric("Objetivo", pn, "5%")
 
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
-
-    st.markdown('***')
+    st.markdown('***') 
+#-------------------------------------------------------------------------------#
+#               3. kpi - FIDELIDAD DEL CLIENTE
 #-------------------------------------------------------------------------------#
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">3. Fidelidad del Cliente</p>', unsafe_allow_html=True)
-    st.text('Medir la tasa de clientes que vuelven a comprar dentro de un periodo determinado')
+    st.text('Objetivo: Medir la tasa de clientes que vuelven a comprar dentro de un periodo determinado')
 
     left_column, middle_column, right_column = st.columns(3)
-    st.markdown('***')
+    #st.markdown('***')
     with left_column:
       st.subheader('Cantidad Clientes Fieles')
       st.text('Con pocos datos se identifican clientes fieles')
       #st.subheader("Reales $ {:,.2f}".format(total_ingresos))
       #st.subheader("Reales $ {:,.2f}".format(kpn))
-      st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(num_clientes_fieles), unsafe_allow_html=True)
+    #  st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(num_clientes_fieles), unsafe_allow_html=True)
 
     with middle_column:
         st.subheader('Total de Clientes ')
         st.text('Número de clientes')
-        st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(num_total_clientes), unsafe_allow_html=True)    
+    #    st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(num_total_clientes), unsafe_allow_html=True)    
 
     with right_column:
         st.subheader('Porcentaje de Fidelidad')
         st.text('Basado en los datos obtenidos de clientes del 2017')
-        st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(porcentaje_clientes_fieles), unsafe_allow_html=True)
+    #    st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(porcentaje_clientes_fieles), unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Fidelidad:", num_clientes_fieles, "500")
@@ -1076,11 +1072,13 @@ def kpi():
     col3.metric("Objetivo", "0.92%", "5%")
 
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
-
     st.markdown('***')
 #-------------------------------------------------------------------------------#
+#-------------------------------------------------------------------------------#
+#               4. kpi - TASA DE CONVERSION
+#-------------------------------------------------------------------------------#
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">4. Tasa de Conversión</p>', unsafe_allow_html=True)
-    st.text(' Medir la tasa de vendedores potenciales que se unen a la empresa')
+    st.text('Objetivo: Medir la tasa de vendedores potenciales que se unen a la empresa')
 
     left_column, middle_column, right_column = st.columns(3)
     st.markdown('***')
@@ -1089,23 +1087,30 @@ def kpi():
       st.text('Vendedores que desean ofrecer sus productos')
       #st.subheader("Reales $ {:,.2f}".format(total_ingresos))
       #st.subheader("Reales $ {:,.2f}".format(kpn))
-      st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Vi), unsafe_allow_html=True)
+    #  st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Vi), unsafe_allow_html=True)
 
     with middle_column:
         st.subheader('Cant. Vendedores Acuerdo Cerrado ')
         st.text('Vendedores que hicieron acuerdo de cierre')
-        st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Vc), unsafe_allow_html=True)    
+    #    st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Vc), unsafe_allow_html=True)    
 
     with right_column:
         st.subheader('Tasa de Conversión')
         st.text('Tasa de conversión actual')
-        st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(TC), unsafe_allow_html=True)
-#---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
+    #    st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(TC), unsafe_allow_html=True)
 
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Interesados:", Vi, "10000")
+    col2.metric("Cierres",  Vc, "1500")
+    col3.metric("Conversión", TC, "15%")
+#---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***')
 #-------------------------------------------------------------------------------#
+#               5. kpi - PUNTUALIDAD DE LA ENTREGA
+#-------------------------------------------------------------------------------#  
+#-------------------------------------------------------------------------------#
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">5. Puntualidad de la Entrega</p>', unsafe_allow_html=True)
-    st.text(' Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.')
+    st.text('Objetivo: Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.')
 
     left_column, middle_column, right_column = st.columns(3)
     st.markdown('***')
@@ -1114,23 +1119,28 @@ def kpi():
       st.text('Número de pedidos')
       #st.subheader("Reales $ {:,.2f}".format(total_ingresos))
       #st.subheader("Reales $ {:,.2f}".format(kpn))
-      st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Te), unsafe_allow_html=True)
+    #  st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Te), unsafe_allow_html=True)
 
     with middle_column:
         st.subheader('Pedidos Entregados Puntualmente ')
         st.text('Pedidos Entregados puntualmente')
-        st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Ep), unsafe_allow_html=True)    
+    #    st.markdown('<p style="color:#F56ACF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Ep), unsafe_allow_html=True)    
 
     with right_column:
         st.subheader('% Puntualidad de Entrega')
         st.text('La puntualidad de entrega de los productos')
-        st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Pe), unsafe_allow_html=True)
-#---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
+    #    st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Pe), unsafe_allow_html=True)
+    
 
+    col1, col2, col3 = st.columns(3)
+    col1.metric("Entregados:", Te, "105000")
+    col2.metric("Puntualmente",  Ep, "95000")
+    col3.metric("% Puntualidad", Pe, "95%")
+#---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***')
 #-------------------------------------------------------------------------------#
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">6. Tiempo total del proceso (TTP)</p>', unsafe_allow_html=True)
-    st.text(' Optimizar los tiempos de compra y envío.')
+    st.text('Objetivo: Optimizar los tiempos de compra y envío.')
 
     left_column, middle_column, right_column = st.columns(3)
     st.markdown('***')
@@ -1151,13 +1161,14 @@ def kpi():
         st.text('La puntualidad de entrega de los productos')
         st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(Pe), unsafe_allow_html=True)
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
-
     st.markdown('***')
 #-------------------------------------------------------------------------------#
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Temperature", "70 °F", "1.2 °F")
-    col2.metric("Wind", "9 mph", "-8%")
-    col3.metric("Humidity", "86%", "4%")
+#     Configuracion de Metricas
+#-------------------------------------------------------------------------------#
+    #col1, col2, col3 = st.columns(3)
+    #col1.metric("Temperature", "70 °F", "1.2 °F")
+    #col2.metric("Wind", "9 mph", "-8%")
+    #col3.metric("Humidity", "86%", "4%")
 
 
 
