@@ -20,9 +20,7 @@ engine = sql.create_engine(
 )
 
 #------------------------------------------------------------------------------------------#
-
 #------------------------------------------------------------------------------------------#
-
 #--------------------------------------------------------------------------------------#
 # Logo de Olist
 image = Image.open('D:\PF-DTS05-E-COMMERCE-OLIST\dashboard\src\Olist1.png')
@@ -60,7 +58,7 @@ DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
 st.sidebar.title('Navegador de Opciones')
 uploaded_file = st.sidebar.file_uploader('Cargue su DATASET aqui(Opcional)')
 
-options = st.sidebar.radio('Paginas', options=['Home', 'Panel General', 'Sellers-Customers', 'Payments-Delivery', 'Marketing-Method Payments','Reviews', 'KPIs'
+options = st.sidebar.radio('Paginas', options=['Home', 'Panel General', 'Sellers-Customers', 'Method Payments-Delivery', 'Marketing-Reviews', 'KPIs'
                             
 ])
 
@@ -93,15 +91,27 @@ dataset9 = pd.read_sql('geolocations', con=engine)
 #st.text('A continuación se observara los resultados del análisis')
 st.markdown('***')
 #--------------------------------------------------------------------------------------#
-#           1. Area de consultaS a la base de datos
+#               CONSULTAS GENERALES          
+#              1. Area de consultaS a la base de datos
 #               - Ingresos por año
 #               - Ingresos por ciudad
 #               - Categorizacion de productos x ingresos
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-ingresos_anio = pd.read_sql('select c.anio, sum(oi.price) as total from order_items oi JOIN orders o ON(oi.order_id = o.id) JOIN calendario c ON(c.Fecha = o.purchase_timestamp) group by c.anio ;', con=engine)
+ingresos_anio = pd.read_sql("""
+    select year(o.purchase_timestamp) AS anio, sum(oi.price) as total
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    group by anio;""", con=engine)
 
-categoria_produ = pd.read_sql('select p.category_name, sum(oi.price) as total from order_items oi JOIN products p ON(oi.product_id = p.id) group by p.category_name order by total desc limit 10 ;', con=engine)
+categoria_produ = pd.read_sql("""
+    select p.category_name, sum(oi.price) as total
+    from order_items oi
+    JOIN products p ON(oi.product_id = p.product_id)
+    group by p.category_name
+    order by total desc
+    limit 10""", con=engine)
+
 temp = categoria_produ.category_name
 val = round(categoria_produ['total'], 0)
 #--------------------------------------------------------------------------------------#
@@ -127,24 +137,106 @@ cant_customers = round(dataset6['unique_id'].nunique(), 0)
 cant_ordenes = round(dataset['order_id'].count(), 0)
 #--------------------------------------------------------------------------------------#
 # Visualizacion de la cantidad de productos
-cant_productos = round(dataset4['id'].nunique(), 0)
+cant_productos = round(dataset4['product_id'].nunique(), 0)
 #--------------------------------------------------------------------------------------#
 # Visualizacion de la cantidad de productos
 cant_categorias = round(dataset4['category_name'].nunique(), 0)
 #--------------------------------------------------------------------------------------#
-vendedores_state = pd.read_sql('select g.latitude, g.longitude, g.state, sum(oi.price) as total from order_items oi JOIN sellers s ON(s.id = oi.seller_id) JOIN geolocations g ON(s.zip_code = g.zip_code) group by g.latitude, g.longitude, g.state order by total desc ;', con=engine)
+vendedores_state = pd.read_sql("""
+    select g.latitude, g.longitude, g.state, sum(oi.price) as total
+    from order_items oi
+    JOIN sellers s ON(s.seller_id = oi.seller_id) 
+    JOIN geolocations g ON(s.zip_code = g.zip_code)
+    group by g.latitude, g.longitude, g.state
+    order by total desc;""", con=engine)
+
 latitude = vendedores_state['latitude']
 longitude = vendedores_state['longitude']
 state = vendedores_state['state']
 total_vend = vendedores_state['total']
 #--------------------------------------------------------------------------------------#
-ventas_state = pd.read_sql('select g.state, sum(oi.price) as total from order_items oi JOIN orders o ON(oi.order_id = o.id) JOIN customers c ON(c.id = o.customer_id ) JOIN geolocations g ON(g.zip_code = c.zip_code) group by g.state order by total desc limit 5 ;', con=engine)
+ventas_state = pd.read_sql("""
+    select g.state, sum(oi.price) as total
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    JOIN customers c ON(c.customer_id = o.customer_id )
+    JOIN geolocations g ON(g.zip_code = c.zip_code)
+    group by g.state
+    order by total desc
+    limit 5; """, con=engine)
+
 estados = ventas_state['state']
 valores_state = ventas_state['total']
 
 #--------------------------------------------------------------------------------------#
-ingresos_ciudad = pd.read_sql('select g.city, sum(oi.price) as total from order_items oi JOIN orders o ON(oi.order_id = o.id) JOIN customers c ON(c.id = o.customer_id ) JOIN geolocations g ON(g.zip_code = c.zip_code) group by g.city order by total desc limit 20', con=engine)
+ingresos_ciudad = pd.read_sql("""
+    select g.city, sum(oi.price) as total
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    JOIN customers c ON(c.customer_id = o.customer_id )
+    JOIN geolocations g ON(g.zip_code = c.zip_code)
+    group by g.city
+    order by total desc
+    limit 20;""", con=engine)
+#--------------------------PENDIENTE POR DEFINIR GRAFICA-------------------------------#
+ingresos_ST_ciudad = pd.read_sql("""
+    select g.latitude, g.longitude, g.state, g.city, sum(oi.price) as ventas
+    from order_items oi
+    JOIN sellers s ON(s.seller_id = oi.seller_id)
+    JOIN geolocations g ON(s.zip_code = g.zip_code)
+    group by g.latitude, g.longitude, g.state
+    order by ventas desc
+    limit 20;""", con=engine)
 #--------------------------------------------------------------------------------------#
+clientes_estado = pd.read_sql("""
+    select g.state, count(c.customer_id) as nclientes
+    from customers c
+    JOIN geolocations g ON(c.zip_code = g.zip_code)
+    group by g.state
+    order by nclientes desc
+    limit 10;""", con=engine)
+
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+vendedores_estado = pd.read_sql("""
+    select g.state, count(s.seller_id) as nvendedores
+    from sellers s
+    JOIN geolocations g ON(s.zip_code = g.zip_code)
+    group by g.state
+    order by nvendedores desc
+    limit 10;""", con=engine)
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+ordenes_mes = pd.read_sql("""
+    select month(o.approved_at) as mes, sum(oi.price) as ingresos
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    group by mes
+    order by mes;""", con=engine)
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+relacion_status = pd.read_sql("""
+    select year(purchase_timestamp) as anio, status, count(status) as total
+    from orders
+    where status = 'delivered' or status='canceled' or status='unavailable'
+    group by anio, status;""", con=engine)
+estatus = relacion_status['status']
+valores = relacion_status['total']
+
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+method_payment = pd.read_sql("""
+    select op.type, count(*) as total
+    from order_payments op
+    group by op.type
+    order by total desc;""", con=engine)
+
+tipo = method_payment['type']
+cantidad = method_payment['total']
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+
+
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #           2. KPIs
@@ -162,13 +254,17 @@ ingresos_ciudad = pd.read_sql('select g.city, sum(oi.price) as total from order_
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 kpi_variacionVentas = pd.read_sql(""" 
-    SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total 
-    FROM (  
-        SELECT o.purchase_timestamp, sum(i.price) AS total FROM orders AS o 
-        RIGHT JOIN order_items AS i ON (o.id = i.order_id) WHERE o.status != "canceled" AND o.status != "unavailable" 
-        GROUP BY o.id ) AS s 
-    GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp) 
-    HAVING year(s.purchase_timestamp) = 2017 order by fecha asc ;""", con=engine)
+    SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
+    FROM (
+        SELECT o.purchase_timestamp, sum(i.price) AS total
+        FROM orders AS o
+        RIGHT JOIN order_items AS i ON (o.order_id = i.order_id)
+        WHERE o.status != "canceled" AND o.status != "unavailable"
+        GROUP BY o.order_id
+    ) AS s
+    GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
+    HAVING year(s.purchase_timestamp) = 2017
+    order by fecha asc ;""", con=engine)
 
 diferencia = kpi_variacionVentas['dif_perc'] = kpi_variacionVentas['total'].pct_change()
 #kpi_variacionVentas['dif_perc'] = round(kpi_variacionVentas['dif_perc'], 0)
@@ -231,7 +327,7 @@ objetivo = (porcentaje_clientes_fieles + (porcentaje_clientes_fieles * 5) /100)
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 vendedores_interesados = pd.read_sql(""" 
-    select count(id) as interesados
+    select count(mql_id) as interesados
     from marketing_qualified_leads;
     """, con=engine)
 Vi = vendedores_interesados['interesados'][0]
@@ -290,69 +386,12 @@ Pe
 #               - Ingresos por Categoria de Producto
 #               
 #               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-# -- Create three columns
-col1, col2, col3 = st.columns([5, 5, 20])
-# -- Put the image in the middle column
-# - Commented out here so that the file will run without having the image downloaded
-# with col2:
-# st.image("streamlit.png", width=200)
-# -- Put the title in the last column
-with col3:
-    st.title("Streamlit Demo")
-# -- We use the first column here as a dummy to add a space to the left
-# -- Get the user input
-year_col, continent_col, log_x_col = st.columns([5, 5, 5])
-with year_col:
-    year_choice = st.slider(
-        "What year would you like to examine?",
-        min_value=1952,
-        max_value=2007,
-        step=5,
-        value=2007,
-    )
-with continent_col:
-    continent_choice = st.selectbox(
-        "What continent would you like to look at?",
-        ("All", "Asia", "Europe", "Africa", "Americas", "Oceania"),
-    )
-with log_x_col:
-    log_x_choice = st.checkbox("Log X Axis?")
 
-# -- Read in the data
-
-df = px.data.gapminder()
-# -- Apply the year filter given by the user
-filtered_df = df[(df.year == year_choice)]
-# -- Apply the continent filter
-if continent_choice != "All":
-    filtered_df = filtered_df[filtered_df.continent == continent_choice]
-
-# -- Create the figure in Plotly
-fig = px.scatter(
-    filtered_df,
-    x="gdpPercap",
-    y="lifeExp",
-    size="pop",
-    color="continent",
-    hover_name="country",
-    log_x=log_x_choice,
-    size_max=60,
-)
-fig.update_layout(title="GDP per Capita vs. Life Expectancy")
-# -- Input the Plotly chart to the Streamlit interface
-st.plotly_chart(fig, use_container_width=True)
 
 
 
 #-------------------------------------------------------------------------------------#
-x_axis_val = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.columns)
-y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.columns)
-col = st.color_picker('Seleccione color de la grafica')
-plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
-plot.update_traces(marker=dict(color=col))
-st.plotly_chart(plot)
+
 
 
 #--------------------------------------------------------------------------------------#
@@ -375,6 +414,8 @@ st.plotly_chart(plot)
 #--------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------#
+#@st.cache(persist=True)
+@st.cache
 def Panel():
     st.header('Visualizacion de Datos Generales')
     st.text('A continuación se observara los resultados del análisis')
@@ -612,7 +653,7 @@ def Productos(categoria_produ):
         st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_categorias), unsafe_allow_html=True)
 
 
-    fig = px.funnel(categoria_produ, 
+    fig1 = px.funnel(categoria_produ, 
     x = val, 
     y = temp,
     #textposition = "inside",
@@ -625,60 +666,209 @@ def Productos(categoria_produ):
 
     )
     #fig.show()
-    fig.update_layout(
+    fig1.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+    )
+#------------------------------------------------------------------------------#
+    fig2 = px.funnel(ordenes_mes, 
+    x = 'total', 
+    y = 'fecha',
+    #textposition = "inside",
+    title="Total Ordenes Agrupadas por Mes",
+    color_discrete_sequence=["#33E3FF"] * len(ordenes_mes),
+    #color = ["deepskyblue", "lightsalmon", "tan", "teal", "silver"],
+    #labels=(),
+    orientation="h",
+    opacity = 0.65
+
+    )
+    #fig.show()
+    fig2.update_layout(
         plot_bgcolor = "rgba(0,0,0,0)",
         xaxis = dict(showgrid=False)
     )
 
-    
+#------------------------------------------------------------------------------#
+#       - Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
 
-
-
-    left_column, right_column = st.columns(2)
-    left_column.plotly_chart(fig, use_container_width=True)
+    left_column, right_column = st.columns(3)
+    left_column.plotly_chart(fig1, use_container_width=True)
+    left_column.plotly_chart(fig2, use_container_width=True)
    
 #------------------------------------------------------------------------------#
-def Vendedores(categoria_produ):
-    st.header('VENDEDORES(Seller)')
-    #categoria_produ = pd.read_sql('select p.category_name, sum(oi.price) as total from order_items oi JOIN products p ON(oi.product_id = p.id) group by p.category_name order by total desc limit 20 ;', con=engine)
-    left_column, middle_column, right_column = st.columns(3)
-
-    with left_column:
-        st.subheader('Cantidad Productos')
-        st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_productos), unsafe_allow_html=True)
-
-    with middle_column:
-        st.markdown('')
-
-    with right_column:
-        st.subheader('Cantidad Categorías')
-        st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_categorias), unsafe_allow_html=True)
-
-
-    fig = px.funnel(categoria_produ, 
-    x = val, 
-    y = temp,
-    #textposition = "inside",
-    title="Ingresos por Categoria",
-    color_discrete_sequence=["#33E3FF"] * len(categoria_produ),
-    #color = ["deepskyblue", "lightsalmon", "tan", "teal", "silver"],
-    #labels=(),
-    orientation="h",
-    opacity = 0.65
-
+#-------------------------------------------------------------------------------#
+#              FUNCION Customers-Sellers
+#-------------------------------------------------------------------------------#
+def Vendedores():
+    st.header('Visualizacion de análisis de Vendedores y Clientes')
+    st.text('A continuación se observara los resultados del análisis')
+    st.markdown('***')
+#------------------------------------------------------------------------------#
+#       - Grafica de Clientes por estado
+#------------------------------------------------------------------------------#
+    fig_clientes_estado = px.bar(
+        clientes_estado,
+        x = 'nclientes',
+        y = 'state',
+        orientation="h",
+        title="Top 10 Clientes por Estado",
+        color_discrete_sequence=["#F21F2C"] * len(clientes_estado),
+        template='plotly_white',
     )
-    #fig.show()
-    fig.update_layout(
+    fig_clientes_estado.update_layout(
         plot_bgcolor = "rgba(0,0,0,0)",
         xaxis = dict(showgrid=False)
+        )
+#------------------------------------------------------------------------------#
+#       - Grafica de Vendedores por estado
+#------------------------------------------------------------------------------#
+
+    fig_vendedores_estado = px.bar(
+        vendedores_estado,
+        x = 'state',
+        y = 'nvendedores',
+        #orientation="h",
+        title="Top 10 Vendedores por Estado",
+        color_discrete_sequence=["#1FF29F"] * len(vendedores_estado),
+        template='plotly_white',
     )
+    fig_vendedores_estado.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
+#------------------------------------------------------------------------------#
+#       - Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_clientes_estado, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_vendedores_estado, use_container_width=True)
+#------------------------------------------------------------------------------#
+#       - Grafica de ordenes agrupadas por mes
+#------------------------------------------------------------------------------#
+    fig_ordenes_mes = px.bar(
+        ordenes_mes,
+        x = 'mes', 
+        y = 'ingresos',
+        #orientation="h",
+        title="Total Ordenes Agrupadas por Mes",
+        color_discrete_sequence=["#F1C11E"] * len(ordenes_mes),
+        template='plotly_white',
+    )
+    fig_ordenes_mes.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )    
+#------------------------------------------------------------------------------#
+#       - Grafica de pie
+#------------------------------------------------------------------------------#
+    fig_pie = px.pie(values=valores, names=estatus, title='Relacion estado de ordenes agrupadas por año', color_discrete_sequence=px.colors.sequential.Magenta)
+#------------------------------------------------------------------------------#
+#       - Grafica de pie
+#------------------------------------------------------------------------------#    
+    
+#------------------------------------------------------------------------------#
+#       - Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_ordenes_mes, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_pie, use_container_width=True)
+
+#-------------------------------------------------------------------------------#
+#              FUNCION Method Payments-Delivery
+#-------------------------------------------------------------------------------#
+def Method():
+    st.header('Visualizacion de análisis de Metodos de pago y Entregas')
+    st.text('A continuación se observara los resultados del análisis')
+    st.markdown('***')
+#------------------------------------------------------------------------------#
+#       - Grafica de pie
+#------------------------------------------------------------------------------#
+    fig_pie = px.pie(values=cantidad, names=tipo, title='Número de pagos por tipo', color_discrete_sequence=px.colors.sequential.Inferno)
+#------------------------------------------------------------------------------#
+#      
+#------------------------------------------------------------------------------#     
+
+#------------------------------------------------------------------------------#
+#       - Grafica de Clientes por estado
+#------------------------------------------------------------------------------#
+    fig_clientes_estado = px.bar(
+        clientes_estado,
+        x = 'nclientes',
+        y = 'state',
+        orientation="h",
+        title="Top 10 Clientes por Estado",
+        color_discrete_sequence=["#F21F2C"] * len(clientes_estado),
+        template='plotly_white',
+    )
+    fig_clientes_estado.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
+#------------------------------------------------------------------------------#
+#       - Grafica de Vendedores por estado
+#------------------------------------------------------------------------------#
+
+    fig_vendedores_estado = px.bar(
+        vendedores_estado,
+        x = 'state',
+        y = 'nvendedores',
+        #orientation="h",
+        title="Top 10 Vendedores por Estado",
+        color_discrete_sequence=["#1FF29F"] * len(vendedores_estado),
+        template='plotly_white',
+    )
+    fig_vendedores_estado.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
+#------------------------------------------------------------------------------#
+#       - Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_pie, use_container_width=True)
+    right_column.plotly_chart(fig_clientes_estado, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    
+#------------------------------------------------------------------------------#
+#       - Grafica de ordenes agrupadas por mes
+#------------------------------------------------------------------------------#
+    fig_ordenes_mes = px.bar(
+        ordenes_mes,
+        x = 'mes', 
+        y = 'ingresos',
+        #orientation="h",
+        title="Total Ordenes Agrupadas por Mes",
+        color_discrete_sequence=["#F1C11E"] * len(ordenes_mes),
+        template='plotly_white',
+    )
+    fig_ordenes_mes.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )    
+   
+    
+    
+    
+    
+#------------------------------------------------------------------------------#
+#       - Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_ordenes_mes, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_vendedores_estado, use_container_width=True)
+
+
+#-------------------------------------------------------------------------------#
+#               CLIENTES POR ESTADO
+#-------------------------------------------------------------------------------#
+
 
     
-
-
-
-    left_column, right_column = st.columns(2)
-    left_column.plotly_chart(fig, use_container_width=True)  
 
 
 #-------------------------------------------------------------------------------#
@@ -686,11 +876,74 @@ def Vendedores(categoria_produ):
 def stats(dataset):
     st.header('Data Statistics')
     st.write(dataset.describe())
+#--------------------------------------------------------------------------------------#
+#               DEMO 
+#--------------------------------------------------------------------------------------#
+# -- Create three columns
+    col1, col2, col3 = st.columns([5, 5, 20])
+# -- Put the image in the middle column
+# - Commented out here so that the file will run without having the image downloaded
+#with col2:
+# st.image("streamlit.png", width=200)
+# -- Put the title in the last column
+    with col3:
+        st.title("Streamlit Demo")
+# -- We use the first column here as a dummy to add a space to the left
+# -- Get the user input
+    year_col, continent_col, log_x_col = st.columns([5, 5, 5])
+    with year_col:
+        year_choice = st.slider(
+        "What year would you like to examine?",
+        min_value=1952,
+        max_value=2007,
+        step=5,
+        value=2007,
+    )
+    with continent_col:
+        continent_choice = st.selectbox(
+        "What continent would you like to look at?",
+        ("All", "BA", "MG", "PR", "RJ", "SP"),
+    )
+    with log_x_col:
+        log_x_choice = st.checkbox("Log X Axis?")
+
+# -- Read in the data
+
+    df = px.data.gapminder()
+# -- Apply the year filter given by the user
+    filtered_df = df[(df.year == year_choice)]
+# -- Apply the continent filter
+    if continent_choice != "All":
+        filtered_df = filtered_df[filtered_df.continent == continent_choice]
+
+# -- Create the figure in Plotly
+    fig = px.scatter(
+        filtered_df,
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        color="continent",
+        hover_name="country",
+        log_x=log_x_choice,
+        size_max=60,
+    )
+    fig.update_layout(title="GDP per Capita vs. Life Expectancy")
+# -- Input the Plotly chart to the Streamlit interface
+    st.plotly_chart(fig, use_container_width=True)
 #-------------------------------------------------------------------------------#
 @st.cache
 def data_header(dataset):
     st.header('Data Header')
     st.write(dataset.head(10))
+#-------------------------------------------------------------------------------#
+#               DEMO
+#-------------------------------------------------------------------------------#
+    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.columns)
+    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.columns)
+    col = st.color_picker('Seleccione color de la grafica')
+    plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
+    plot.update_traces(marker=dict(color=col))
+    st.plotly_chart(plot)
 #-------------------------------------------------------------------------------#
 @st.cache
 def plot(dataset):
@@ -918,7 +1171,7 @@ def kpi():
 #--------------------------------------------------------------------------------------#
 # AREA DE OPCIONES PARA EJECUTAR LAS FUNCIONALIDADES y DE NAVEGACION
 if options == 'Panel General':
-    st.text('Podemos Observar el Dataset')
+    st.text('Bienvenidos')
     Panel()
 if options == 'Ventas':
     st.text('Podemos Observar el Dataset')
@@ -926,9 +1179,12 @@ if options == 'Ventas':
 elif options == 'Productos':
     st.text('Visualizacion de Graficas')
     Productos(categoria_produ)
-elif options == 'Vendedores':
-    st.text('Visualizacion de Graficas')
+elif options == 'Sellers-Customers':
+    st.text('Bienvenidos')
     Vendedores()
+elif options == 'Method Payments-Delivery':
+    st.text('Bienvenidos')
+    Method()
 elif options == 'Data Header':
     st.text('Despliegue de los primeros 10 registros')
     data_header(dataset)

@@ -59,10 +59,18 @@ ORDER BY c.anio, c.trimestre, tp.TipoProducto;
 /*
 Genera los datos para la grafica de ingresos por año
 */
+select year(o.purchase_timestamp) AS anio, sum(oi.price) as total
+from order_items oi
+JOIN orders o ON(oi.order_id = o.order_id)
+#JOIN calendario c ON(c.Fecha = o.purchase_timestamp) 
+group by anio
+order by anio asc
+;
+
 select c.anio, sum(oi.price) as total
 from order_items oi
 JOIN orders o ON(oi.order_id = o.id)
-JOIN calendario c ON(c.Fecha = o.purchase_timestamp)
+JOIN ordes c ON(c.Fecha = o.purchase_timestamp)
 group by c.anio
 ;
 
@@ -79,8 +87,8 @@ Genera los datos para la grafica de ingresos por ciudad
 */
 select g.city, sum(oi.price) as total
 from order_items oi
-JOIN orders o ON(oi.order_id = o.id)
-JOIN customers c ON(c.id = o.customer_id )
+JOIN orders o ON(oi.order_id = o.order_id)
+JOIN customers c ON(c.customer_id = o.customer_id )
 JOIN geolocations g ON(g.zip_code = c.zip_code)
 group by g.city
 order by total desc
@@ -92,7 +100,7 @@ Genera la visualizacion de los productos categorizados
 */
 select p.category_name, sum(oi.price) as total
 from order_items oi
-JOIN products p ON(oi.product_id = p.id)
+JOIN products p ON(oi.product_id = p.product_id)
 group by p.category_name
 order by total desc
 limit 10
@@ -103,7 +111,7 @@ Genera la visualizacion de vendedores y sus ventas por estado y ciudad
 */
 select g.latitude, g.longitude, g.state, sum(oi.price) as total
 from order_items oi
-JOIN sellers s ON(s.id = oi.seller_id) 
+JOIN sellers s ON(s.seller_id = oi.seller_id) 
 JOIN geolocations g ON(s.zip_code = g.zip_code)
 group by g.latitude, g.longitude, g.state
 order by total desc
@@ -114,8 +122,8 @@ Genera la visualizacion de ingresos por estado
 */
 select g.state, sum(oi.price) as total
 from order_items oi
-JOIN orders o ON(oi.order_id = o.id)
-JOIN customers c ON(c.id = o.customer_id )
+JOIN orders o ON(oi.order_id = o.order_id)
+JOIN customers c ON(c.customer_id = o.customer_id )
 JOIN geolocations g ON(g.zip_code = c.zip_code)
 group by g.state
 order by total desc
@@ -165,9 +173,9 @@ SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
     FROM (
         SELECT o.purchase_timestamp, sum(i.price) AS total
         FROM orders AS o
-        RIGHT JOIN order_items AS i ON (o.id = i.order_id)
+        RIGHT JOIN order_items AS i ON (o.order_id = i.order_id)
         WHERE o.status != "canceled" AND o.status != "unavailable"
-        GROUP BY o.id
+        GROUP BY o.order_id
     ) AS s
     GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
     HAVING year(s.purchase_timestamp) = 2017
@@ -203,12 +211,13 @@ SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
     FROM (
         SELECT o.purchase_timestamp, sum(i.price) AS total
         FROM orders AS o
-        RIGHT JOIN order_items AS i ON (o.id = i.order_id)
+        RIGHT JOIN order_items AS i ON (o.order_id = i.order_id)
         WHERE o.status != "canceled" AND o.status != "unavailable"
-        GROUP BY o.id
+        GROUP BY o.order_id
     ) AS s
     GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
     HAVING year(s.purchase_timestamp) = 2017
+    order by fecha asc
     ;
 
 /*
@@ -220,7 +229,7 @@ Medir la tasa de vendedores potenciales que se unen a la empresa
 select mql_id, max(won_date) as maximo
 from closed_deals
 ;
-select count(id) as interesados
+select count(mql_id) as interesados
 from marketing_qualified_leads
 ;
 select count(mql_id) as cerrados
@@ -269,6 +278,92 @@ from orders as o
 GROUP BY year(o.purchase_timestamp), month(o.purchase_timestamp)
 having status = 'delivered'
 ;
+/*
+Mapa de Vendedores
+
+- Consulta para ubicar a los vendedores
+
+*/
+select g.latitude, g.longitude, g.state, g.city, sum(oi.price) as ventas
+from order_items oi
+JOIN sellers s ON(s.seller_id = oi.seller_id)
+JOIN geolocations g ON(s.zip_code = g.zip_code)
+group by g.latitude, g.longitude, g.state
+order by ventas desc
+limit 20
+;
+/*
+Clientes por estado
+
+- Consulta para de clientes por estado
+
+*/
+select g.state, count(c.customer_id) as nclientes
+from customers c
+JOIN geolocations g ON(c.zip_code = g.zip_code)
+group by g.state
+order by nclientes desc
+limit 10;
+/*
+vendedores por estado
+
+- Consulta para la cantidad de vendedores por estado
+
+*/
+select g.state, count(s.seller_id) as nvendedores
+from sellers s
+JOIN geolocations g ON(s.zip_code = g.zip_code)
+group by g.state
+order by nvendedores desc
+limit 10;
+
+/*
+ventas por mes
+
+- Consulta para la ventas por mes
+
+*/
+select month(o.approved_at) as mes, sum(oi.price) as ingresos
+from order_items oi
+JOIN orders o ON(oi.order_id = o.order_id)
+group by mes
+order by mes
+;
+/*
+Relacion de status
+
+- relacion del estado de las ordenes que fueron 
+despachadas, canceladas y no disponibles
+
+*/
+
+
+select year(purchase_timestamp) as anio, status, count(status) as total
+from orders
+where status = 'delivered' or status='canceled' or status='unavailable'
+group by anio, status
+order by anio asc
+;
+/*
+Metodo de pago
+
+- Cantidad por tipo de metodo de pago
+
+*/
+select op.type, count(*) as total
+from order_payments op
+group by op.type
+order by total desc
+;
+
+
+
+
+
+
+
+
+            
 
 
 
