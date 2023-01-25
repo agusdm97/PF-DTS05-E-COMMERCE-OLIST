@@ -783,178 +783,23 @@ def Method():
     fig_pie = px.pie(values=cantidad, names=tipo, title='Número de pagos por tipo', color_discrete_sequence=px.colors.sequential.Inferno)
 #------------------------------------------------------------------------------#
 #      
-#------------------------------------------------------------------------------#     
+#------------------------------------------------------------------------------# 
+    diferido_valor = pd.read_sql("""
+        select installments, count(*) as diferido, sum(value) as total
+        from order_payments
+        group by installments
+        order by installments asc;""", con=engine)
 
 #------------------------------------------------------------------------------#
-#       2. Grafica de Clientes por estado
-#------------------------------------------------------------------------------#
-    fig_clientes_estado = px.bar(
-        clientes_estado,
-        x = 'nclientes',
-        y = 'state',
-        orientation="h",
-        title="Top 10 Clientes por Estado",
-        color_discrete_sequence=["#F21F2C"] * len(clientes_estado),
-        template='plotly_white',
-    )
-    fig_clientes_estado.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-        )
-#------------------------------------------------------------------------------#
-#       3. Grafica de Vendedores por estado
-#------------------------------------------------------------------------------#
-
-    fig_vendedores_estado = px.bar(
-        vendedores_estado,
-        x = 'state',
-        y = 'nvendedores',
-        #orientation="h",
-        title="Top 10 Vendedores por Estado",
-        color_discrete_sequence=["#1FF29F"] * len(vendedores_estado),
-        template='plotly_white',
-    )
-    fig_vendedores_estado.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-        )
-#------------------------------------------------------------------------------#
-#       4. Ubicaciones de las graficas
-#------------------------------------------------------------------------------#
-    left_column, right_column = st.columns(2)
-    left_column.plotly_chart(fig_pie, use_container_width=True)
-    right_column.plotly_chart(fig_clientes_estado, use_container_width=True) 
-    #middle_column.plotly_chart(fig, use_container_width=True)
-    
-#------------------------------------------------------------------------------#
-#       5. Grafica de ordenes agrupadas por mes
-#------------------------------------------------------------------------------#
-    fig_ordenes_mes = px.bar(
-        ordenes_mes,
-        x = 'mes', 
-        y = 'ingresos',
-        #orientation="h",
-        title="Total Ordenes Agrupadas por Mes",
-        color_discrete_sequence=["#F1C11E"] * len(ordenes_mes),
-        template='plotly_white',
-    )
-    fig_ordenes_mes.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-        )    
-    
-#------------------------------------------------------------------------------#
-#       6. Ubicaciones de las graficas
-#------------------------------------------------------------------------------#
-    left_column, right_column = st.columns(2)
-    left_column.plotly_chart(fig_ordenes_mes, use_container_width=True) 
-    #middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.plotly_chart(fig_vendedores_estado, use_container_width=True)
-
-
-#-------------------------------------------------------------------------------#
-#               CLIENTES POR ESTADO
-#-------------------------------------------------------------------------------#
-  
-
-
-#-------------------------------------------------------------------------------#
-@st.cache
-def stats(dataset):
-    st.header('Data Statistics')
-    st.write(dataset.describe())
-#--------------------------------------------------------------------------------------#
-#               DEMO 
-#--------------------------------------------------------------------------------------#
-# -- Create three columns
-    col1, col2, col3 = st.columns([5, 5, 20])
-# -- Put the image in the middle column
-# - Commented out here so that the file will run without having the image downloaded
-#with col2:
-# st.image("streamlit.png", width=200)
-# -- Put the title in the last column
-    with col3:
-        st.title("Streamlit Demo")
-# -- We use the first column here as a dummy to add a space to the left
-# -- Get the user input
-    year_col, continent_col, log_x_col = st.columns([5, 5, 5])
-    with year_col:
-        year_choice = st.slider(
-        "What year would you like to examine?",
-        min_value=1952,
-        max_value=2007,
-        step=5,
-        value=2007,
-    )
-    with continent_col:
-        continent_choice = st.selectbox(
-        "What continent would you like to look at?",
-        ("All", "BA", "MG", "PR", "RJ", "SP"),
-    )
-    with log_x_col:
-        log_x_choice = st.checkbox("Log X Axis?")
-
-# -- Read in the data
-
-    df = px.data.gapminder()
-# -- Apply the year filter given by the user
-    filtered_df = df[(df.year == year_choice)]
-# -- Apply the continent filter
-    if continent_choice != "All":
-        filtered_df = filtered_df[filtered_df.continent == continent_choice]
-
-# -- Create the figure in Plotly
-    fig = px.scatter(
-        filtered_df,
-        x="gdpPercap",
-        y="lifeExp",
-        size="pop",
-        color="continent",
-        hover_name="country",
-        log_x=log_x_choice,
-        size_max=60,
-    )
-    fig.update_layout(title="GDP per Capita vs. Life Expectancy")
-# -- Input the Plotly chart to the Streamlit interface
-    st.plotly_chart(fig, use_container_width=True)
-#-------------------------------------------------------------------------------#
-@st.cache
-def data_header(dataset):
-    st.header('Data Header')
-    st.write(dataset.head(10))
-#-------------------------------------------------------------------------------#
-#               DEMO
-#-------------------------------------------------------------------------------#
-    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.columns)
-    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.columns)
-    col = st.color_picker('Seleccione color de la grafica')
-    plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
-    plot.update_traces(marker=dict(color=col))
-    st.plotly_chart(plot)
-#-------------------------------------------------------------------------------#
-@st.cache
-def plot(dataset):
-    fig, ax=plt.subplot(1,1)
-    ax.scatter(x=dataset['country'], y=dataset['points'])
-    ax.set_xlabel('pais')
-    ax.set_ylabel('puntos')
-    st.pyplot(fig)
-#-------------------------------------------------------------------------------#
-@st.cache
-def lines():
-    chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['a', 'b', 'c'])
-    st.line_chart(chart_data)
-#-------------------------------------------------------------------------------#
-
-def lines1():
-    line_chart = alt.Chart(dataset).mark_line().encode(
-        y =  alt.Y('Facturado', title='Precios($)'),
-        x =  alt.X( 'Fecha', title='Pais')
+#       2. Grafica de linea para la distribución de pagos por diferido
+#------------------------------------------------------------------------------#    
+    st.markdown('***')
+    line_chart = alt.Chart(diferido_valor).mark_line().encode(
+        y =  alt.Y('total', title='Ingresos($)'),
+        x =  alt.X('installments', title='Diferido')
     ).properties(
-        height=500, width=800,
-        title="Vinos del Mundo"
+        height=400, width=400,
+        title="Distribucion de cuotas diferidas"
     ).configure_title(
         fontSize=16
     ).configure_axis(
@@ -962,28 +807,288 @@ def lines1():
         labelFontSize=12
     )
  
-    st.altair_chart(line_chart, use_container_width=True)
+    #st.altair_chart(line_chart, use_container_width=True)
+#------------------------------------------------------------------------------#
+#        Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
 
-#-------------------------------------------------------------------------------#
-@st.cache
-def interactive_plot(dataset):
-    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=dataset.columns)
-    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=dataset.columns)
-    col = st.color_picker('Seleccione color de la grafica')
-    plot = px.scatter(dataset, x=x_axis_val, y=y_axis_val)
-    plot.update_traces(marker=dict(color=col))
-    st.plotly_chart(plot)
-#-------------------------------------------------------------------------------#
-def barras():
-    st.subheader('Grafico de Barras')
-    source = (dataset)
-    bar_chart = alt.Chart(source).mark_bar().encode(
-        y = 'Facturado',
-        x = 'Nombres',
+    left_column.plotly_chart(fig_pie, use_container_width=True)
+    right_column.altair_chart(line_chart, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+
+#------------------------------------------------------------------------------#
+#       3. Grafica de barras ingresos por tipo de pago
+#------------------------------------------------------------------------------#
+    payment_type = pd.read_sql("""
+        select type, sum(value) as total
+        from order_payments
+        group by type
+        order by total desc;""", con=engine)
+
+    fig_pyment_type = px.bar(
+        payment_type,
+        x = 'type', 
+        y = 'total',
+        #orientation="h",
+        title="Ingresos por tipo de metodo de pago",
+        color_discrete_sequence=["#DA8DF9"] * len(payment_type),
+        template='plotly_white',
     )
-    st.altair_chart(bar_chart, use_container_width=True)
+    fig_pyment_type.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )    
+#------------------------------------------------------------------------------#
+#       4. Grafica de Productos entregados en la fecha estimada
+#------------------------------------------------------------------------------# 
+    delivery_estimado = pd.read_sql("""
+        SELECT count(d.dias) AS 'entregado',
+            CASE
+            WHEN d.dias  < 1 THEN 'Llego en fecha estimada'
+            ELSE 'LLego con retrazo'
+            END
+            AS Plazo_de_entrega
+        FROM (SELECT datediff(o.delivered_customer_date, o.estimated_delivery_date ) as dias
+            FROM orders AS o
+            WHERE o.status = 'delivered'
+             ) AS d
 
-#-------------------------------------------------------------------------------#
+        GROUP BY Plazo_de_entrega;""", con=engine)
+    entregado = delivery_estimado['entregado']
+    plazo = delivery_estimado['Plazo_de_entrega']
+
+
+    fig_pie_delivery = px.pie(values=entregado, names=plazo, title='Productos entregados en fecha estimada', color_discrete_sequence=px.colors.sequential.Cividis)
+
+#------------------------------------------------------------------------------#
+#       Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_pyment_type, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_pie_delivery, use_container_width=True)
+
+    
+#------------------------------------------------------------------------------#
+#       5. Grafica Productos entregado en un rango de dias
+#------------------------------------------------------------------------------#
+    delivery_rango = pd.read_sql("""
+        SELECT count(d.dias) AS 'cantidad',
+            CASE
+                WHEN dias  < 4 THEN 'menos de 4'
+                WHEN dias < 7 THEN 'de 4 a 6'
+                WHEN dias < 11 THEN 'de 7 a 10'
+                WHEN dias < 16 THEN 'de 11 a 15'
+                ELSE 'más de 15'
+            END
+            AS rango_entregas
+        FROM (SELECT datediff(o.delivered_customer_date, o.purchase_timestamp ) as dias
+            FROM orders AS o
+        WHERE o.status = 'delivered'
+            ) AS d
+        GROUP BY rango_entregas;""", con=engine)
+
+    #cantidad_delivery = delivery_rango['cantidad']
+    #rangos = delivery_rango['rango_entregas']  
+
+    fig_delivery_rango = px.bar(
+        delivery_rango,
+        x = 'rango_entregas', 
+        y = 'cantidad',
+        #orientation="h",
+        title="Productos Entregados en un rango de días",
+        color_discrete_sequence=["#7EA2F7"] * len(payment_type),
+        template='plotly_white',
+    )
+    fig_delivery_rango.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )    
+
+#------------------------------------------------------------------------------#
+#       6. Grafica Productos entregado en un rango de dias
+#------------------------------------------------------------------------------#   
+    delivery_peso = pd.read_sql("""
+    SELECT avg(d.freight_value) AS 'promedio_flete',
+        CASE
+        WHEN d.weight_g  < 501 THEN 'menos de 500g'
+        WHEN d.weight_g < 1001 THEN 'de 500g a 1kg'
+        WHEN d.weight_g < 5001 THEN 'de 1kg a 5kg'
+        WHEN d.weight_g < 10001 THEN 'de 5kg a 10kg'
+        WHEN d.weight_g < 20001 THEN 'de 10kg a 20kg'
+        ELSE 'más de 20kg'
+        END
+        as rango_peso
+    FROM (SELECT i.product_id, i.freight_value, p.weight_g
+        FROM order_items AS i
+        LEFT JOIN products as p ON(i.product_id = p.product_id)
+            ) AS d
+
+    GROUP BY rango_peso;""", con=engine)
+    prom_flete = delivery_peso['promedio_flete']
+    rango_peso = delivery_peso['rango_peso']
+
+    fig_pie_peso = px.pie(values=prom_flete, names=rango_peso, title='Promedio de Flete por rango de pesoa', color_discrete_sequence=px.colors.sequential.algae)
+  
+#------------------------------------------------------------------------------#
+#       Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_delivery_rango, use_container_width=True) 
+#middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_pie_peso, use_container_width=True)
+  
+def Marketing():
+    st.header('Visualizacion de análisis de Marketing y Reviews')
+    st.text('A continuación se observara los resultados del análisis')
+    st.markdown('***')
+#------------------------------------------------------------------------------#
+#       1. Grafica de linea volumen de primer contacto con el vendedor por año-mes
+#      
+#------------------------------------------------------------------------------# 
+    marketing_volumen = pd.read_sql("""
+        select concat(year(first_contact_date), '-', month(first_contact_date)) as anio_mes, count(*) as volumen 
+        from marketing_qualified_leads
+        group by anio_mes
+        order by first_contact_date asc;""", con=engine)
+  
+    st.markdown('***')
+    line_chart = alt.Chart(marketing_volumen).mark_line().encode(
+        y =  alt.Y('volumen', title='volumne(#)'),
+        x =  alt.X('anio_mes', title='Anio-Mes')
+    ).properties(
+        height=400, width=400,
+        title="Distribucion de volumen primer contacto por año y mes"
+    ).configure_title(
+        fontSize=16
+    ).configure_axis(
+        titleFontSize=14,
+        labelFontSize=12
+    )
+    
+    #st.altair_chart(line_chart, use_container_width=True)
+#------------------------------------------------------------------------------#
+#       2. Grafica de barras del Volumen por canal de mercadeo
+#------------------------------------------------------------------------------# 
+    marketing_origin = pd.read_sql("""
+        select origin, count(*) as volumen
+        from marketing_qualified_leads
+        group by origin
+        order by volumen desc;""", con=engine)
+
+    fig_marketing_origin = px.bar(
+        marketing_origin,
+        x = 'origin', 
+        y = 'volumen',
+        #orientation="h",
+        title="Volumen por canal de mercadeo",
+        color_discrete_sequence=["#BC0330"] * len(marketing_origin),
+        template='plotly_white',
+    )
+    fig_marketing_origin.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )    
+
+#------------------------------------------------------------------------------#
+#        Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+
+    left_column.altair_chart(line_chart, use_container_width=True) 
+    right_column.plotly_chart(fig_marketing_origin, use_container_width=True)
+    #middle_column.plotly_chart(fig, use_container_width=True)
+#------------------------------------------------------------------------------#
+#       3. Grafica de barras Promedio de score por categoria
+#------------------------------------------------------------------------------#
+    reviews_score_prom = pd.read_sql("""
+    SELECT AVG(a.score) as prom_score, c.category_name AS categoria
+    FROM order_reviews AS a
+        INNER JOIN order_items AS b
+        ON (a.order_id = b.order_id)
+        INNER JOIN products AS c
+        ON (b.product_id = c.product_id)
+    GROUP BY categoria
+    order by prom_score desc
+    limit 15; """, con=engine) 
+
+    fig_reviews_score_prom = px.bar(
+        reviews_score_prom,
+        x = 'prom_score',
+        y = 'categoria',
+        orientation="h",
+        title="Top 15 Score por categoria",
+        color_discrete_sequence=["#93F553"] * len(ingresos_ciudad),
+        template='plotly_white',
+    )
+    fig_reviews_score_prom.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
+
+
+#------------------------------------------------------------------------------#
+#       4. Grafica cierre de acuerdo por segmento de negocio
+#------------------------------------------------------------------------------# 
+    cierre_volumen_segm = pd.read_sql("""
+    select business_segment, count(*) as volumen
+        from closed_deals
+        group by business_segment
+        order by volumen desc
+        limit 10; """, con=engine) 
+    
+
+    fig_cierre = px.funnel(cierre_volumen_segm, 
+        x = 'volumen', 
+        y = 'business_segment',
+        #textposition = "inside",
+        title="Top 10 cierre acuerdo por segmento de negocio",
+        color_discrete_sequence=["#E3B7F9"] * len(cierre_volumen_segm),
+        #color = ["deepskyblue", "lightsalmon", "tan", "teal", "silver"],
+        #labels=(),
+        orientation="h",
+        opacity = 0.65
+
+        )
+        #fig.show()
+    fig_cierre.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
+    
+#------------------------------------------------------------------------------#
+#       5. Grafica Productos entregado en un rango de dias
+#------------------------------------------------------------------------------#
+    
+
+    #cantidad_delivery = delivery_rango['cantidad']
+    #rangos = delivery_rango['rango_entregas']  
+
+    
+
+    
+#------------------------------------------------------------------------------#
+#       6. Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_reviews_score_prom, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_cierre, use_container_width=True)
+
+
+#------------------------------------------------------------------------------#
+#       6. Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
+    left_column.plotly_chart(fig_delivery_rango, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.plotly_chart(fig_pie_delivery, use_container_width=True)
+  
+
+
+
+
 def kpi():
     st.header('KPIs')
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">1. Variación porcentual del volumen de ventas por mes año 2017</p>', unsafe_allow_html=True)
@@ -1169,13 +1274,131 @@ def kpi():
     #col1.metric("Temperature", "70 °F", "1.2 °F")
     #col2.metric("Wind", "9 mph", "-8%")
     #col3.metric("Humidity", "86%", "4%")
+#-------------------------------------------------------------------------------#
+@st.cache
+def data_header(dataset):
+    st.header('Data Header')
+    st.write(dataset.head(10))
+#-------------------------------------------------------------------------------#
+#               DEMO
+#-------------------------------------------------------------------------------#
+    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.columns)
+    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.columns)
+    col = st.color_picker('Seleccione color de la grafica')
+    plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
+    plot.update_traces(marker=dict(color=col))
+    st.plotly_chart(plot)
+#-------------------------------------------------------------------------------#
+@st.cache
+def plot(dataset):
+    fig, ax=plt.subplot(1,1)
+    ax.scatter(x=dataset['country'], y=dataset['points'])
+    ax.set_xlabel('pais')
+    ax.set_ylabel('puntos')
+    st.pyplot(fig)
+#-------------------------------------------------------------------------------#
+@st.cache
+def lines():
+    chart_data = pd.DataFrame(
+    np.random.randn(20, 3),
+    columns=['a', 'b', 'c'])
+    st.line_chart(chart_data)
+#-------------------------------------------------------------------------------#
 
+def lines1():
+    line_chart = alt.Chart(dataset).mark_line().encode(
+        y =  alt.Y('Facturado', title='Precios($)'),
+        x =  alt.X( 'Fecha', title='Pais')
+    ).properties(
+        height=500, width=800,
+        title="Vinos del Mundo"
+    ).configure_title(
+        fontSize=16
+    ).configure_axis(
+        titleFontSize=14,
+        labelFontSize=12
+    )
+ 
+    st.altair_chart(line_chart, use_container_width=True)
 
+#-------------------------------------------------------------------------------#
+@st.cache
+def interactive_plot(dataset):
+    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=dataset.columns)
+    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=dataset.columns)
+    col = st.color_picker('Seleccione color de la grafica')
+    plot = px.scatter(dataset, x=x_axis_val, y=y_axis_val)
+    plot.update_traces(marker=dict(color=col))
+    st.plotly_chart(plot)
+#-------------------------------------------------------------------------------#
+def barras():
+    st.subheader('Grafico de Barras')
+    source = (dataset)
+    bar_chart = alt.Chart(source).mark_bar().encode(
+        y = 'Facturado',
+        x = 'Nombres',
+    )
+    st.altair_chart(bar_chart, use_container_width=True)
+#-------------------------------------------------------------------------------#
+@st.cache
+def stats(dataset):
+    st.header('Data Statistics')
+    st.write(dataset.describe())
+#--------------------------------------------------------------------------------------#
+#               DEMO 
+#--------------------------------------------------------------------------------------#
+# -- Create three columns
+    col1, col2, col3 = st.columns([5, 5, 20])
+# -- Put the image in the middle column
+# - Commented out here so that the file will run without having the image downloaded
+#with col2:
+# st.image("streamlit.png", width=200)
+# -- Put the title in the last column
+    with col3:
+        st.title("Streamlit Demo")
+# -- We use the first column here as a dummy to add a space to the left
+# -- Get the user input
+    year_col, continent_col, log_x_col = st.columns([5, 5, 5])
+    with year_col:
+        year_choice = st.slider(
+        "What year would you like to examine?",
+        min_value=1952,
+        max_value=2007,
+        step=5,
+        value=2007,
+    )
+    with continent_col:
+        continent_choice = st.selectbox(
+        "What continent would you like to look at?",
+        ("All", "BA", "MG", "PR", "RJ", "SP"),
+    )
+    with log_x_col:
+        log_x_choice = st.checkbox("Log X Axis?")
 
+# -- Read in the data
 
+    df = px.data.gapminder()
+# -- Apply the year filter given by the user
+    filtered_df = df[(df.year == year_choice)]
+# -- Apply the continent filter
+    if continent_choice != "All":
+        filtered_df = filtered_df[filtered_df.continent == continent_choice]
 
-
-
+# -- Create the figure in Plotly
+    fig = px.scatter(
+        filtered_df,
+        x="gdpPercap",
+        y="lifeExp",
+        size="pop",
+        color="continent",
+        hover_name="country",
+        log_x=log_x_choice,
+        size_max=60,
+    )
+    fig.update_layout(title="GDP per Capita vs. Life Expectancy")
+# -- Input the Plotly chart to the Streamlit interface
+    st.plotly_chart(fig, use_container_width=True)
+#-------------------------------------------------------------------------------#
 
 
 
@@ -1184,18 +1407,19 @@ def kpi():
 if options == 'Panel General':
     st.text('Bienvenidos')
     Panel()
-if options == 'Ventas':
-    st.text('Podemos Observar el Dataset')
-    Ventas(dataset)
-elif options == 'Productos':
-    st.text('Visualizacion de Graficas')
-    Productos(categoria_produ)
 elif options == 'Sellers-Customers':
     st.text('Bienvenidos')
     Vendedores()
 elif options == 'Method Payments-Delivery':
     st.text('Bienvenidos')
     Method()
+elif options == 'Marketing-Reviews':
+    st.text('Bienvenidos')
+    Marketing()
+elif options == 'KPIs':
+    st.text('Bienvenidos')
+    kpi()
+#--------------------------------------------------------------------------------------#
 elif options == 'Data Header':
     st.text('Despliegue de los primeros 10 registros')
     data_header(dataset)
@@ -1214,10 +1438,13 @@ elif options == 'Barras':
 elif options == 'Lineas':
     st.text('Grafico de Lineas')
     lines1()
-elif options == 'KPIs':
-    st.text('Muestra KPI')
-    kpi()
 
+elif options == 'Ventas':
+    st.text('Podemos Observar el Dataset')
+    Ventas(dataset)
+elif options == 'Productos':
+    st.text('Visualizacion de Graficas')
+    Productos(categoria_produ)
 #--------------------------------------------------------------------------------------#
 
 

@@ -355,15 +355,147 @@ from order_payments op
 group by op.type
 order by total desc
 ;
+/*
+Metodo de pago
 
+- Distribucion de los cuotas diferidas y su valor 
 
+*/
+select installments, count(*) as diferido, sum(value) as total
+from order_payments
+group by installments
+order by installments asc
+;
+select installments, count(*) as cantidad, sum(value) as total
+from order_payments
+group by installments
+order by installments asc
+;
+/*
+Metodo de pago
 
+- Ingresos por tipo de metodo de pago 
 
+*/
+select type, sum(value) as total
+from order_payments
+group by type
+order by total desc
+;
+/*
+Delivery - Entregas
 
+-  Analisis de Productos entregado en la fecha estimada
 
+*/
+SELECT count(d.dias) AS 'entregado',
+CASE
+WHEN d.dias  < 1 THEN 'Llego en fecha estimada'
+ELSE 'LLego con retrazo'
+END
+AS Plazo_de_entrega
+FROM (SELECT datediff(o.delivered_customer_date, o.estimated_delivery_date ) as dias
+      FROM orders AS o
+      WHERE o.status = 'delivered'
+        ) AS d
 
+GROUP BY Plazo_de_entrega
+;
+/*
+Delivery - Entregas
 
-            
+-  Analisis de Productos entregado en un rango de dias
+
+*/
+SELECT count(d.dias) AS 'cantidad',
+CASE
+WHEN dias  < 4 THEN 'menos de 4'
+WHEN dias < 7 THEN 'de 4 a 6'
+WHEN dias < 11 THEN 'de 7 a 10'
+WHEN dias < 16 THEN 'de 11 a 15'
+ELSE 'más de 15'
+END
+AS rango_entregas
+FROM (SELECT datediff(o.delivered_customer_date, o.purchase_timestamp ) as dias
+      FROM orders AS o
+      WHERE o.status = 'delivered'
+        ) AS d
+
+GROUP BY rango_entregas
+;
+/*
+marketing - reviews
+
+-  Serie de tiempo por volumen de primer contacto con el vendedor por año-mes
+
+*/
+select concat(year(first_contact_date), '-', month(first_contact_date)) as anio_mes, count(*) as volumen 
+from marketing_qualified_leads
+group by anio_mes
+order by first_contact_date asc
+;
+ /*
+marketing - reviews
+
+-  Volumen por canal de mercadeo
+
+*/
+select origin, count(*) as volumen
+from marketing_qualified_leads
+group by origin
+order by volumen desc
+;
+/*
+marketing - reviews
+
+-  Promedio de Flete por rango de peso
+
+*/
+SELECT avg(d.freight_value) AS 'promedio_flete',
+CASE
+WHEN d.weight_g  < 501 THEN 'menos de 500g'
+WHEN d.weight_g < 1001 THEN 'de 500g a 1kg'
+WHEN d.weight_g < 5001 THEN 'de 1kg a 5kg'
+WHEN d.weight_g < 10001 THEN 'de 5kg a 10kg'
+WHEN d.weight_g < 20001 THEN 'de 10kg a 20kg'
+ELSE 'más de 20kg'
+END
+as rango_peso
+FROM (SELECT i.product_id, i.freight_value, p.weight_g
+      FROM order_items AS i
+      LEFT JOIN products as p ON(i.product_id = p.product_id)
+        ) AS d
+
+GROUP BY rango_peso
+;
+/*
+marketing - reviews
+
+-  Promedio de score por categoria
+
+*/
+SELECT AVG(a.score) as prom_score, c.category_name AS categoria
+      FROM order_reviews AS a
+      INNER JOIN order_items AS b
+      ON (a.order_id = b.order_id)
+      INNER JOIN products AS c
+      ON (b.product_id = c.product_id)
+      GROUP BY categoria
+      order by prom_score desc
+      limit 15
+      ;  
+ /*
+marketing - reviews
+
+-  cierre de acuerdo por segmento
+
+*/     
+select business_segment, count(*) as volumen
+from closed_deals
+group by business_segment
+order by volumen desc
+limit 15
+;
 
 
 
