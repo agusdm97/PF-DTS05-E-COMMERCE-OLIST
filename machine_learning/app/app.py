@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import sqlalchemy as sql
 import pickle as pkl
+#from xgboost.sklearn import XGBRegressor
+import datetime
 
 
 st.title('Forecasting Olist Sales')
@@ -53,4 +55,23 @@ def recommend_products(product_id):
 if btn:
     st.write(recommend_products(product).head(3))
 
+st.header('4.-Modelo de predicción de dias para la entrega de producto')
 
+zip_comprador = st.text_input("Zip code del comprador")
+if type(zip_comprador) != str:
+    st.write("El valor ingresado no es un número entero")
+zip_vendedor = st.text_input("Zip code del vendedor")
+dia_compra = st.text_input("Día en la que realizó la compra")
+flete = st.text_input("Valor del flete")
+peso = st.text_input("Peso del producto")
+dia_compra 
+list =pd.DataFrame([[zip_comprador], [zip_comprador], [dia_compra], [flete], [peso]]).transpose()
+list.rename(columns={0:'zip_comprador',1:'zip_vendedor',2:'dia_compra', 3:'flete', 4:'peso'}, inplace=True)
+
+def dias_espera(datos):
+    modelo= pd.read_pickle('app/dias_espera.pkl')
+    dia = datetime.datetime(df_ventas['dia_compra']).astype('int64') / 10**9
+    pred = modelo.predict(datos)
+    return pred
+
+btn2 = st.button("predict1")
