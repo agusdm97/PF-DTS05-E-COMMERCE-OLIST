@@ -27,7 +27,7 @@ st.success('Done!')
 #------------------------------------------------------------------------------------------#
 # Conexion al DATAWAREHOUSE de los datos
 engine = sql.create_engine(
-    "mysql+pymysql://root:password@localhost:3307/data_warehouse_olist?charset=utf8mb4"
+    "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
 )
 
 #------------------------------------------------------------------------------------------#
