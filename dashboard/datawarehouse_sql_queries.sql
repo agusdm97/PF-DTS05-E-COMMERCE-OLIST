@@ -179,6 +179,20 @@ SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
     GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
     HAVING year(s.purchase_timestamp) = 2017
     ;
+    
+SELECT month(s.purchase_timestamp) AS fecha, sum(s.total) AS total
+    FROM (
+        SELECT o.purchase_timestamp, sum(i.price) AS total
+        FROM orders AS o
+        RIGHT JOIN order_items AS i ON (o.order_id = i.order_id)
+        WHERE o.status != "canceled" AND o.status != "unavailable"
+        GROUP BY o.order_id
+    ) AS s
+    WHERE year(s.purchase_timestamp) = 2017
+    GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
+	order by fecha asc
+    ;    
+    
 /*
 KPI - Variación porcentual del volumen de ventas por mes
 
@@ -522,8 +536,17 @@ from closed_deals
 group by lead_type
 order by volumen desc
 limit 10;
+/*
+marketing - reviews
 
+- Cantidad de reviews por score
 
+*/     
+
+SELECT count(*) as cant_reviews, score 
+FROM order_reviews
+GROUP BY score
+order by cant_puntuaciones desc;
 
 
 

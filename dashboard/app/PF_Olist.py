@@ -61,7 +61,6 @@ uploaded_file = st.sidebar.file_uploader('Cargue su DATASET aqui(Opcional)')
 
 options = st.sidebar.radio('Paginas', options=['Home', 'Panel General', 'Sellers-Customers', 'Method Payments-Delivery', 'Marketing-Reviews', 'KPIs'
 
-
 ])
 
 my_bar = st.progress(0)
@@ -71,9 +70,15 @@ for percent_complete in range(100):
     my_bar.progress(percent_complete + 1)
 #---------------------------------------------------------------------------------------#
 with st.spinner('Wait for it...'):
-    time.sleep(5)
+    time.sleep(30)
 st.success('Done!')
 #---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#
+
+
+
+
 #---------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------#
 # CARGA DE DATASET A DATAFRAME
@@ -136,51 +141,18 @@ ingresos_ST_ciudad = pd.read_sql("""
     group by g.latitude, g.longitude, g.state
     order by ventas desc
     limit 20;""", con=engine)
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPIs
-#               - Variación porcentual del volumen de ventas por mes
-#               - 
-#               - Total Flete
-#               - Total ingresos
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-
-
-#--------------------------------------------------------------------------------------#
-
-
-
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPI
-#           F. Tiempo total del proceso (TTP)
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #           
+#--------------------------------------------------------------------------------------#
 #               
 #               
 #-------------------------------------------------------------------------------------#
-
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-# FUNCIONES PRINCIPALES
+#                   FUNCIONES PRINCIPALES
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
@@ -560,7 +532,7 @@ def Vendedores():
     estatus = relacion_status['status']
     valores = relacion_status['total']
 
-    fig_pie = px.pie(values=valores, names=estatus, title='Relacion estado de ordenes agrupadas por año', color_discrete_sequence=px.colors.sequential.Viridis)
+    fig_pie = px.pie(values=valores, names=estatus, title='Relacion del estado de ordenes', color_discrete_sequence=px.colors.sequential.Viridis)
 #------------------------------------------------------------------------------#
 #      
 #------------------------------------------------------------------------------#    
@@ -572,7 +544,7 @@ def Vendedores():
     #middle_column.plotly_chart(fig, use_container_width=True)
     right_column.plotly_chart(fig_pie, use_container_width=True)
 
-    st.balloons()
+    st.snow()
 #-------------------------------------------------------------------------------#
 #              FUNCION Method Payments-Delivery
 #-------------------------------------------------------------------------------#
@@ -592,7 +564,7 @@ def Method():
     tipo = method_payment['type']
     cantidad = method_payment['total']
 
-    fig_pie = px.pie(values=cantidad, names=tipo, title='Número de pagos por tipo', color_discrete_sequence=px.colors.sequential.Inferno)
+    fig_pie = px.pie(values=cantidad, names=tipo, title='Proporción por metodo de pago', color_discrete_sequence=px.colors.sequential.Inferno)
 #------------------------------------------------------------------------------#
 #      
 #------------------------------------------------------------------------------# 
@@ -709,7 +681,7 @@ def Method():
         x = 'rango_entregas', 
         y = 'cantidad',
         #orientation="h",
-        title="Productos Entregados en un rango de días",
+        title="Productos Entregados segun rango de días",
         color_discrete_sequence=["#7EA2F7"] * len(payment_type),
         template='plotly_white',
     )
@@ -741,7 +713,7 @@ def Method():
     prom_flete = delivery_peso['promedio_flete']
     rango_peso = delivery_peso['rango_peso']
 
-    fig_pie_peso = px.pie(values=prom_flete, names=rango_peso, title='Promedio de Flete por rango de pesoa', color_discrete_sequence=px.colors.sequential.algae)
+    fig_pie_peso = px.pie(values=prom_flete, names=rango_peso, title='Promedio valor flete por rango de peso', color_discrete_sequence=px.colors.sequential.algae)
   
 #------------------------------------------------------------------------------#
 #       Ubicaciones de las graficas
@@ -750,11 +722,13 @@ def Method():
     left_column.plotly_chart(fig_delivery_rango, use_container_width=True) 
 #middle_column.plotly_chart(fig, use_container_width=True)
     right_column.plotly_chart(fig_pie_peso, use_container_width=True)
+
+    st.balloons()
 #------------------------------------------------------------------------------#
 # 
 # 
 # -----------------------------------------------------------------------------#  
-    st.balloons()
+    
 def Marketing():
     st.header('Visualizacion de análisis de Marketing y Reviews')
     st.text('A continuación se observara los resultados del análisis')
@@ -815,35 +789,29 @@ def Marketing():
     left_column.altair_chart(line_chart, use_container_width=True) 
     right_column.plotly_chart(fig_marketing_origin, use_container_width=True)
     #middle_column.plotly_chart(fig, use_container_width=True)
+
 #------------------------------------------------------------------------------#
-#       3. Grafica de barras Promedio de score por categoria
+#       6. Grafica volumen de cierre por lead type
 #------------------------------------------------------------------------------#
-    reviews_score_prom = pd.read_sql("""
-    SELECT AVG(a.score) as prom_score, c.category_name AS categoria
-    FROM order_reviews AS a
-        INNER JOIN order_items AS b
-        ON (a.order_id = b.order_id)
-        INNER JOIN products AS c
-        ON (b.product_id = c.product_id)
-    GROUP BY categoria
-    order by prom_score desc
-    limit 15; """, con=engine) 
+    cierre_volumen_lead = pd.read_sql("""
+    select lead_type, count(*) as volumen
+    from closed_deals
+    group by lead_type
+    order by volumen desc
+    limit 10; """, con=engine)
 
-    fig_reviews_score_prom = px.bar(
-        reviews_score_prom,
-        x = 'prom_score',
-        y = 'categoria',
-        orientation="h",
-        title="Top 15 Score por categoria",
-        color_discrete_sequence=["#93F553"] * len(reviews_score_prom),
-        template='plotly_white',
-    )
-    fig_reviews_score_prom.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-        )
-
-
+    line_chart = alt.Chart(cierre_volumen_lead).mark_line().encode(
+        y =  alt.Y('volumen', title='volumen(#)'),
+        x =  alt.X('lead_type', title='Lead Type')
+    ).properties(
+        height=400, width=400,
+        title="Volumen de cierre por categoria de negocio"
+    ).configure_title(
+        fontSize=16
+    ).configure_axis(
+        titleFontSize=14,
+        labelFontSize=12
+    )    
 #------------------------------------------------------------------------------#
 #       4. Grafica cierre de acuerdo por segmento de negocio
 #------------------------------------------------------------------------------# 
@@ -877,9 +845,11 @@ def Marketing():
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
 
-    left_column.plotly_chart(fig_reviews_score_prom, use_container_width=True) 
+     
+    left_column.plotly_chart(fig_cierre, use_container_width=True) 
     #middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.plotly_chart(fig_cierre, use_container_width=True)    
+    right_column.altair_chart(line_chart, use_container_width=True)
+       
 #------------------------------------------------------------------------------#
 #       5. Grafica top 20 Fechas que tiene el mayor # de cierres
 #------------------------------------------------------------------------------#
@@ -905,28 +875,34 @@ def Marketing():
         )
 
       
-#------------------------------------------------------------------------------#
-#       6. Grafica volumen de cierre por lead type
-#------------------------------------------------------------------------------#
-    cierre_volumen_lead = pd.read_sql("""
-    select lead_type, count(*) as volumen
-    from closed_deals
-    group by lead_type
-    order by volumen desc
-    limit 10; """, con=engine)
 
-    line_chart = alt.Chart(cierre_volumen_lead).mark_line().encode(
-        y =  alt.Y('volumen', title='volumen(#)'),
-        x =  alt.X('lead_type', title='Lead Type')
-    ).properties(
-        height=400, width=400,
-        title="Volumen de cierre por lead type"
-    ).configure_title(
-        fontSize=16
-    ).configure_axis(
-        titleFontSize=14,
-        labelFontSize=12
-    )    
+#------------------------------------------------------------------------------#
+#       3. Grafica de barras Promedio de score por categoria
+#------------------------------------------------------------------------------#
+    reviews_score_prom = pd.read_sql("""
+    SELECT AVG(a.score) as prom_score, c.category_name AS categoria
+    FROM order_reviews AS a
+        INNER JOIN order_items AS b
+        ON (a.order_id = b.order_id)
+        INNER JOIN products AS c
+        ON (b.product_id = c.product_id)
+    GROUP BY categoria
+    order by prom_score desc
+    limit 15; """, con=engine) 
+
+    fig_reviews_score_prom = px.bar(
+        reviews_score_prom,
+        x = 'prom_score',
+        y = 'categoria',
+        orientation="h",
+        title="Top 15 Score por categoria",
+        color_discrete_sequence=["#93F553"] * len(reviews_score_prom),
+        template='plotly_white',
+    )
+    fig_reviews_score_prom.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
 
 
 #------------------------------------------------------------------------------#
@@ -934,14 +910,47 @@ def Marketing():
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
 
-    left_column.plotly_chart(fig_cierre_volumen_fecha, use_container_width=True) 
+    
+    left_column.plotly_chart(fig_cierre_volumen_fecha, use_container_width=True)
     #middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.altair_chart(line_chart, use_container_width=True)
-  
+    right_column.plotly_chart(fig_reviews_score_prom, use_container_width=True) 
+#------------------------------------------------------------------------------#  
+#------------------------------------------------------------------------------#
+#       5. Grafica top 20 Fechas que tiene el mayor # de cierres
+#------------------------------------------------------------------------------#
+    reviews_cant_score = pd.read_sql("""
+    SELECT count(*) as cant_reviews, score 
+    FROM order_reviews
+    GROUP BY score
+    order by cant_reviews desc; """, con=engine)     
 
+    fig_reviews_cant_score = px.bar(
+        reviews_cant_score,
+        x = 'score', 
+        y = 'cant_reviews',
+        #orientation="h",
+        title="Cantidad de reviews por score",
+        color_discrete_sequence=["#22A6F6"] * len(reviews_cant_score),
+        template='plotly_white',
+    )
+    fig_reviews_cant_score.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )    
+#------------------------------------------------------------------------------#
+#        Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, middle_column, right_column = st.columns(3)
+
+    
+    #left_column.plotly_chart()
+    middle_column.plotly_chart(fig_reviews_cant_score, use_container_width=True)
+    #right_column.plotly_chart()
+    
+#------------------------------------------------------------------------------#
+#
     st.snow()
-
-
+#------------------------------------------------------------------------------#
 def kpi():
     st.header('KPIs')
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">1. Variación porcentual del volumen de ventas por mes año 2017</p>', unsafe_allow_html=True)
@@ -972,7 +981,6 @@ def kpi():
     #kpi_variacionVentas['dif_perc'] = round(kpi_variacionVentas['dif_perc'], 0)
 
     dif = kpi_variacionVentas['dif_perc'].map(lambda x:format(x,'.2%'))
-
     prom_variacion = kpi_variacionVentas['dif_perc'].mean()
 
 #--------------------------------------------------------------------------------------#
@@ -1150,9 +1158,7 @@ def kpi():
     col3.metric("Conversión", TC, "15%")
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***')
-#-------------------------------------------------------------------------------#
-#               5. kpi - PUNTUALIDAD DE LA ENTREGA
-#-------------------------------------------------------------------------------#  
+  
 #-------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
@@ -1265,9 +1271,5 @@ elif options == 'KPIs':
 #--------------------------------------------------------------------------------------#
 
 #--------------------------------------------------------------------------------------#
-
-
-
-
 
 #------------------------------------------------------------------------------------------#
