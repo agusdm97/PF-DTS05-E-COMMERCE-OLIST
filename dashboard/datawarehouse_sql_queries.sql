@@ -546,7 +546,7 @@ marketing - reviews
 SELECT count(*) as cant_reviews, score 
 FROM order_reviews
 GROUP BY score
-order by cant_puntuaciones desc;
+order by cant_reviews desc;
 
 
 
