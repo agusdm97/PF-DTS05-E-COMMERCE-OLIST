@@ -6,3 +6,4 @@ SQLAlchemy==1.4.46
 statsmodels==0.13.5
 cryptography==39.0.0
 xgboost==1.7.3
+prophet==1.1.2

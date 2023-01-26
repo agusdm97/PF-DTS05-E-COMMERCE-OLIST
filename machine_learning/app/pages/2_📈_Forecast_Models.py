@@ -4,8 +4,8 @@ import sqlalchemy as sql
 import pickle as pkl
 
 
-st.title("Forecasting Olist Sales")
-st.header("1.-  ARIMA")
+st.title("Forecasting Sales")
+tab1, tab2 = st.tabs(['ARIMA', 'Prophet'])
 
 engine = sql.create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
@@ -33,10 +33,19 @@ future_df = pd.concat([Sales_per_Week, future_dates_df])
 with open("app/total_model.pkl", "rb") as f:
     total_model = pkl.load(f)
 
-date = st.select_slider("select the date", options=future_dates)
+with open("app/model_prophet.pkl", "rb") as f:
+    model_prophet = pkl.load(f)
 
-future_df["forecast"] = total_model.predict(start=86, end=date, dynamic=True)
-prediction = st.line_chart(future_df[["sales", "forecast"]])  # .plot(figsize=(12, 8))
-st.write("the sales prediction is", future_df["forecast"].dropna())
+with tab1: 
+    date = st.select_slider("select the date", options=future_dates)
 
-st.header("2.-  Prophet")
+    future_df["forecast"] = total_model.predict(start=86, end=date, dynamic=True)
+    prediction = st.line_chart(future_df[["sales", "forecast"]])  # .plot(figsize=(12, 8))
+    st.write("the sales prediction is", future_df["forecast"].dropna())
+
+with tab2:
+    date = st.select_slider("select the date", options=future_dates)
+
+    future = model_prophet.make_future_dataframe(periods=date, freq='W')
+    forecast = model_prophet.predict(future)
+    predictions_tuned = st.line_chart(forecast.tail(date))
