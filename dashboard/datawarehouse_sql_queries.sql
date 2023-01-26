@@ -471,7 +471,7 @@ GROUP BY rango_peso
 /*
 marketing - reviews
 
--  Promedio de score por categoria
+-  TOP 15 Promedio de score por categoria
 
 */
 SELECT AVG(a.score) as prom_score, c.category_name AS categoria
@@ -496,6 +496,35 @@ group by business_segment
 order by volumen desc
 limit 15
 ;
+
+/*
+marketing - reviews
+
+-  top 20 Fechas que tiene el mayor # de cierres
+
+*/     
+
+;
+select won_date as fecha, count(*) as volumen
+from closed_deals
+group by won_date
+order by volumen desc
+limit 20
+;
+
+/*
+marketing - reviews
+
+- Volumen de cierre por lead type
+
+*/      
+select lead_type, count(*) as volumen
+from closed_deals
+group by lead_type
+order by volumen desc
+limit 10;
+
+
 
 
 

@@ -9,6 +9,7 @@ import datetime
 from PIL import Image
 import altair as alt
 import pymysql
+import time
 #------------------------------------------------------------------------------------------#
 st.set_page_config(page_title="Proyecto Final - Olist", page_icon='low_brightness:', layout="wide")
 #------------------------------------------------------------------------------------------#
@@ -59,9 +60,20 @@ st.sidebar.title('Navegador de Opciones')
 uploaded_file = st.sidebar.file_uploader('Cargue su DATASET aqui(Opcional)')
 
 options = st.sidebar.radio('Paginas', options=['Home', 'Panel General', 'Sellers-Customers', 'Method Payments-Delivery', 'Marketing-Reviews', 'KPIs'
-                            
+
+
 ])
 
+my_bar = st.progress(0)
+
+for percent_complete in range(100):
+    time.sleep(0.1)
+    my_bar.progress(percent_complete + 1)
+#---------------------------------------------------------------------------------------#
+with st.spinner('Wait for it...'):
+    time.sleep(5)
+st.success('Done!')
+#---------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------#
 # CARGA DE DATASET A DATAFRAME
@@ -98,50 +110,8 @@ st.markdown('***')
 #               - Categorizacion de productos x ingresos
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-ingresos_anio = pd.read_sql("""
-    select year(o.purchase_timestamp) AS anio, sum(oi.price) as total
-    from order_items oi
-    JOIN orders o ON(oi.order_id = o.order_id)
-    group by anio;""", con=engine)
 
-categoria_produ = pd.read_sql("""
-    select p.category_name, sum(oi.price) as total
-    from order_items oi
-    JOIN products p ON(oi.product_id = p.product_id)
-    group by p.category_name
-    order by total desc
-    limit 10""", con=engine)
-
-temp = categoria_produ.category_name
-val = round(categoria_produ['total'], 0)
-#--------------------------------------------------------------------------------------#
-# Visualizacion del total de ingresos sumado el valor del flete
-precios = round(dataset['price'].sum(), 2)
-freight = round(dataset['freight_value'].sum(), 2)
-total = precios + freight
-
-#---------------------------------------------------------------------------------------#
-# Visualizacion de solo el total de los fletes sin ingresos
-total_freight = round(dataset['freight_value'].sum(), 2)
-#---------------------------------------------------------------------------------------#
-# Visualizacion de solo el total de los ingresos sin fletes
-total_ingresos = round(dataset['price'].sum(), 2)
-#---------------------------------------------------------------------------------------#
-# Visualizacion de la cantidad de vendedores
-cant_vendedores = round(dataset['seller_id'].nunique(), 0)
-#--------------------------------------------------------------------------------------#
-cant_customers = round(dataset6['unique_id'].nunique(), 0)
-
-#--------------------------------------------------------------------------------------#
-# Visualizacion de la cantidad de ordenes de venta
-cant_ordenes = round(dataset['order_id'].count(), 0)
-#--------------------------------------------------------------------------------------#
-# Visualizacion de la cantidad de productos
-cant_productos = round(dataset4['product_id'].nunique(), 0)
-#--------------------------------------------------------------------------------------#
-# Visualizacion de la cantidad de productos
-cant_categorias = round(dataset4['category_name'].nunique(), 0)
-#--------------------------------------------------------------------------------------#
+#-------PARA GRAFICA DE MAPA-----------------------------------------------------------#
 vendedores_state = pd.read_sql("""
     select g.latitude, g.longitude, g.state, sum(oi.price) as total
     from order_items oi
@@ -155,29 +125,8 @@ longitude = vendedores_state['longitude']
 state = vendedores_state['state']
 total_vend = vendedores_state['total']
 #--------------------------------------------------------------------------------------#
-ventas_state = pd.read_sql("""
-    select g.state, sum(oi.price) as total
-    from order_items oi
-    JOIN orders o ON(oi.order_id = o.order_id)
-    JOIN customers c ON(c.customer_id = o.customer_id )
-    JOIN geolocations g ON(g.zip_code = c.zip_code)
-    group by g.state
-    order by total desc
-    limit 5; """, con=engine)
-
-estados = ventas_state['state']
-valores_state = ventas_state['total']
-
 #--------------------------------------------------------------------------------------#
-ingresos_ciudad = pd.read_sql("""
-    select g.city, sum(oi.price) as total
-    from order_items oi
-    JOIN orders o ON(oi.order_id = o.order_id)
-    JOIN customers c ON(c.customer_id = o.customer_id )
-    JOIN geolocations g ON(g.zip_code = c.zip_code)
-    group by g.city
-    order by total desc
-    limit 20;""", con=engine)
+
 #--------------------------PENDIENTE POR DEFINIR GRAFICA-------------------------------#
 ingresos_ST_ciudad = pd.read_sql("""
     select g.latitude, g.longitude, g.state, g.city, sum(oi.price) as ventas
@@ -188,55 +137,16 @@ ingresos_ST_ciudad = pd.read_sql("""
     order by ventas desc
     limit 20;""", con=engine)
 #--------------------------------------------------------------------------------------#
-clientes_estado = pd.read_sql("""
-    select g.state, count(c.customer_id) as nclientes
-    from customers c
-    JOIN geolocations g ON(c.zip_code = g.zip_code)
-    group by g.state
-    order by nclientes desc
-    limit 10;""", con=engine)
-
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-vendedores_estado = pd.read_sql("""
-    select g.state, count(s.seller_id) as nvendedores
-    from sellers s
-    JOIN geolocations g ON(s.zip_code = g.zip_code)
-    group by g.state
-    order by nvendedores desc
-    limit 10;""", con=engine)
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-ordenes_mes = pd.read_sql("""
-    select month(o.approved_at) as mes, sum(oi.price) as ingresos
-    from order_items oi
-    JOIN orders o ON(oi.order_id = o.order_id)
-    group by mes
-    order by mes;""", con=engine)
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-relacion_status = pd.read_sql("""
-    select year(purchase_timestamp) as anio, status, count(status) as total
-    from orders
-    where status = 'delivered' or status='canceled' or status='unavailable'
-    group by anio, status;""", con=engine)
-estatus = relacion_status['status']
-valores = relacion_status['total']
-
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-method_payment = pd.read_sql("""
-    select op.type, count(*) as total
-    from order_payments op
-    group by op.type
-    order by total desc;""", con=engine)
-
-tipo = method_payment['type']
-cantidad = method_payment['total']
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-
-
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #           2. KPIs
@@ -421,7 +331,20 @@ def Panel():
 #               - Total ingresos
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
+# Consulta del total de ingresos sumado el valor del flete
+    precios = round(dataset['price'].sum(), 2)
+    freight = round(dataset['freight_value'].sum(), 2)
+    total = precios + freight
+
 #---------------------------------------------------------------------------------------#
+# Cosulta de solo el total de los fletes sin ingresos
+    total_freight = round(dataset['freight_value'].sum(), 2)
+#---------------------------------------------------------------------------------------#
+# Consulta de solo el total de los ingresos sin fletes
+    total_ingresos = round(dataset['price'].sum(), 2)
+#---------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------#
+
     left_column, middle_column, right_column = st.columns(3)
     st.markdown('***')
     with left_column:
@@ -446,6 +369,15 @@ def Panel():
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #---------------------------------------------------------------------------------------#
+    # Visualizacion de la cantidad de vendedores
+    cant_vendedores = round(dataset['seller_id'].nunique(), 0)
+#--------------------------------------------------------------------------------------#
+    cant_customers = round(dataset6['unique_id'].nunique(), 0)
+#--------------------------------------------------------------------------------------#
+# Visualizacion de la cantidad de ordenes de venta
+    cant_ordenes = round(dataset['order_id'].count(), 0)
+#--------------------------------------------------------------------------------------#
+
     left_column, middle_column, right_column = st.columns(3)
     st.markdown('***')
     with left_column:
@@ -461,6 +393,12 @@ def Panel():
         st.subheader('Cantidad de Ordenes')
         st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_ordenes), unsafe_allow_html=True)
 
+#--------------------------------------------------------------------------------------#
+    # Visualizacion de la cantidad de productos
+    cant_productos = round(dataset4['product_id'].nunique(), 0)
+#--------------------------------------------------------------------------------------#
+# Visualizacion de la cantidad de productos
+    cant_categorias = round(dataset4['category_name'].nunique(), 0)
 #--------------------------------------------------------------------------------------#
 
     left_column, middle_column, right_column = st.columns(3)
@@ -484,10 +422,30 @@ def Panel():
 #               
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
+#           - Aplicacion de filtro
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    #x_axis_val = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.columns)
+    #y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.columns)
+    #col = st.color_picker('Seleccione color de la grafica')
+    #plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
+    #plot.update_traces(marker=dict(color=col))
+    #st.plotly_chart(plot)
+    
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    ingresos_anio = pd.read_sql("""
+        select year(o.purchase_timestamp) AS anio, sum(oi.price) as total
+        from order_items oi
+        JOIN orders o ON(oi.order_id = o.order_id)
+        group by anio
+        order by anio asc; """, con=engine)
+        
     st.markdown('***')
     line_chart = alt.Chart(ingresos_anio).mark_line().encode(
         y =  alt.Y('total', title='Ingresos($)'),
         x =  alt.X('anio', title='Año')
+        #x = x_axis_val
     ).properties(
         height=500, width=800,
         title="Ingresos por Año"
@@ -497,9 +455,16 @@ def Panel():
         titleFontSize=14,
         labelFontSize=12
     )
- 
     st.altair_chart(line_chart, use_container_width=True)
 
+    #opcion = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.anio)
+    #y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.total)
+    #col = st.color_picker('Seleccione color de la grafica')
+    #plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
+    #plot = st.altair_chart(ingresos_anio, x = opcion ,use_container_width=True)
+    #plot.update_traces(marker=dict(color=col))
+    #st.plotly_chart(plot) 
+    
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #           4. Dashboard visualizacion grafica de barras
@@ -508,6 +473,16 @@ def Panel():
 #               
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
+    ingresos_ciudad = pd.read_sql("""
+    select g.city, sum(oi.price) as total
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    JOIN customers c ON(c.customer_id = o.customer_id )
+    JOIN geolocations g ON(g.zip_code = c.zip_code)
+    group by g.city
+    order by total desc
+    limit 20;""", con=engine)
+
     fig_ingresos_ciudad = px.bar(
         ingresos_ciudad,
         x = 'total',
@@ -529,7 +504,18 @@ def Panel():
 #               
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    categoria_produ = pd.read_sql("""
+    select p.category_name, sum(oi.price) as total
+    from order_items oi
+    JOIN products p ON(oi.product_id = p.product_id)
+    group by p.category_name
+    order by total desc
+    limit 10""", con=engine)
+
+    temp = categoria_produ.category_name
+    val = round(categoria_produ['total'], 0)
+
     fig = px.funnel(categoria_produ, 
         x = val, 
         y = temp,
@@ -562,9 +548,21 @@ def Panel():
 #               
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
- 
+    ventas_state = pd.read_sql("""
+    select g.state, sum(oi.price) as total
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    JOIN customers c ON(c.customer_id = o.customer_id )
+    JOIN geolocations g ON(g.zip_code = c.zip_code)
+    group by g.state
+    order by total desc
+    limit 5; """, con=engine)
+
+    estados = ventas_state['state']
+    valores_state = ventas_state['total']
+
     fig = px.pie(values=valores_state, names=estados, title='Participacion de las Ventas por Estado', color_discrete_sequence=px.colors.sequential.RdBu)
-    
+#--------------------------------------------------------------------------------------#    
 
     left_column, middle_column, right_column = st.columns(3)
 
@@ -577,7 +575,7 @@ def Panel():
     with right_column:
         st.markdown('')
 
-
+    st.balloons()
 
 
 def Ventas(dataset):
@@ -620,14 +618,12 @@ def Ventas(dataset):
     right_column.plotly_chart(fig, use_container_width=True)
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           4. Opcion de Productos
-#               - Ventas
-#               - Productos
+#           
 #               
 #               
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-
+    st.snow()
 def Productos(categoria_produ):
     st.header('PRODUCTOS(Products)')
     #categoria_produ = pd.read_sql('select p.category_name, sum(oi.price) as total from order_items oi JOIN products p ON(oi.product_id = p.id) group by p.category_name order by total desc limit 20 ;', con=engine)
@@ -702,6 +698,14 @@ def Vendedores():
 #------------------------------------------------------------------------------#
 #       1. Grafica de Clientes por estado
 #------------------------------------------------------------------------------#
+    clientes_estado = pd.read_sql("""
+    select g.state, count(c.customer_id) as nclientes
+    from customers c
+    JOIN geolocations g ON(c.zip_code = g.zip_code)
+    group by g.state
+    order by nclientes desc
+    limit 10;""", con=engine)
+
     fig_clientes_estado = px.bar(
         clientes_estado,
         x = 'nclientes',
@@ -718,6 +722,13 @@ def Vendedores():
 #------------------------------------------------------------------------------#
 #       2. Grafica de Vendedores por estado
 #------------------------------------------------------------------------------#
+    vendedores_estado = pd.read_sql("""
+    select g.state, count(s.seller_id) as nvendedores
+    from sellers s
+    JOIN geolocations g ON(s.zip_code = g.zip_code)
+    group by g.state
+    order by nvendedores desc
+    limit 10;""", con=engine)
 
     fig_vendedores_estado = px.bar(
         vendedores_estado,
@@ -742,6 +753,13 @@ def Vendedores():
 #------------------------------------------------------------------------------#
 #       4. Grafica de ordenes agrupadas por mes
 #------------------------------------------------------------------------------#
+    ordenes_mes = pd.read_sql("""
+    select month(o.approved_at) as mes, sum(oi.price) as ingresos
+    from order_items oi
+    JOIN orders o ON(oi.order_id = o.order_id)
+    group by mes
+    order by mes;""", con=engine)
+
     fig_ordenes_mes = px.bar(
         ordenes_mes,
         x = 'mes', 
@@ -758,6 +776,14 @@ def Vendedores():
 #------------------------------------------------------------------------------#
 #       5. Grafica de pie
 #------------------------------------------------------------------------------#
+    relacion_status = pd.read_sql("""
+    select year(purchase_timestamp) as anio, status, count(status) as total
+    from orders
+    where status = 'delivered' or status='canceled' or status='unavailable'
+    group by anio, status;""", con=engine)
+    estatus = relacion_status['status']
+    valores = relacion_status['total']
+
     fig_pie = px.pie(values=valores, names=estatus, title='Relacion estado de ordenes agrupadas por año', color_discrete_sequence=px.colors.sequential.Viridis)
 #------------------------------------------------------------------------------#
 #      
@@ -770,6 +796,7 @@ def Vendedores():
     #middle_column.plotly_chart(fig, use_container_width=True)
     right_column.plotly_chart(fig_pie, use_container_width=True)
 
+    st.balloons()
 #-------------------------------------------------------------------------------#
 #              FUNCION Method Payments-Delivery
 #-------------------------------------------------------------------------------#
@@ -780,6 +807,15 @@ def Method():
 #------------------------------------------------------------------------------#
 #       1. Grafica de pie
 #------------------------------------------------------------------------------#
+    method_payment = pd.read_sql("""
+    select op.type, count(*) as total
+    from order_payments op
+    group by op.type
+    order by total desc;""", con=engine)
+
+    tipo = method_payment['type']
+    cantidad = method_payment['total']
+
     fig_pie = px.pie(values=cantidad, names=tipo, title='Número de pagos por tipo', color_discrete_sequence=px.colors.sequential.Inferno)
 #------------------------------------------------------------------------------#
 #      
@@ -938,7 +974,11 @@ def Method():
     left_column.plotly_chart(fig_delivery_rango, use_container_width=True) 
 #middle_column.plotly_chart(fig, use_container_width=True)
     right_column.plotly_chart(fig_pie_peso, use_container_width=True)
-  
+#------------------------------------------------------------------------------#
+# 
+# 
+# -----------------------------------------------------------------------------#  
+    st.balloons()
 def Marketing():
     st.header('Visualizacion de análisis de Marketing y Reviews')
     st.text('A continuación se observara los resultados del análisis')
@@ -1019,7 +1059,7 @@ def Marketing():
         y = 'categoria',
         orientation="h",
         title="Top 15 Score por categoria",
-        color_discrete_sequence=["#93F553"] * len(ingresos_ciudad),
+        color_discrete_sequence=["#93F553"] * len(reviews_score_prom),
         template='plotly_white',
     )
     fig_reviews_score_prom.update_layout(
@@ -1056,37 +1096,75 @@ def Marketing():
         plot_bgcolor = "rgba(0,0,0,0)",
         xaxis = dict(showgrid=False)
         )
-    
 #------------------------------------------------------------------------------#
-#       5. Grafica Productos entregado en un rango de dias
-#------------------------------------------------------------------------------#
-    
-
-    #cantidad_delivery = delivery_rango['cantidad']
-    #rangos = delivery_rango['rango_entregas']  
-
-    
-
-    
-#------------------------------------------------------------------------------#
-#       6. Ubicaciones de las graficas
+#        Ubicaciones de las graficas
 #------------------------------------------------------------------------------#
     left_column, right_column = st.columns(2)
+
     left_column.plotly_chart(fig_reviews_score_prom, use_container_width=True) 
     #middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.plotly_chart(fig_cierre, use_container_width=True)
-
-
+    right_column.plotly_chart(fig_cierre, use_container_width=True)    
 #------------------------------------------------------------------------------#
-#       6. Ubicaciones de las graficas
+#       5. Grafica top 20 Fechas que tiene el mayor # de cierres
 #------------------------------------------------------------------------------#
-    left_column, right_column = st.columns(2)
-    left_column.plotly_chart(fig_delivery_rango, use_container_width=True) 
-    #middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.plotly_chart(fig_pie_delivery, use_container_width=True)
+    cierre_volumen_fecha = pd.read_sql("""
+    select won_date as fecha, count(*) as volumen
+    from closed_deals
+    group by won_date
+    order by volumen desc
+    limit 20; """, con=engine) 
+
+    fig_cierre_volumen_fecha = px.bar(
+        cierre_volumen_fecha,
+        x = 'fecha', 
+        y = 'volumen',
+        #orientation="h",
+        title="Top 20 fechas volumen alto de cierre ",
+        color_discrete_sequence=["#ECF622"] * len(cierre_volumen_fecha),
+        template='plotly_white',
+    )
+    fig_marketing_origin.update_layout(
+        plot_bgcolor = "rgba(0,0,0,0)",
+        xaxis = dict(showgrid=False)
+        )
+
+      
+#------------------------------------------------------------------------------#
+#       6. Grafica volumen de cierre por lead type
+#------------------------------------------------------------------------------#
+    cierre_volumen_lead = pd.read_sql("""
+    select lead_type, count(*) as volumen
+    from closed_deals
+    group by lead_type
+    order by volumen desc
+    limit 10; """, con=engine)
+
+    line_chart = alt.Chart(cierre_volumen_lead).mark_line().encode(
+        y =  alt.Y('volumen', title='volumen(#)'),
+        x =  alt.X('lead_type', title='Lead Type')
+    ).properties(
+        height=400, width=400,
+        title="Volumen de cierre por lead type"
+    ).configure_title(
+        fontSize=16
+    ).configure_axis(
+        titleFontSize=14,
+        labelFontSize=12
+    )    
+
   
 
+#------------------------------------------------------------------------------#
+#        Ubicaciones de las graficas
+#------------------------------------------------------------------------------#
+    left_column, right_column = st.columns(2)
 
+    left_column.plotly_chart(fig_cierre_volumen_fecha, use_container_width=True) 
+    #middle_column.plotly_chart(fig, use_container_width=True)
+    right_column.altair_chart(line_chart, use_container_width=True)
+  
+
+    st.snow()
 
 
 def kpi():
@@ -1140,9 +1218,9 @@ def kpi():
     #    st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(pn), unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Positivas:", kpn, "90000")
-    col2.metric("Negativas",  nkpn, "-10000")
-    col3.metric("Objetivo", pn, "5%")
+    col1.metric("Positivas:", kpn, "81000")
+    col2.metric("Negativas",  nkpn, "-21400")
+    col3.metric("Objetivo", pn, "60%")
 
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***') 
@@ -1172,8 +1250,8 @@ def kpi():
     #    st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(porcentaje_clientes_fieles), unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Fidelidad:", num_clientes_fieles, "500")
-    col2.metric("Total Clientes",  num_total_clientes, "2500")
+    col1.metric("Fidelidad:", num_clientes_fieles, "17")
+    col2.metric("Total Clientes",  num_total_clientes, "1850")
     col3.metric("Objetivo", "0.92%", "5%")
 
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
@@ -1186,7 +1264,7 @@ def kpi():
     st.text('Objetivo: Medir la tasa de vendedores potenciales que se unen a la empresa')
 
     left_column, middle_column, right_column = st.columns(3)
-    st.markdown('***')
+    
     with left_column:
       st.subheader('Cant. Vendedores Interesados')
       st.text('Vendedores que desean ofrecer sus productos')
@@ -1205,8 +1283,8 @@ def kpi():
     #    st.markdown('<p style="color:#F3FF33;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(TC), unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns(3)
-    col1.metric("Interesados:", Vi, "10000")
-    col2.metric("Cierres",  Vc, "1500")
+    col1.metric("Interesados:", Vi, "9200")
+    col2.metric("Cierres",  Vc, "970")
     col3.metric("Conversión", TC, "15%")
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***')
@@ -1218,7 +1296,7 @@ def kpi():
     st.text('Objetivo: Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.')
 
     left_column, middle_column, right_column = st.columns(3)
-    st.markdown('***')
+    
     with left_column:
       st.subheader('Cant. Pedidos Entregados')
       st.text('Número de pedidos')
@@ -1239,7 +1317,7 @@ def kpi():
 
     col1, col2, col3 = st.columns(3)
     col1.metric("Entregados:", Te, "105000")
-    col2.metric("Puntualmente",  Ep, "95000")
+    col2.metric("Puntualmente",  Ep, "93800")
     col3.metric("% Puntualidad", Pe, "95%")
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***')
@@ -1248,7 +1326,7 @@ def kpi():
     st.text('Objetivo: Optimizar los tiempos de compra y envío.')
 
     left_column, middle_column, right_column = st.columns(3)
-    st.markdown('***')
+    
     with left_column:
       st.subheader('Cant. Pedidos Entregados')
       st.text('Número de pedidos')
