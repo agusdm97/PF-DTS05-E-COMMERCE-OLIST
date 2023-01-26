@@ -5,3 +5,4 @@ pandas==1.5.3
 SQLAlchemy==1.4.46
 statsmodels==0.13.5
 cryptography==39.0.0
+xgboost==1.7.3
