@@ -168,7 +168,6 @@ el total de ventas para hallar la variacion
 */
 SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));
 
-
 SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
     FROM (
         SELECT o.purchase_timestamp, sum(i.price) AS total

@@ -156,121 +156,12 @@ ingresos_ST_ciudad = pd.read_sql("""
 #               - Total ingresos
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPI
-#           A. Variación porcentual del volumen de ventas por mes
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-kpi_variacionVentas = pd.read_sql(""" 
-    SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
-    FROM (
-        SELECT o.purchase_timestamp, sum(i.price) AS total
-        FROM orders AS o
-        RIGHT JOIN order_items AS i ON (o.order_id = i.order_id)
-        WHERE o.status != "canceled" AND o.status != "unavailable"
-        GROUP BY o.order_id
-    ) AS s
-    GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
-    HAVING year(s.purchase_timestamp) = 2017
-    order by fecha asc ;""", con=engine)
 
-diferencia = kpi_variacionVentas['dif_perc'] = kpi_variacionVentas['total'].pct_change()
-#kpi_variacionVentas['dif_perc'] = round(kpi_variacionVentas['dif_perc'], 0)
 
-dif = kpi_variacionVentas['dif_perc'].map(lambda x:format(x,'.2%'))
+#--------------------------------------------------------------------------------------#
 
-prom_variacion = kpi_variacionVentas['dif_perc'].mean()
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPI
-#           B. Puntuacion neta del promotor
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-kpi_puntuacionPromotor = pd.read_sql(""" 
-    select score 
-    from order_reviews
-    where score > 3
-    """, con=engine)
-kpn = kpi_puntuacionPromotor.shape[0]
-#--------------------------------------------------------------------------------------#
-kpi_puntuacionPromotor = pd.read_sql(""" 
-select score 
-from order_reviews
-where score <= 3
-""", con=engine)
-nkpn = kpi_puntuacionPromotor.shape[0]
-#--------------------------------------------------------------------------------------#
-total_c = kpn + nkpn
-#--------------------------------------------------------------------------------------#
-pn = round(((kpn-nkpn)/total_c)*100 ,2)
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPI
-#           C. Fidelidad del cliente
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-df_customers = pd.read_csv("D:\PF-DTS05-E-COMMERCE-OLIST\data_warehouse\datasets\olist_customers_dataset.csv") #1
-df_orders = pd.read_csv("D:\PF-DTS05-E-COMMERCE-OLIST\data_warehouse\datasets\olist_orders_dataset.csv") #2
-df_merged_FC = pd.merge(df_customers, df_orders, on='customer_id') #3
-df_merged_FC.drop(columns=['customer_zip_code_prefix','customer_city', 'customer_state', 'order_approved_at', 'order_delivered_carrier_date', 'order_delivered_customer_date', 'order_estimated_delivery_date'], inplace=True) #4
-df_merged_FC['order_purchase_timestamp'] = pd.to_datetime(df_merged_FC['order_purchase_timestamp']) #5
-df_merged_FC['quarter'] =df_merged_FC['order_purchase_timestamp'].dt.quarter #6
-df_merged_FC['year'] = df_merged_FC['order_purchase_timestamp'].dt.year #7
-clientes_group = df_merged_FC.groupby(['customer_unique_id','quarter','year']).size().reset_index(name='num_compras') #8
-clientes_group['compro_en_trimestre'] = clientes_group['num_compras'] > 1 #9
-clientes_group['compro_en_trimestre_anterior'] = clientes_group.groupby("customer_unique_id")['compro_en_trimestre'].shift(1) #10
-clientes_fieles = clientes_group[(clientes_group['compro_en_trimestre'] == True) & (clientes_group['compro_en_trimestre_anterior'] == True)] #11
-num_clientes_fieles = len(clientes_fieles) #12 resultado de numero de clietes fieles
-num_total_clientes = len(clientes_group[clientes_group['compro_en_trimestre'] == True]) #13 resultado de numero total de clientes que compro en el trimestre
-porcentaje_clientes_fieles = round((num_clientes_fieles / num_total_clientes)*100,2) #14 resultado del porcentaje de fidelidad del cliente
-objetivo = (porcentaje_clientes_fieles + (porcentaje_clientes_fieles * 5) /100) 
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPI
-#           D. Tasa de Conversión
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-vendedores_interesados = pd.read_sql(""" 
-    select count(mql_id) as interesados
-    from marketing_qualified_leads;
-    """, con=engine)
-Vi = vendedores_interesados['interesados'][0]
-#--------------------------------------------------------------------------------------#
-vendedores_cerrados = pd.read_sql(""" 
-    select count(mql_id) as cerrados
-    from closed_deals;
-    """, con=engine)
-Vc = vendedores_cerrados['cerrados'][0]
-#--------------------------------------------------------------------------------------#
-TC = round((Vc/Vi)*100, 2)
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-#           2. KPI
-#           E. Puntualidad de la entrega
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-entregas_puntuales = pd.read_sql(""" 
-    select *
-    from orders
-    where estimated_delivery_date > delivered_customer_date 
-    having status = 'delivered';
-    """, con=engine)
-Ep = entregas_puntuales.shape[0]
-#--------------------------------------------------------------------------------------#  
-total_entregas = pd.read_sql(""" 
-    select * from orders;
-    """, con=engine)
-Te = total_entregas.shape[0]
-#--------------------------------------------------------------------------------------#
-Pe = round((Ep/Te)*100, 2)
-Pe
+
+
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #           2. KPI
@@ -279,16 +170,6 @@ Pe
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 
-
-
-
-
-
-
-
-
-
-
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
@@ -296,8 +177,6 @@ Pe
 #               
 #               
 #-------------------------------------------------------------------------------------#
-
-
 
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
@@ -578,113 +457,10 @@ def Panel():
     st.balloons()
 
 
-def Ventas(dataset):
-    st.header('Dataset')
-    #st.dataframe(dataset)
-    precios_promedio = (dataset.groupby(by=['Nombres']).sum()[['Facturado']].sort_values(by='Facturado'))
-    fig_precios_promedio = px.bar(
-        precios_promedio,
-        x = 'Facturado',
-        y = precios_promedio.index,
-        orientation="h",
-        title="Ventas Vendedor",
-        color_discrete_sequence=["#f5b932"] * len(precios_promedio),
-        template='plotly_white',
-    )
-    fig_precios_promedio.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-    )
 
-    vendedor_presupuesto = (dataset.groupby(by=['Nombres']).sum()[['Presupuesto']].sort_values(by='Presupuesto'))
-    fig_vendedor_presupuesto = px.bar(
-        vendedor_presupuesto,
-        x = vendedor_presupuesto.index,
-        y = 'Presupuesto',
-        orientation="h",
-        title="Presupuesto vendedor",
-        color_discrete_sequence=["#f6b960"] * len(vendedor_presupuesto),
-        template='plotly_white',
-    )
-    fig_vendedor_presupuesto.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-    )
-
-    
-
-    left_column, right_column = st.columns(2)
-    left_column.plotly_chart(fig_precios_promedio, use_container_width=True)
-    right_column.plotly_chart(fig, use_container_width=True)
 #--------------------------------------------------------------------------------------#
 #--------------------------------------------------------------------------------------#
-#           
-#               
-#               
-#--------------------------------------------------------------------------------------#
-#--------------------------------------------------------------------------------------#
-    st.snow()
-def Productos(categoria_produ):
-    st.header('PRODUCTOS(Products)')
-    #categoria_produ = pd.read_sql('select p.category_name, sum(oi.price) as total from order_items oi JOIN products p ON(oi.product_id = p.id) group by p.category_name order by total desc limit 20 ;', con=engine)
-    left_column, middle_column, right_column = st.columns(3)
-
-    with left_column:
-        st.subheader('Cantidad Productos')
-        st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_productos), unsafe_allow_html=True)
-
-    with middle_column:
-        st.markdown('')
-
-    with right_column:
-        st.subheader('Cantidad Categorías')
-        st.markdown('<p style="color:#33FFFF;font-size:24px;border-radius:2%;">{:,.2f}</p>'.format(cant_categorias), unsafe_allow_html=True)
-
-
-    fig1 = px.funnel(categoria_produ, 
-    x = val, 
-    y = temp,
-    #textposition = "inside",
-    title="Ingresos por Categoria",
-    color_discrete_sequence=["#33E3FF"] * len(categoria_produ),
-    #color = ["deepskyblue", "lightsalmon", "tan", "teal", "silver"],
-    #labels=(),
-    orientation="h",
-    opacity = 0.65
-
-    )
-    #fig.show()
-    fig1.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-    )
-#------------------------------------------------------------------------------#
-    fig2 = px.funnel(ordenes_mes, 
-    x = 'total', 
-    y = 'fecha',
-    #textposition = "inside",
-    title="Total Ordenes Agrupadas por Mes",
-    color_discrete_sequence=["#33E3FF"] * len(ordenes_mes),
-    #color = ["deepskyblue", "lightsalmon", "tan", "teal", "silver"],
-    #labels=(),
-    orientation="h",
-    opacity = 0.65
-
-    )
-    #fig.show()
-    fig2.update_layout(
-        plot_bgcolor = "rgba(0,0,0,0)",
-        xaxis = dict(showgrid=False)
-    )
-
-#------------------------------------------------------------------------------#
-#       - Ubicaciones de las graficas
-#------------------------------------------------------------------------------#
-
-    left_column, right_column = st.columns(3)
-    left_column.plotly_chart(fig1, use_container_width=True)
-    left_column.plotly_chart(fig2, use_container_width=True)
-   
+  
 #------------------------------------------------------------------------------#
 #-------------------------------------------------------------------------------#
 #              FUNCION Customers-Sellers
@@ -1152,7 +928,6 @@ def Marketing():
         labelFontSize=12
     )    
 
-  
 
 #------------------------------------------------------------------------------#
 #        Ubicaciones de las graficas
@@ -1173,6 +948,34 @@ def kpi():
     #st.subheader('Variación porcentual del volumen de ventas por mes año 2017')
     st.text('Objetivo: Evaluar aumento o disminucion de la variación porcentual del volumen de ventas por mes')
 
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPI
+#           A. Variación porcentual del volumen de ventas por mes
+#               
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    kpi_variacionVentas = pd.read_sql(""" 
+        SELECT s.purchase_timestamp AS fecha, sum(s.total) AS total
+        FROM (
+          SELECT o.purchase_timestamp, sum(i.price) AS total
+          FROM orders AS o
+         RIGHT JOIN order_items AS i ON (o.order_id = i.order_id)
+         WHERE o.status != "canceled" AND o.status != "unavailable"
+         GROUP BY o.order_id
+         ) AS s
+        GROUP BY year(s.purchase_timestamp), month(s.purchase_timestamp)
+        HAVING year(s.purchase_timestamp) = 2017
+        order by fecha asc ;""", con=engine)
+
+    diferencia = kpi_variacionVentas['dif_perc'] = kpi_variacionVentas['total'].pct_change()
+    #kpi_variacionVentas['dif_perc'] = round(kpi_variacionVentas['dif_perc'], 0)
+
+    dif = kpi_variacionVentas['dif_perc'].map(lambda x:format(x,'.2%'))
+
+    prom_variacion = kpi_variacionVentas['dif_perc'].mean()
+
+#--------------------------------------------------------------------------------------#
     left_column, middle_colum, right_column = st.columns(3)
 
     st.markdown('***')
@@ -1191,10 +994,31 @@ def kpi():
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
 
     st.markdown('***')
-#-------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------#
-#               2. kpi - PUNTUACION NETA DEL PROMOTOR
-#-------------------------------------------------------------------------------#
+
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPI
+#           B. Puntuacion neta del promotor
+#               
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    kpi_puntuacionPromotor = pd.read_sql(""" 
+        select score 
+        from order_reviews
+        where score > 3
+        """, con=engine)
+    kpn = kpi_puntuacionPromotor.shape[0]
+#--------------------------------------------------------------------------------------#
+    kpi_puntuacionPromotor = pd.read_sql(""" 
+        select score 
+        from order_reviews
+        where score <= 3
+        """, con=engine)
+    nkpn = kpi_puntuacionPromotor.shape[0]
+#--------------------------------------------------------------------------------------#
+    total_c = kpn + nkpn
+#--------------------------------------------------------------------------------------#
+    pn = round(((kpn-nkpn)/total_c)*100 ,2)
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">2. Puntuación neta del promotor</p>', unsafe_allow_html=True)
     st.text('Objetivo: Medir la satisfacción del cliente')
 
@@ -1224,9 +1048,29 @@ def kpi():
 
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***') 
-#-------------------------------------------------------------------------------#
-#               3. kpi - FIDELIDAD DEL CLIENTE
-#-------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPI
+#           C. Fidelidad del cliente
+#               
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    df_customers = pd.read_csv("D:\PF-DTS05-E-COMMERCE-OLIST\data_warehouse\datasets\olist_customers_dataset.csv") #1
+    df_orders = pd.read_csv("D:\PF-DTS05-E-COMMERCE-OLIST\data_warehouse\datasets\olist_orders_dataset.csv") #2
+    df_merged_FC = pd.merge(df_customers, df_orders, on='customer_id') #3
+    df_merged_FC.drop(columns=['customer_zip_code_prefix','customer_city', 'customer_state', 'order_approved_at', 'order_delivered_carrier_date', 'order_delivered_customer_date', 'order_estimated_delivery_date'], inplace=True) #4
+    df_merged_FC['order_purchase_timestamp'] = pd.to_datetime(df_merged_FC['order_purchase_timestamp']) #5
+    df_merged_FC['quarter'] =df_merged_FC['order_purchase_timestamp'].dt.quarter #6
+    df_merged_FC['year'] = df_merged_FC['order_purchase_timestamp'].dt.year #7
+    clientes_group = df_merged_FC.groupby(['customer_unique_id','quarter','year']).size().reset_index(name='num_compras') #8
+    clientes_group['compro_en_trimestre'] = clientes_group['num_compras'] > 1 #9
+    clientes_group['compro_en_trimestre_anterior'] = clientes_group.groupby("customer_unique_id")['compro_en_trimestre'].shift(1) #10
+    clientes_fieles = clientes_group[(clientes_group['compro_en_trimestre'] == True) & (clientes_group['compro_en_trimestre_anterior'] == True)] #11
+    num_clientes_fieles = len(clientes_fieles) #12 resultado de numero de clietes fieles
+    num_total_clientes = len(clientes_group[clientes_group['compro_en_trimestre'] == True]) #13 resultado de numero total de clientes que compro en el trimestre
+    porcentaje_clientes_fieles = round((num_clientes_fieles / num_total_clientes)*100,2) #14 resultado del porcentaje de fidelidad del cliente
+    objetivo = (porcentaje_clientes_fieles + (porcentaje_clientes_fieles * 5) /100) 
+
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">3. Fidelidad del Cliente</p>', unsafe_allow_html=True)
     st.text('Objetivo: Medir la tasa de clientes que vuelven a comprar dentro de un periodo determinado')
 
@@ -1257,9 +1101,27 @@ def kpi():
 #---------------FINALIZA EL LIMITE DE CADA KPI----------------------------------#
     st.markdown('***')
 #-------------------------------------------------------------------------------#
-#-------------------------------------------------------------------------------#
-#               4. kpi - TASA DE CONVERSION
-#-------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPI
+#           D. Tasa de Conversión
+#               
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    vendedores_interesados = pd.read_sql(""" 
+    select count(mql_id) as interesados
+    from marketing_qualified_leads;
+    """, con=engine)
+    Vi = vendedores_interesados['interesados'][0]
+#--------------------------------------------------------------------------------------#
+    vendedores_cerrados = pd.read_sql(""" 
+    select count(mql_id) as cerrados
+    from closed_deals;
+    """, con=engine)
+    Vc = vendedores_cerrados['cerrados'][0]
+#--------------------------------------------------------------------------------------#
+    TC = round((Vc/Vi)*100, 2)
+
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">4. Tasa de Conversión</p>', unsafe_allow_html=True)
     st.text('Objetivo: Medir la tasa de vendedores potenciales que se unen a la empresa')
 
@@ -1292,6 +1154,29 @@ def kpi():
 #               5. kpi - PUNTUALIDAD DE LA ENTREGA
 #-------------------------------------------------------------------------------#  
 #-------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+#           2. KPI
+#           E. Puntualidad de la entrega
+#               
+#--------------------------------------------------------------------------------------#
+#--------------------------------------------------------------------------------------#
+    entregas_puntuales = pd.read_sql(""" 
+    select *
+    from orders
+    where estimated_delivery_date > delivered_customer_date 
+    having status = 'delivered';
+    """, con=engine)
+    Ep = entregas_puntuales.shape[0]
+#--------------------------------------------------------------------------------------#  
+    total_entregas = pd.read_sql(""" 
+    select * from orders;
+    """, con=engine)
+    Te = total_entregas.shape[0]
+#--------------------------------------------------------------------------------------#
+    Pe = round((Ep/Te)*100, 2)
+    Pe
+
     st.markdown(f'<p style="color:#F3FF33;font-size:18px;border-radius:2%;">5. Puntualidad de la Entrega</p>', unsafe_allow_html=True)
     st.text('Objetivo: Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas.')
 
@@ -1353,129 +1238,9 @@ def kpi():
     #col2.metric("Wind", "9 mph", "-8%")
     #col3.metric("Humidity", "86%", "4%")
 #-------------------------------------------------------------------------------#
-@st.cache
-def data_header(dataset):
-    st.header('Data Header')
-    st.write(dataset.head(10))
-#-------------------------------------------------------------------------------#
-#               DEMO
-#-------------------------------------------------------------------------------#
-    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=ingresos_anio.columns)
-    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=ingresos_anio.columns)
-    col = st.color_picker('Seleccione color de la grafica')
-    plot = px.scatter(ingresos_anio, x=x_axis_val, y=y_axis_val)
-    plot.update_traces(marker=dict(color=col))
-    st.plotly_chart(plot)
-#-------------------------------------------------------------------------------#
-@st.cache
-def plot(dataset):
-    fig, ax=plt.subplot(1,1)
-    ax.scatter(x=dataset['country'], y=dataset['points'])
-    ax.set_xlabel('pais')
-    ax.set_ylabel('puntos')
-    st.pyplot(fig)
-#-------------------------------------------------------------------------------#
-@st.cache
-def lines():
-    chart_data = pd.DataFrame(
-    np.random.randn(20, 3),
-    columns=['a', 'b', 'c'])
-    st.line_chart(chart_data)
-#-------------------------------------------------------------------------------#
+    st.balloons()
 
-def lines1():
-    line_chart = alt.Chart(dataset).mark_line().encode(
-        y =  alt.Y('Facturado', title='Precios($)'),
-        x =  alt.X( 'Fecha', title='Pais')
-    ).properties(
-        height=500, width=800,
-        title="Vinos del Mundo"
-    ).configure_title(
-        fontSize=16
-    ).configure_axis(
-        titleFontSize=14,
-        labelFontSize=12
-    )
- 
-    st.altair_chart(line_chart, use_container_width=True)
 
-#-------------------------------------------------------------------------------#
-@st.cache
-def interactive_plot(dataset):
-    x_axis_val = st.selectbox('Seleccione X-Eje Value', options=dataset.columns)
-    y_axis_val = st.selectbox('Seleccione Y-Eje Value', options=dataset.columns)
-    col = st.color_picker('Seleccione color de la grafica')
-    plot = px.scatter(dataset, x=x_axis_val, y=y_axis_val)
-    plot.update_traces(marker=dict(color=col))
-    st.plotly_chart(plot)
-#-------------------------------------------------------------------------------#
-def barras():
-    st.subheader('Grafico de Barras')
-    source = (dataset)
-    bar_chart = alt.Chart(source).mark_bar().encode(
-        y = 'Facturado',
-        x = 'Nombres',
-    )
-    st.altair_chart(bar_chart, use_container_width=True)
-#-------------------------------------------------------------------------------#
-@st.cache
-def stats(dataset):
-    st.header('Data Statistics')
-    st.write(dataset.describe())
-#--------------------------------------------------------------------------------------#
-#               DEMO 
-#--------------------------------------------------------------------------------------#
-# -- Create three columns
-    col1, col2, col3 = st.columns([5, 5, 20])
-# -- Put the image in the middle column
-# - Commented out here so that the file will run without having the image downloaded
-#with col2:
-# st.image("streamlit.png", width=200)
-# -- Put the title in the last column
-    with col3:
-        st.title("Streamlit Demo")
-# -- We use the first column here as a dummy to add a space to the left
-# -- Get the user input
-    year_col, continent_col, log_x_col = st.columns([5, 5, 5])
-    with year_col:
-        year_choice = st.slider(
-        "What year would you like to examine?",
-        min_value=1952,
-        max_value=2007,
-        step=5,
-        value=2007,
-    )
-    with continent_col:
-        continent_choice = st.selectbox(
-        "What continent would you like to look at?",
-        ("All", "BA", "MG", "PR", "RJ", "SP"),
-    )
-    with log_x_col:
-        log_x_choice = st.checkbox("Log X Axis?")
-
-# -- Read in the data
-
-    df = px.data.gapminder()
-# -- Apply the year filter given by the user
-    filtered_df = df[(df.year == year_choice)]
-# -- Apply the continent filter
-    if continent_choice != "All":
-        filtered_df = filtered_df[filtered_df.continent == continent_choice]
-
-# -- Create the figure in Plotly
-    fig = px.scatter(
-        filtered_df,
-        x="gdpPercap",
-        y="lifeExp",
-        size="pop",
-        color="continent",
-        hover_name="country",
-        log_x=log_x_choice,
-        size_max=60,
-    )
-    fig.update_layout(title="GDP per Capita vs. Life Expectancy")
-# -- Input the Plotly chart to the Streamlit interface
-    st.plotly_chart(fig, use_container_width=True)
 #-------------------------------------------------------------------------------#
 
 
@@ -1498,31 +1263,7 @@ elif options == 'KPIs':
     st.text('Bienvenidos')
     kpi()
 #--------------------------------------------------------------------------------------#
-elif options == 'Data Header':
-    st.text('Despliegue de los primeros 10 registros')
-    data_header(dataset)
-elif options == 'plot':
-    st.text('Grafico de puntos')
-    plot(dataset)
-elif options == 'lineas':
-    st.text('Grafico de lineas')
-    lines()
-elif options == 'Grafica Interactiva':
-    st.text('Grafico Interactivo')
-    interactive_plot(dataset)
-elif options == 'Barras':
-    st.text('Grafico de Barras')
-    barras()
-elif options == 'Lineas':
-    st.text('Grafico de Lineas')
-    lines1()
 
-elif options == 'Ventas':
-    st.text('Podemos Observar el Dataset')
-    Ventas(dataset)
-elif options == 'Productos':
-    st.text('Visualizacion de Graficas')
-    Productos(categoria_produ)
 #--------------------------------------------------------------------------------------#
 
 
