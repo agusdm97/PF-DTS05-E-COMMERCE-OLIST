@@ -9,7 +9,7 @@ st.write("# Title")
 st.sidebar.header("Home")
 st.sidebar.write("BIENVENIDOS")
 
-image = Image.open('dashboard\src\Olist1.png')
+image = Image.open('src/Olist1.png')
 st.image(image, caption='', width=200)
 #--------------------------------------------------------------------------------------#
 st.title(":clipboard: Proyecto Final - Olist Dashboard") 
@@ -29,7 +29,7 @@ with right_column:
 
 # Que es Olist (Video)
 st.header('Que es Olist?')
-video_file = open('D:\PF-DTS05-E-COMMERCE-OLIST\dashboard\src\Olist.mp4', 'rb')
+video_file = open('src/Olist.mp4', 'rb')
 video_bytes = video_file.read()
 
 st.video(video_bytes)
