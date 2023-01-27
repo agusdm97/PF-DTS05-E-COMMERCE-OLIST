@@ -59,17 +59,19 @@ with tab2:
     st.write('Puedes:')
     
     usuario2 = st.selectbox('Elegir un usuario', 
-    ['432aa6200ee9673be90863a912dc91dc', 'fd8ccc89be43894d2553494c71a61fd8', 'dd8c09f1b309c9ffc302c745550a9ff3', 'dd8c09f1b309c9ffc302c745550a9ff3'])
+    ['ff922bdd6bafcdf99cb90d7f39cea5b3', 'fd8ccc89be43894d2553494c71a61fd8', 'dd8c09f1b309c9ffc302c745550a9ff3', 'dd8c09f1b309c9ffc302c745550a9ff3'])
     
     st.write('o')
 
     usuario1 = st.text_input("Ingrese el id del usuario.")
     
     btn2 = st.button("**Predecir**") 
-
+    top_five_ranked = pd.read_pickle('app/recomendacion_colaborativa.pkl')
     def recommend_products2(usuario):
-        return usuario
-
+        
+        
+        return top_five_ranked.loc[top_five_ranked['unique_id'] == usuario]
+    
     try:
         if btn2:
         
