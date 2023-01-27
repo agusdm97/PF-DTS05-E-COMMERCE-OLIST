@@ -7,6 +7,8 @@ import plotly.express as px
 st.set_page_config(page_title="KPIs", page_icon="🧮", layout="wide")
 
 st.sidebar.header("KPIs")
+st.header('Key Performance Indicator')
+st.subheader('Indicadores Clave de desempeño')
 st.sidebar.write(
     """Herramientas para medir el desempeño y el progreso de Olist
                 en relación a sus objetivos estratégicos."""
