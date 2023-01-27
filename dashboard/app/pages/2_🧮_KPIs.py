@@ -21,9 +21,6 @@ engine = sql.create_engine(
 )
 
 
-st.title(":mag_right: KPIs")
-
-
 # KPI Variación porcentual del volumen de ventas por mes (VVV)
 st.markdown("---")
 st.markdown("#### Variación porcentual del volumen de ventas (VVV)")
