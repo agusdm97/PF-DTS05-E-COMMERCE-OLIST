@@ -7,7 +7,10 @@ import plotly.express as px
 st.set_page_config(page_title="KPIs", page_icon="🧮", layout="wide")
 
 st.sidebar.header("KPIs")
-st.sidebar.write("ACA VA UN TEXTO EXPLICATIVO SOBRE LA PAGG")
+st.sidebar.write(
+    """Herramientas para medir el desempeño y el progreso de Olist
+                en relación a sus objetivos estratégicos."""
+)
 
 # Conexión con el data warehouse
 engine = sql.create_engine(
@@ -21,9 +24,9 @@ st.title(":mag_right: KPIs")
 # KPI Variación porcentual del volumen de ventas por mes (VVV)
 st.markdown("---")
 st.markdown("#### Variación porcentual del volumen de ventas (VVV)")
-st.text(
-    "Objetivo: Evaluar aumento o disminución de la variación porcentual del volumen de ventas por mes"
-)
+st.text("Objetivo: Evaluar el cambio de porcentual de las ventas por mes")
+st.text("Frecuencia de evaluación: Mensual")
+st.text("Valor objetivo: 10%")
 
 kpi_vvv = pd.read_sql(
     """ 
@@ -66,6 +69,8 @@ with right_column:
 st.markdown("---")
 st.markdown("#### Puntuación neta del promotor (PN)")
 st.text("Objetivo: Medir la satisfacción del cliente")
+st.text("Frecuencia de evaluación: Trimestral")
+st.text("Valor objetivo: 60%")
 
 kpi_pn = pd.read_sql(
     """ 
@@ -122,6 +127,8 @@ with right_column:
 st.markdown("---")
 st.markdown("#### Fidelidad del Cliente (FC)")
 st.text("Objetivo: Medir la tasa de clientes que vuelven a comprar")
+st.text("Frecuencia de evaluación: Trimestral")
+st.text("Valor objetivo: 5%")
 
 kpi_fc = pd.read_sql(
     sql=""" 
@@ -218,7 +225,11 @@ with right_column:
 # KPI Tasa de Conversión (TC)
 st.markdown("---")
 st.markdown("#### Tasa de Conversión (TC)")
-st.text("Objetivo: Medir la tasa de vendedores potenciales que se unen a la empresa")
+st.text(
+    "Objetivo: Determinar la cantidad vendedores potenciales que se unen a la empresa"
+)
+st.text("Frecuencia de evaluación: Trimestral")
+st.text("Valor objetivo: 15%")
 kpi_tc = pd.read_sql(
     """ 
     SELECT 
@@ -281,9 +292,9 @@ with right_column:
 # KPI Puntualidad de la entrega (PE)
 st.markdown("---")
 st.markdown("#### Puntualidad de la Entrega (PE)")
-st.text(
-    "Objetivo: Medir el porcentaje de entregas que se realizan a tiempo en relación con el número total de entregas."
-)
+st.text("Objetivo: Medir el porcentaje de entregas que se realizan a tiempo.")
+st.text("Frecuencia de evaluación: Mensual")
+st.text("Valor objetivo: 95%")
 
 kpi_pe = pd.read_sql(
     """ 
@@ -339,6 +350,8 @@ with right_column:
 st.markdown("---")
 st.markdown("#### Tiempo total del proceso (TTP)")
 st.text("Objetivo: Optimizar los tiempos de compra y envío.")
+st.text("Frecuencia de evaluación: Mensual")
+st.text("Valor objetivo: 8 días")
 
 kpi_ttp = pd.read_sql(
     sql="""
