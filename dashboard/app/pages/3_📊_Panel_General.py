@@ -18,12 +18,7 @@ engine = create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
 )
 
-# df_order_items = pd.read_sql("order_items", con=engine)
-# df_products = pd.read_sql("products", con=engine)
-# df_customers = pd.read_sql("customers", con=engine)
-
 tab_ventas, tab_clientes, tab_vendedores = st.tabs(["Ventas", "Clientes", "Vendedores"])
-
 
 with tab_ventas:
 
