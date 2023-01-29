@@ -5,7 +5,7 @@ import streamlit as st
 import plotly.express as px
 import altair as alt
 import pymysql
-
+import time
 
 st.set_page_config(page_title="Sellers - Customers", page_icon="📈", layout="wide")
 st.sidebar.header("Sellers & Customers")
