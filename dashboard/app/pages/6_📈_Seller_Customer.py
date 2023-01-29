@@ -1,15 +1,11 @@
 # ----LIBRERIAS--------------------------------------------------------------------------------------#
 import sqlalchemy as sql
 import pandas as pd
-import numpy as np
 import streamlit as st
-import matplotlib.pylab as plt
 import plotly.express as px
-import datetime
-from PIL import Image
 import altair as alt
 import pymysql
-import time
+
 
 st.set_page_config(page_title="Sellers - Customers", page_icon="📈", layout="wide")
 st.sidebar.header("Sellers & Customers")
