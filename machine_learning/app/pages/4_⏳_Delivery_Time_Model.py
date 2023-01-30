@@ -1,30 +1,54 @@
 import streamlit as st
 import pandas as pd
 import pickle as pkl
+import sqlalchemy as sql
 from datetime import date, datetime
 from xgboost.sklearn import XGBRegressor
 
 st.header("4.-Delivery Time Model")
+
+engine = sql.create_engine(
+    "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
+)
+
+DF = pd.read_sql(
+    "SELECT zip_code, latitude, longitude FROM data_warehouse_olist.geolocations;",
+    con=engine,
+)
 
 st.write(
     """Este modelo tiene por finalidad estimar la cantidad de días de espera que tomará en llegar 
 un producto, contados a partir de que el cliente lo compra."""
 )
 st.write("""Ingrese los siguientes valores para calcular:""")
-# st.write("* Zip Code del comprador: número entero")
-# st.write("* Zip Code del vendedor: número entero")
-# st.write("* Día en la que realizó la compra: Seleccione la fecha en formato AAAA/MM/DD")
-# st.write("* Valor del flete: numero decimal")
-# st.write("* Peso del producto: el peso en gramos (numero entero)")
 
 
-zip_comprador = st.number_input("Zip code del comprador", value=1000)
-# st.write(type(zip_comprador))
+zip_comprador = st.number_input("Zip code del comprador", min_value=1001, value=1001)
+# Filtering the dataframe DF by zip_code and then getting the latitude and longitude of the zip code.
+filtro_comprador = DF["zip_code"] == zip_comprador
+lat_comp = DF[filtro_comprador]["latitude"].values[0]
+long_comp = DF[filtro_comprador]["longitude"].values[0]
 
-zip_vendedor = st.number_input("Zip code del vendedor", value=1000)
+# Test mode
+# st.write(lat_comp)
+# st.write(type(lat_comp))
+# st.write(type(long_comp))
+
+zip_vendedor = st.number_input("Zip code del vendedor", min_value=1001, value=1001)
+filtro_vendedor = DF["zip_code"] == zip_vendedor
+lat_vend = DF[filtro_vendedor]["latitude"].values[0]
+long_vend = DF[filtro_vendedor]["longitude"].values[0]
 # st.write(type(zip_vendedor))
 
-dia_compra = st.date_input("Día en la que realizó la compra")
+start_date = date(2017, 12, 31)
+max_date = date(2018, 12, 31)
+min_date = date(2016, 6, 1)
+dia_compra = st.date_input(
+    "Día en la que realizó la compra",
+    value=start_date,
+    min_value=min_date,
+    max_value=max_date,
+)
 fecha_completa = datetime.combine(dia_compra, datetime.min.time())
 timestamp = fecha_completa.timestamp()
 
@@ -36,15 +60,17 @@ peso = st.number_input("Peso del producto", value=1)
 # st.write(timestamp)
 
 list = pd.DataFrame(
-    [[zip_comprador], [zip_comprador], [timestamp], [flete], [peso]]
+    [[lat_comp], [long_comp], [lat_vend], [long_vend], [timestamp], [flete], [peso]]
 ).transpose()
 list.rename(
     columns={
-        0: "zip_comprador",
-        1: "zip_vendedor",
-        2: "dia_compra",
-        3: "flete",
-        4: "peso",
+        0: "lat_comp",
+        1: "long_comp",
+        2: "lat_vend",
+        3: "long_vend",
+        4: "dia_compra",
+        5: "flete",
+        6: "peso",
     },
     inplace=True,
 )
