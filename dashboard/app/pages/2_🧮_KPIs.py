@@ -1,5 +1,5 @@
 import streamlit as st
-import sqlalchemy as sql
+from sqlalchemy import create_engine
 import pandas as pd
 import plotly.express as px
 
@@ -8,7 +8,7 @@ st.set_page_config(page_title="KPIs", page_icon="🧮", layout="wide")
 
 st.sidebar.header("KPIs")
 st.title(":mag_right: Visualización de Datos KPIs")
-st.subheader('Key Performance Indicator - (Indicadores Clave de desempeño)')
+st.subheader("Key Performance Indicator - (Indicadores Clave de desempeño)")
 
 st.sidebar.write(
     """Herramientas para medir el desempeño y el progreso de Olist
@@ -16,7 +16,7 @@ st.sidebar.write(
 )
 
 # Conexión con el data warehouse
-engine = sql.create_engine(
+engine = create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
 )
 
@@ -24,7 +24,7 @@ engine = sql.create_engine(
 # KPI Variación porcentual del volumen de ventas por mes (VVV)
 st.markdown("---")
 st.markdown("#### Variación porcentual del volumen de ventas (VVV)")
-st.text("Objetivo: Evaluar el cambio de porcentual de las ventas por mes")
+st.text("Objetivo: Evaluar el cambio de porcentual de las ventas")
 st.text("Frecuencia de evaluación: Mensual")
 st.text("Valor objetivo: 10%")
 
@@ -113,6 +113,7 @@ with middle_column:
         label="Porcentaje Calificaciones Negativas",
         value=format(pct_act_rn, ".2%"),
         delta=format(pct_act_rn - pct_ant_rn, ".2%"),
+        delta_color="inverse",
     )
 
 with right_column:
@@ -123,7 +124,7 @@ with right_column:
     )
 
 
-# KPI Fidelidad del cliente
+# KPI Fidelidad del cliente (FC)
 st.markdown("---")
 st.markdown("#### Fidelidad del Cliente (FC)")
 st.text("Objetivo: Medir la tasa de clientes que vuelven a comprar")
@@ -292,7 +293,7 @@ with right_column:
 # KPI Puntualidad de la entrega (PE)
 st.markdown("---")
 st.markdown("#### Puntualidad de la Entrega (PE)")
-st.text("Objetivo: Medir el porcentaje de entregas que se realizan a tiempo.")
+st.text("Objetivo: Medir el porcentaje de entregas que se realizan a tiempo")
 st.text("Frecuencia de evaluación: Mensual")
 st.text("Valor objetivo: 95%")
 
@@ -349,7 +350,7 @@ with right_column:
 # KPI: Tiempo total del proceso (TTP)
 st.markdown("---")
 st.markdown("#### Tiempo total del proceso (TTP)")
-st.text("Objetivo: Optimizar los tiempos de compra y envío.")
+st.text("Objetivo: Optimizar los tiempos de compra y envío")
 st.text("Frecuencia de evaluación: Mensual")
 st.text("Valor objetivo: 8 días")
 
@@ -382,7 +383,7 @@ with graf_col:
 
 with kpi_col:
     st.metric(
-        label="Puntualidad de Entrega",
+        label="Tiempo total promedio",
         value=round(float(kpi_ttp.loc[0, "tiempo_prom"]), 2),
         delta=round(
             float(kpi_ttp.loc[0, "tiempo_prom"] - kpi_ttp.loc[1, "tiempo_prom"]), 2
