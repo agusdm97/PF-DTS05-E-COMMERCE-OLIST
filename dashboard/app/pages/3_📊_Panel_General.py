@@ -33,6 +33,7 @@ with tab_ventas:
                 sum(oi.price) AS total
             FROM order_items AS oi
             JOIN orders AS o ON(oi.order_id = o.order_id)
+            WHERE o.purchase_timestamp < date("2018-09-01")
             GROUP BY o.order_id
             ORDER BY o.purchase_timestamp;
             """,
@@ -53,6 +54,7 @@ with tab_ventas:
         st.plotly_chart(fig, use_container_width=True)
 
     with col_categorias:
+
         df_categorias = pd.read_sql(
             """
             SELECT 
@@ -65,7 +67,6 @@ with tab_ventas:
             LIMIT 5;""",
             con=engine,
         )
-
         fig = px.bar(
             df_categorias,
             x="categoria",
@@ -74,70 +75,109 @@ with tab_ventas:
         )
         st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
+
 with tab_clientes:
-    df_customers = pd.read_sql(
-        sql="""
-        SELECT 
-            count(c.unique_id) AS weight,
-            g.latitude AS latitude,
-            g.longitude AS longitude
-        FROM customers AS c
-        LEFT JOIN geolocations AS g ON (c.zip_code = g.zip_code)
-        GROUP BY g.latitude, g.longitude;
-    """,
-        con=engine,
-    )
 
-    view = pdk.data_utils.compute_view(df_customers[["longitude", "latitude"]])
-    view.zoom = 3
-    view.pitch = 30
+    col_graph, col_fig = st.columns([3, 2])
+    with col_graph:
 
-    st.pydeck_chart(
-        pdk.Deck(
-            map_style="dark",
-            initial_view_state=view,
-            tooltip=True,
-            layers=[
-                pdk.Layer(
-                    type="HeatmapLayer",
-                    data=df_customers,
-                    get_position="[longitude, latitude]",
-                    get_weight="weight",
-                )
-            ],
+        df_customers = pd.read_sql(
+            sql="""
+            SELECT 
+                count(c.unique_id) AS weight,
+                g.latitude AS latitude,
+            	g.longitude AS longitude,
+            	min(g.state) AS estado
+            FROM customers AS c
+            LEFT JOIN geolocations AS g ON (c.zip_code = g.zip_code)
+            GROUP BY g.latitude, g.longitude;
+        """,
+            con=engine,
         )
-    )
+
+        view = pdk.data_utils.compute_view(df_customers[["longitude", "latitude"]])
+        view.zoom = 3.3
+        view.pitch = 30
+
+        st.pydeck_chart(
+            pdk.Deck(
+                map_style="dark",
+                initial_view_state=view,
+                tooltip=True,
+                layers=[
+                    pdk.Layer(
+                        type="HeatmapLayer",
+                        data=df_customers,
+                        get_position="[longitude, latitude]",
+                        get_weight="weight",
+                    )
+                ],
+            ),
+            use_container_width=True,
+        )
+
+    with col_fig:
+        fig = px.bar(
+            data_frame=df_customers.groupby(by="estado")
+            .sum()
+            .reset_index()
+            .sort_values("weight", ascending=False)
+            .head(5),
+            x="estado",
+            y="weight",
+            title="Top 5 de estados por cantidad de clientes",
+            labels={"weight": "Cantidad clientes", "estado": "Estado"},
+        )
+        st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
 with tab_vendedores:
-    df_sellers = pd.read_sql(
-        sql="""
-        SELECT 
-            count(s.seller_id) AS weight,
-            g.latitude AS latitude,
-            g.longitude AS longitude
-        FROM sellers AS s
-        LEFT JOIN geolocations AS g ON (s.zip_code = g.zip_code)
-        GROUP BY g.latitude, g.longitude;
-    """,
-        con=engine,
-    )
 
-    view = pdk.data_utils.compute_view(df_sellers[["longitude", "latitude"]])
-    view.zoom = 3
-    view.pitch = 30
-
-    st.pydeck_chart(
-        pdk.Deck(
-            map_style="dark",
-            initial_view_state=view,
-            tooltip=True,
-            layers=[
-                pdk.Layer(
-                    type="HeatmapLayer",
-                    data=df_sellers,
-                    get_position="[longitude, latitude]",
-                    get_weight="weight",
-                )
-            ],
+    col_graph, col_fig = st.columns([3, 2])
+    with col_graph:
+        df_sellers = pd.read_sql(
+            sql="""
+            SELECT 
+                count(s.seller_id) AS weight,
+                g.latitude AS latitude,
+                g.longitude AS longitude,
+                min(g.state) AS estado
+            FROM sellers AS s
+            LEFT JOIN geolocations AS g ON (s.zip_code = g.zip_code)
+            GROUP BY g.latitude, g.longitude;
+        """,
+            con=engine,
         )
-    )
+
+        view = pdk.data_utils.compute_view(df_sellers[["longitude", "latitude"]])
+        view.zoom = 3.3
+        view.pitch = 30
+
+        st.pydeck_chart(
+            pdk.Deck(
+                map_style="dark",
+                initial_view_state=view,
+                tooltip=True,
+                layers=[
+                    pdk.Layer(
+                        type="HeatmapLayer",
+                        data=df_sellers,
+                        get_position="[longitude, latitude]",
+                        get_weight="weight",
+                    )
+                ],
+            )
+        )
+
+    with col_fig:
+        fig = px.bar(
+            data_frame=df_sellers.groupby(by="estado")
+            .sum()
+            .reset_index()
+            .sort_values("weight", ascending=False)
+            .head(5),
+            x="estado",
+            y="weight",
+            title="Top 5 de estados por cantidad de vendedores",
+            labels={"weight": "Cantidad vendedores", "estado": "Estado"},
+        )
+        st.plotly_chart(figure_or_data=fig, use_container_width=True)
