@@ -40,7 +40,7 @@ with tab_metodos:
             values="cantidad",
             names="type",
             title="Proporción por método de pago",
-            color_discrete_sequence=px.colors.sequential.Inferno,
+            # color_discrete_sequence=px.colors.sequential.Inferno,
         )
         st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
@@ -71,20 +71,31 @@ with tab_envios:
             """
                 SELECT count(d.dias) AS 'cantidad',
                     CASE
-                        WHEN dias  < 4 THEN 'menos de 4'
-                        WHEN dias < 7 THEN 'de 4 a 6'
-                        WHEN dias < 11 THEN 'de 7 a 10'
-                        WHEN dias < 16 THEN 'de 11 a 15'
-                        ELSE 'más de 15'
+                        WHEN dias  < 4 THEN '< 4'
+                        WHEN dias < 7 THEN '4 - 6'
+                        WHEN dias < 11 THEN '7 - 10'
+                        WHEN dias < 16 THEN '11 - 15'
+                        WHEN dias < 20 THEN '16 - 20'
+                        ELSE '> 20'
                     END
-                    AS rango_entregas
+                    AS rango_entregas   
                 FROM (
                     SELECT 
                         datediff(o.delivered_customer_date, o.purchase_timestamp ) AS dias
                     FROM orders AS o
                     WHERE o.status = 'delivered'
                 ) AS d
-                GROUP BY rango_entregas;""",
+                GROUP BY rango_entregas
+                ORDER BY  
+                    CASE rango_entregas
+                        WHEN '< 4' THEN 1
+                        WHEN '4 - 6' THEN 2
+                        WHEN '7 - 10' THEN 3
+                        WHEN '11 - 15' THEN 4
+                        WHEN '16 - 20' THEN 5
+                        WHEN '> 20' THEN 6
+                        ELSE 7
+                    END;""",
             con=engine,
         )
 
@@ -97,7 +108,6 @@ with tab_envios:
                 "rango_entregas": "Rango de dias",
                 "cantidad": "Cantidad de envíos",
             },
-            color_discrete_sequence=px.colors.sequential.Magma_r,
         )
 
         st.plotly_chart(figure_or_data=fig, use_container_width=True)
@@ -107,24 +117,34 @@ with tab_envios:
             """
             SELECT avg(d.freight_value) AS 'promedio_flete',
                 CASE
-                WHEN d.weight_g  < 501 THEN '< 0,5'
-                WHEN d.weight_g < 1001 THEN '0,5 - 1'
-                WHEN d.weight_g < 5001 THEN '1 - 5'
-                WHEN d.weight_g < 10001 THEN '5 - 10'
-                WHEN d.weight_g < 20001 THEN '10 - 20'
-                ELSE '> 20'
+                    WHEN d.weight_g  < 501 THEN '< 0,5'
+                    WHEN d.weight_g < 1001 THEN '0,5 - 1'
+                    WHEN d.weight_g < 5001 THEN '1 - 5'
+                    WHEN d.weight_g < 10001 THEN '5 - 10'
+                    WHEN d.weight_g < 20001 THEN '10 - 20'
+                    ELSE '> 20'
                 END
                 as rango_peso
             FROM (SELECT i.product_id, i.freight_value, p.weight_g
                 FROM order_items AS i
                 LEFT JOIN products as p ON(i.product_id = p.product_id)
                     ) AS d
-            GROUP BY rango_peso;""",
+            GROUP BY rango_peso
+            ORDER BY 
+                CASE rango_peso
+                    WHEN  '< 0,5' THEN 1
+                    WHEN  '0,5 - 1' THEN 2
+                    WHEN  '1 - 5' THEN 3
+                    WHEN  '5 - 10' THEN 4
+                    WHEN  '10 - 20' THEN 5
+                    WHEN  '> 20' THEN 6
+                    ELSE 7
+                END;""",
             con=engine,
         )
 
         fig = px.bar(
-            data_frame=delivery_peso.sort_values(by="promedio_flete"),
+            data_frame=delivery_peso,
             x="rango_peso",
             y="promedio_flete",
             title="Promedio valor flete por rango de peso",
@@ -132,47 +152,50 @@ with tab_envios:
                 "rango_peso": "Rango de peso [kg]",
                 "promedio_flete": "Precio promedio del flete [R$]",
             },
-            color_discrete_sequence=px.colors.sequential.Inferno,
         )
         st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
 with tab_vend_comp:
-    df_cust_sell = pd.read_sql(
-        sql="""
-        SELECT 
-        	avg(cg.latitude) AS c_latitude,
-            avg(cg.longitude) AS c_longitude,
-            avg(sg.latitude) AS s_latitude,
-            avg(sg.longitude) AS s_longitude
-        FROM order_items AS oi
-        LEFT JOIN sellers AS s ON(oi.seller_id = s.seller_id)
-        LEFT JOIN orders AS ord ON (oi.order_id = ord.order_id)
-        LEFT JOIN customers AS c ON (ord.customer_id = c.customer_id)
-        LEFT JOIN geolocations AS cg ON (c.zip_code = cg.zip_code)
-        LEFT JOIN geolocations AS sg ON (s.zip_code = sg.zip_code)
-        GROUP BY oi.product_id, oi.seller_id, ord.customer_id
-        ORDER BY rand()
-        LIMIT 10000;
-        """,
-        con=engine,
-    )
-    view = pdk.data_utils.compute_view(df_cust_sell[["c_longitude", "c_latitude"]])
-    view.zoom = 3
-    view.pitch = 30
-    st.pydeck_chart(
-        pdk.Deck(
-            map_style="dark",
-            initial_view_state=view,
-            tooltip=True,
-            layers=[
-                pdk.Layer(
-                    "ArcLayer",
-                    data=df_cust_sell,
-                    get_source_position=["s_longitude", "s_latitude"],
-                    get_target_position=["c_longitude", "c_latitude"],
-                    get_source_color=[0, 255, 0, 80],
-                    get_target_color=[255, 0, 0, 80],
-                )
-            ],
+    col_graph, col_text = st.columns([3, 2])
+    with col_graph:
+        df_cust_sell = pd.read_sql(
+            sql="""
+            SELECT 
+                avg(cg.latitude) AS c_latitude,
+                avg(cg.longitude) AS c_longitude,
+                avg(sg.latitude) AS s_latitude,
+                avg(sg.longitude) AS s_longitude
+            FROM order_items AS oi
+            LEFT JOIN sellers AS s ON(oi.seller_id = s.seller_id)
+            LEFT JOIN orders AS ord ON (oi.order_id = ord.order_id)
+            LEFT JOIN customers AS c ON (ord.customer_id = c.customer_id)
+            LEFT JOIN geolocations AS cg ON (c.zip_code = cg.zip_code)
+            LEFT JOIN geolocations AS sg ON (s.zip_code = sg.zip_code)
+            GROUP BY oi.product_id, oi.seller_id, ord.customer_id
+            ORDER BY rand()
+            LIMIT 10000;
+            """,
+            con=engine,
         )
-    )
+        view = pdk.data_utils.compute_view(df_cust_sell[["c_longitude", "c_latitude"]])
+        view.zoom = 3
+        view.pitch = 30
+        st.pydeck_chart(
+            pdk.Deck(
+                map_style="dark",
+                initial_view_state=view,
+                tooltip=True,
+                layers=[
+                    pdk.Layer(
+                        "ArcLayer",
+                        data=df_cust_sell,
+                        get_source_position=["s_longitude", "s_latitude"],
+                        get_target_position=["c_longitude", "c_latitude"],
+                        get_source_color=[0, 255, 0, 80],
+                        get_target_color=[255, 0, 0, 80],
+                    )
+                ],
+            )
+        )
+    with col_text:
+        st.text("ACA VA EL TEXTO QUE EXPLICA EL GRAFICO")
