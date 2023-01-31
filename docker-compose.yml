@@ -80,6 +80,24 @@ services:
       retries: 5
     restart: always
 
+
+  machine-learning:
+    container_name: dashboard_ml
+    build: ./machine_learning
+    volumes:
+      - ./machine_learning/app:/app
+    command: streamlit run app/1_🏠_Home.py --server.port 5000
+    ports:
+      - 5000:5000
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:5000/_stcore/health"]
+      timeout: 5s
+      retries: 5
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: always
+    
   dashboard:
     container_name: dashboard
     build: ./dashboard

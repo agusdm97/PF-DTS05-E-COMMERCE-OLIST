@@ -1,0 +1,10 @@
+scikit-learn==1.2.0
+streamlit==1.17.0
+PyMySQL==1.0.2
+pandas==1.5.3
+SQLAlchemy==1.4.46
+statsmodels==0.13.5
+cryptography==39.0.0
+xgboost==1.7.3
+prophet==1.1.2
+plotly==5.13.0
