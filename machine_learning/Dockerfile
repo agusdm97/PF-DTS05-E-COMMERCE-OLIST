@@ -3,11 +3,12 @@ FROM python:3.10-slim
 # Copia el archivo requirements.txt
 COPY requirements.txt /requirements.txt
 
-
-
 # Instala las dependencias
 RUN pip install --user --upgrade pip
 RUN pip install --no-cache-dir -r /requirements.txt
 
-#Copia la carpeta src
+# Copia la carpeta de modelos de ml
+COPY models /models
+
+# Copia la carpeta src
 COPY src /src

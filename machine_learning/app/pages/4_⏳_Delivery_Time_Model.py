@@ -79,7 +79,7 @@ list.rename(
 
 
 def dias_espera(datos):
-    modelo = pd.read_pickle("app/dias_espera.pkl")
+    modelo = pd.read_pickle("models/dias_espera.pkl")
     pred = modelo.predict(datos)
     # pred.rename(columns={0: "Predicción [días]"}, inpace=True)
     return pred[0]
