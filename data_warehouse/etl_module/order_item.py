@@ -29,7 +29,7 @@ def etl(data_path: str, engine: sql.engine.Engine) -> None:
             """         
             CREATE TABLE IF NOT EXISTS `data_warehouse_olist`.`order_items` (
                 `order_id` VARCHAR(45) NOT NULL,
-                `item_id` VARCHAR(45) NOT NULL,
+                `item_id` INT NOT NULL,
                 `product_id` VARCHAR(45) NOT NULL,
                 `seller_id` VARCHAR(45) NOT NULL,
                 `price` DECIMAL(10,2) NOT NULL,
