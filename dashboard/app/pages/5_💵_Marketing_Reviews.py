@@ -7,7 +7,9 @@ import plotly.express as px
 st.set_page_config(page_title="Marketing - Reviews", page_icon="📈", layout="wide")
 
 st.sidebar.header("Marketing & reviews")
-
+st.sidebar.write("""Este apartado se refiere a la variación temporal de la cantidad de contactos (marketing 
+qualified leads) según su origen,  a su conversión como vendedores, a la evolución histórica del promedio de 
+puntuación y a su distribución de acuerdo con las categorías de los diferentes productos. """)
 
 engine = create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
@@ -17,6 +19,7 @@ engine = create_engine(
 st.title(":mag_right: Visualización de análisis de Marketing y Reviews")
 st.text("A continuación se observara los resultados del análisis")
 st.markdown("---")
+
 
 tab1, tab2 = st.tabs(["Marketing ", "Reviews"])
 

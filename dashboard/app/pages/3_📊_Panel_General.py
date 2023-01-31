@@ -12,7 +12,9 @@ st.text("A continuación se observara los resultados del análisis")
 st.markdown("---")
 
 st.sidebar.header("Panel General")
-st.sidebar.write("ACA VA UN TEXTO EXPLICATIVO DE LA PAGINA")
+st.sidebar.write("""El panel general contiene información sobre la evolución de las ventas totales, 
+participación de las ventas por categoría y la distribución geográfica de 
+las ordenes en razón de los clientes y vendedores. """)
 
 engine = create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"

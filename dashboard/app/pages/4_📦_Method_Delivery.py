@@ -11,7 +11,10 @@ st.text("A continuación se observara los resultados del análisis")
 st.markdown("---")
 
 st.sidebar.header("Method Payment & Delivery")
-st.sidebar.write("ACA VA UN TEXTO EXPLICATIVO DE LA PAGINA")
+st.sidebar.write("""Esta sección abarca la distribución de las ventas en cuanto a los 
+diferentes métodos de pagos y cantidades de cuotas, la duración de los envíos, los costos de los fletes
+ conforme al peso de los productos y los trayectos de los pedidos entre el cliente y el vendedor 
+ desde una perspectiva territorial.""")
 
 engine = sql.create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
