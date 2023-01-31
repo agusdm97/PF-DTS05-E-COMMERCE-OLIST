@@ -104,6 +104,7 @@ with tab2:
             y="categoria",
             orientation="h",
             title="Top 10 puntuación por categoría",
+            labels={"categoria": "Categoría", "prom_score": "Puntuación promedio"},
         )
         st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
@@ -128,5 +129,6 @@ with tab2:
             x="fecha",
             y="score",
             title="Evolución de la puntuación promedio",
+            labels={"fecha": "Fecha", "score": "Puntuación promedio"},
         )
         st.plotly_chart(figure_or_data=fig, use_container_width=True)
