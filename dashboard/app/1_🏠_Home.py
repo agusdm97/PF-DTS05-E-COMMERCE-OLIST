@@ -8,7 +8,6 @@ st.sidebar.write("BIENVENIDOS")
 
 
 st.title(":clipboard: Proyecto Final - Olist Dashboard")
-st.text("Sitio web para explorar la visualización de Dashboard")
 
 left_column, right_column = st.columns(2)
 
