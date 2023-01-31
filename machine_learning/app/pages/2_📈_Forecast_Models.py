@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import sqlalchemy as sql
 import pickle as pkl
+import datetime as dt
+import plotly.express as px
 
 
 st.title("Forecasting Sales")
@@ -11,43 +13,70 @@ engine = sql.create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
 )
 
-DF = pd.read_sql(
-    "select o.purchase_timestamp, oi.price from orders as o inner join order_items as oi on o.order_id = oi.order_id",
-    con=engine,
-)
-DF["purchase_timestamp"] = pd.to_datetime(DF["purchase_timestamp"])
-
-DF.rename(columns={"purchase_timestamp": "time", "price": "sales"}, inplace=True)
-DF.set_index("time", inplace=True)
-Week_Data = DF["sales"].resample("W").sum()
-
-Sales_per_Week = Week_Data.to_frame(name="sales")
-
-from pandas.tseries.offsets import DateOffset
-
-future_dates = [Sales_per_Week.index[-1] + DateOffset(weeks=x) for x in range(0, 32)]
-
-future_dates_df = pd.DataFrame(index=future_dates[1:], columns=Sales_per_Week.columns)
-future_df = pd.concat([Sales_per_Week, future_dates_df])
-
 with open("models/total_model.pkl", "rb") as f:
     total_model = pkl.load(f)
 
 with open("models/model_prophet.pkl", "rb") as f:
     model_prophet = pkl.load(f)
 
-with tab1:
-    date = st.select_slider("select the date", options=future_dates)
+df_history = pd.read_sql(
+    """
+    SELECT
+        o.purchase_timestamp AS time,
+        oi.price AS sales
+    FROM orders AS o 
+    LEFT JOIN order_items AS oi ON (o.order_id = oi.order_id)
+    """,
+    con=engine,
+)
+df_history.dropna(inplace=True)
+df_history["time"] = pd.to_datetime(df_history["time"])
+df_history.set_index("time", inplace=True)
+df_history_w = df_history["sales"].resample("W").sum().reset_index()
+df_history_w["type"] = "history"
 
-    future_df["forecast"] = total_model.predict(start=86, end=date, dynamic=True)
-    prediction = st.line_chart(
-        future_df[["sales", "forecast"]]
-    )  # .plot(figsize=(12, 8))
-    st.write("the sales prediction is", future_df["forecast"].dropna())
+future = [dt.date(2018, 9, 9) + dt.timedelta(days=7) * i for i in range(1, 40)]
+
+
+with tab1:
+    date = st.select_slider("Seleccione la fecha de predicción:", options=future, key=1)
+
+    forecast_arima = total_model.predict(start=87, end=date, dynamic=True)
+    forecast_arima = forecast_arima.reset_index()
+    forecast_arima.rename(
+        columns={"index": "time", "predicted_mean": "sales"}, inplace=True
+    )
+    forecast_arima["type"] = "forecast"
+    df = pd.concat([df_history_w, forecast_arima.loc[1:]], axis=0, ignore_index=True)
+
+    fig = px.line(
+        data_frame=df,
+        x="time",
+        y="sales",
+        color="type",
+        title="Predicción de ventas",
+        labels={"time": "Fecha", "sales": "Ventas"},
+    )
+    st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
 with tab2:
-    date = st.select_slider("select the date", options=future_dates)
+    date = st.select_slider("Seleccione la fecha de predicción:", options=future, key=2)
+    weeks = future.index(date)
 
-    future = model_prophet.make_future_dataframe(periods=date, freq="W")
-    forecast = model_prophet.predict(future)
-    predictions_tuned = st.line_chart(forecast.tail(date))
+    future_prophet = model_prophet.make_future_dataframe(periods=weeks + 23, freq="W")
+    forecast_prophet = model_prophet.predict(future_prophet)
+
+    forecast_prophet = forecast_prophet[["ds", "yhat"]]
+    forecast_prophet.rename(columns={"ds": "time", "yhat": "sales"}, inplace=True)
+    forecast_prophet["type"] = "forecast"
+    df = pd.concat([df_history_w, forecast_prophet.loc[88:]], axis=0, ignore_index=True)
+
+    fig = px.line(
+        data_frame=df,
+        x="time",
+        y="sales",
+        color="type",
+        title="Predicción de ventas",
+        labels={"time": "Fecha", "sales": "Ventas"},
+    )
+    st.plotly_chart(figure_or_data=fig, use_container_width=True)

@@ -7,3 +7,4 @@ statsmodels==0.13.5
 cryptography==39.0.0
 xgboost==1.7.3
 prophet==1.1.2
+plotly==5.13.0
