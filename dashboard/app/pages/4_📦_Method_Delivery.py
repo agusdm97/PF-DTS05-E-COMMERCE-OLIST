@@ -198,4 +198,10 @@ with tab_vend_comp:
             )
         )
     with col_text:
-        st.text("ACA VA EL TEXTO QUE EXPLICA EL GRAFICO")
+        st.text(
+            """
+            Se toma una muestra aleatoria de 10.000 envíos de productos. 
+            Cada arco representa una orden de compra que parte desde el 
+            vendedor (verde) y finaliza en el comprador (rojo).
+            """
+        )

@@ -1,10 +1,7 @@
-# ----LIBRERIAS--------------------------------------------------------------------------------------#
-import sqlalchemy as sql
+from sqlalchemy import create_engine
 import pandas as pd
 import streamlit as st
 import plotly.express as px
-import altair as alt
-import pymysql
 
 
 st.set_page_config(page_title="Marketing - Reviews", page_icon="📈", layout="wide")
@@ -12,226 +9,124 @@ st.set_page_config(page_title="Marketing - Reviews", page_icon="📈", layout="w
 st.sidebar.header("Marketing & reviews")
 
 
-engine = sql.create_engine(
+engine = create_engine(
     "mysql+pymysql://root:password@mysql:3306/data_warehouse_olist?charset=utf8mb4"
 )
 
-# ------------------------------------------------------------------------------------------#
-st.title(":mag_right: Visualizacion de análisis de Marketing y Reviews")
+
+st.title(":mag_right: Visualización de análisis de Marketing y Reviews")
 st.text("A continuación se observara los resultados del análisis")
-st.markdown("***")
-# ------------------------------------------------------------------------------#
-#
-# ------------------------------------------------------------------------------#
-tab1, tab2, tab3 = st.tabs(["Marketing ", "Closed Deals", "Reviews"])
+st.markdown("---")
+
+tab1, tab2 = st.tabs(["Marketing ", "Reviews"])
 
 with tab1:
-    # ------------------------------------------------------------------------------#
-    #       1. Grafica de linea volumen de primer contacto con el vendedor por año-mes
-    # ------------------------------------------------------------------------------#
-    st.header("Bienvenidos")
-    marketing_volumen = pd.read_sql(
-        """
-    select concat(year(first_contact_date), '-', month(first_contact_date)) as anio_mes, count(*) as volumen 
-    from marketing_qualified_leads
-    group by anio_mes
-    order by first_contact_date asc;""",
-        con=engine,
-    )
+    col_contactos, col_cerrados = st.columns([3, 2])
 
-    st.markdown("***")
-    line_chart = (
-        alt.Chart(marketing_volumen)
-        .mark_line()
-        .encode(
-            y=alt.Y("volumen", title="volumne(#)"),
-            x=alt.X("anio_mes", title="Anio-Mes"),
+    with col_contactos:
+        df_marketing = pd.read_sql(
+            sql="""
+            SELECT mql_id, first_contact_date, origin AS  Origen
+            FROM marketing_qualified_leads;
+            """,
+            con=engine,
         )
-        .properties(
-            height=400,
-            width=400,
-            title="Distribucion de volumen primer contacto por año y mes",
+        df_marketing["first_contact_date"] = pd.to_datetime(
+            df_marketing["first_contact_date"]
         )
-        .configure_title(fontSize=16)
-        .configure_axis(titleFontSize=14, labelFontSize=12)
-    )
-    #   st.altair_chart(line_chart, use_container_width=True)
+        df_marketing["año_mes"] = df_marketing["first_contact_date"].dt.to_period("M")
+        df_grouped = (
+            df_marketing.groupby(["Origen", "año_mes"])
+            .aggregate({"mql_id": "count", "first_contact_date": "first"})
+            .reset_index()
+        )
 
-    # ------------------------------------------------------------------------------#
-    #       2. Grafica de barras del Volumen por canal de mercadeo
-    # ------------------------------------------------------------------------------#
-    marketing_origin = pd.read_sql(
-        """
-        select origin, count(*) as volumen
-        from marketing_qualified_leads
-        group by origin
-        order by volumen desc;""",
-        con=engine,
-    )
+        fig = px.line(
+            data_frame=df_grouped,
+            x="first_contact_date",
+            y="mql_id",
+            title="Cantidad de contactos por canal",
+            color="Origen",
+            labels={
+                "first_contact_date": "Fecha de contacto",
+                "mql_id": "Cantidad de contactos",
+            },
+        )
+        st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
-    fig_marketing_origin = px.bar(
-        marketing_origin,
-        x="origin",
-        y="volumen",
-        # orientation="h",
-        title="Volumen por canal de mercadeo",
-        color_discrete_sequence=["#BC0330"] * len(marketing_origin),
-        template="plotly_white",
-    )
-    fig_marketing_origin.update_layout(
-        plot_bgcolor="rgba(0,0,0,0)", xaxis=dict(showgrid=False)
-    )
+    with col_cerrados:
+        df_closed_deals = pd.read_sql(
+            sql="""
+            SELECT 
+                mql.origin AS origen,
+                count(cd.mql_id)/count(mql.mql_id)*100 AS porcentaje
+            FROM marketing_qualified_leads AS mql
+            LEFT JOIN closed_deals AS cd ON (cd.mql_id = mql.mql_id)
+            GROUP BY mql.origin
+            ORDER BY porcentaje DESC;
+            """,
+            con=engine,
+        )
 
-    # st.plotly_chart(fig_marketing_origin, use_container_width=True)
-    left_column, right_column = st.columns(2)
+        fig = px.bar(
+            data_frame=df_closed_deals,
+            x="origen",
+            y="porcentaje",
+            title="Porcentaje de cierre por canal de contacto",
+            labels={"origen": "Origen", "porcentaje": "Porcentaje de cierre"},
+        )
 
-    left_column.altair_chart(line_chart, use_container_width=True)
-    right_column.plotly_chart(fig_marketing_origin, use_container_width=True)
+        st.plotly_chart(figure_or_data=fig, use_container_width=True)
+
 
 with tab2:
-    st.header("Bienvenidos")
-    # ------------------------------------------------------------------------------#
-    #       6. Grafica volumen de cierre por lead type
-    # ------------------------------------------------------------------------------#
-    cierre_volumen_lead = pd.read_sql(
-        """
-    select lead_type, count(*) as volumen
-    from closed_deals
-    group by lead_type
-    order by volumen desc
-    limit 10; """,
-        con=engine,
-    )
+    col_1, col_2 = st.columns(2)
 
-    line_chart = (
-        alt.Chart(cierre_volumen_lead)
-        .mark_line()
-        .encode(
-            y=alt.Y("volumen", title="volumen(#)"),
-            x=alt.X("lead_type", title="Lead Type"),
+    with col_1:
+        df_category_score = pd.read_sql(
+            """
+            SELECT 
+                avg(a.score) as prom_score, 
+                c.category_name AS categoria
+            FROM order_reviews AS a
+                LEFT JOIN order_items AS b ON (a.order_id = b.order_id)
+                LEFT JOIN products AS c ON (b.product_id = c.product_id)
+            GROUP BY categoria
+            ORDER BY prom_score DESC
+            LIMIT 10;
+            """,
+            con=engine,
         )
-        .properties(
-            height=400, width=400, title="Volumen de cierre por categoria de negocio"
+
+        fig = px.bar(
+            df_category_score,
+            x="prom_score",
+            y="categoria",
+            orientation="h",
+            title="Top 10 puntuación por categoría",
         )
-        .configure_title(fontSize=16)
-        .configure_axis(titleFontSize=14, labelFontSize=12)
-    )
-    # ------------------------------------------------------------------------------#
-    #       4. Grafica cierre de acuerdo por segmento de negocio
-    # ------------------------------------------------------------------------------#
-    cierre_volumen_segm = pd.read_sql(
-        """
-    select business_segment, count(*) as volumen
-        from closed_deals
-        group by business_segment
-        order by volumen desc
-        limit 10; """,
-        con=engine,
-    )
+        st.plotly_chart(figure_or_data=fig, use_container_width=True)
 
-    fig_cierre = px.funnel(
-        cierre_volumen_segm,
-        x="volumen",
-        y="business_segment",
-        # textposition = "inside",
-        title="Top 10 cierre acuerdo por segmento de negocio",
-        color_discrete_sequence=["#E3B7F9"] * len(cierre_volumen_segm),
-        orientation="h",
-        opacity=0.65,
-    )
-    # fig.show()
-    fig_cierre.update_layout(plot_bgcolor="rgba(0,0,0,0)", xaxis=dict(showgrid=False))
+    with col_2:
+        df_reviews = pd.read_sql(
+            """
+            SELECT ordr.score AS score, o.purchase_timestamp AS fecha
+            FROM order_reviews AS ordr
+            LEFT JOIN orders AS o ON (ordr.order_id = o.order_id)
+            WHERE o.purchase_timestamp > date("2016-12-31") 
+            AND o.purchase_timestamp < date("2018-09-01");
+            """,
+            con=engine,
+        )
 
-    # ------------------------------------------------------------------------------#
-    #        Ubicaciones de las graficas
-    # ------------------------------------------------------------------------------#
-    left_column, right_column = st.columns(2)
+        df_reviews["fecha"] = pd.to_datetime(df_reviews["fecha"])
+        df_reviews.set_index("fecha", inplace=True)
+        df_reviews = df_reviews.resample("M").aggregate({"score": "mean"}).reset_index()
 
-    left_column.plotly_chart(fig_cierre, use_container_width=True)
-    # middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.altair_chart(line_chart, use_container_width=True)
-
-
-with tab3:
-    st.header("Bienvnidos")
-
-    # ------------------------------------------------------------------------------#
-    # st.altair_chart(line_chart, use_container_width=True)
-    # middle_column.plotly_chart(fig, use_container_width=True)
-    # ------------------------------------------------------------------------------#
-    #       3. Grafica de barras Promedio de score por categoria
-    # ------------------------------------------------------------------------------#
-    reviews_score_prom = pd.read_sql(
-        """
-    SELECT AVG(a.score) as prom_score, c.category_name AS categoria
-    FROM order_reviews AS a
-        INNER JOIN order_items AS b
-        ON (a.order_id = b.order_id)
-        INNER JOIN products AS c
-        ON (b.product_id = c.product_id)
-    GROUP BY categoria
-    order by prom_score desc
-    limit 15; """,
-        con=engine,
-    )
-
-    fig_reviews_score_prom = px.bar(
-        reviews_score_prom,
-        x="prom_score",
-        y="categoria",
-        orientation="h",
-        title="Top 15 Score por categoria",
-        color_discrete_sequence=["#93F553"] * len(reviews_score_prom),
-        template="plotly_white",
-    )
-    fig_reviews_score_prom.update_layout(
-        plot_bgcolor="rgba(0,0,0,0)", xaxis=dict(showgrid=False)
-    )
-
-    # ------------------------------------------------------------------------------#
-    #       5. Grafica top 20 Fechas que tiene el mayor # de cierres
-    # ------------------------------------------------------------------------------#
-    reviews_cant_score = pd.read_sql(
-        """
-   SELECT count(*) as cant_reviews, score 
-   FROM order_reviews
-   GROUP BY score
-   order by cant_reviews desc; """,
-        con=engine,
-    )
-
-    fig_reviews_cant_score = px.bar(
-        reviews_cant_score,
-        x="score",
-        y="cant_reviews",
-        # orientation="h",
-        title="Cantidad de reviews por score",
-        color_discrete_sequence=["#22A6F6"] * len(reviews_cant_score),
-        template="plotly_white",
-    )
-    fig_reviews_cant_score.update_layout(
-        plot_bgcolor="rgba(0,0,0,0)", xaxis=dict(showgrid=False)
-    )
-    # ------------------------------------------------------------------------------#
-    #        Ubicaciones de las graficas
-    # ------------------------------------------------------------------------------#
-    left_column, right_column = st.columns(2)
-
-    left_column.plotly_chart(fig_reviews_score_prom, use_container_width=True)
-    # middle_column.plotly_chart(fig, use_container_width=True)
-    right_column.plotly_chart(fig_reviews_cant_score, use_container_width=True)
-# ------------------------------------------------------------------------------#
-
-# ------------------------------------------------------------------------------#
-#        Ubicaciones de las graficas
-# ------------------------------------------------------------------------------#
-# left_column, middle_column, right_column = st.columns(3)
-
-
-# left_column.plotly_chart()
-# middle_column.plotly_chart(fig_reviews_cant_score, use_container_width=True)
-# right_column.plotly_chart()
-
-# ------------------------------------------------------------------------------#
-#
-st.snow()
+        fig = px.line(
+            df_reviews,
+            x="fecha",
+            y="score",
+            title="Evolución de la puntuación promedio",
+        )
+        st.plotly_chart(figure_or_data=fig, use_container_width=True)
