@@ -2,7 +2,7 @@ version: '3'
 x-airflow-common:
   &airflow-common
   
-  image: ${AIRFLOW_IMAGE_NAME:-extended_airflow:latest}
+  build: ./data_warehouse
   
   environment:
     &airflow-common-env
@@ -84,6 +84,7 @@ services:
   machine-learning:
     container_name: dashboard_ml
     build: ./machine_learning
+    image: dashboard/machine_learning:latest
     volumes:
       - ./machine_learning/app:/app
     command: streamlit run app/1_🏠_Home.py --server.port 5000
@@ -101,6 +102,7 @@ services:
   dashboard:
     container_name: dashboard
     build: ./dashboard
+    image: dashboard/analytics:latest
     volumes:
       - ./dashboard/app:/app
     command: streamlit run app/1_🏠_Home.py --server.port 5050
@@ -118,6 +120,7 @@ services:
   airflow-webserver:
     <<: *airflow-common
     container_name: airflow_webserver
+    image: x-airflow-common
     command: webserver
     ports:
       - 8080:8080
@@ -135,6 +138,7 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     container_name: airflow_scheduler
+    image: x-airflow-common
     command: scheduler
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type SchedulerJob --hostname "$${HOSTNAME}"']
@@ -150,6 +154,7 @@ services:
   airflow-triggerer:
     <<: *airflow-common
     container_name: airflow_triggerer
+    image: x-airflow-common
     command: triggerer
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
@@ -165,6 +170,7 @@ services:
   airflow-init:
     <<: *airflow-common
     container_name: airflow_init
+    image: x-airflow-common
     entrypoint: /bin/bash
     # yamllint disable rule:line-length
     command:
@@ -242,6 +248,7 @@ services:
 
   airflow-cli:
     <<: *airflow-common
+    image: x-airflow-common
     profiles:
       - debug
     environment:
