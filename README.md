@@ -83,8 +83,8 @@ The project has been developed using Docker, so the installation is simple. Foll
 
 3.  Run the following command to run the docker containers:
 
-        :warning: WARNING: The next step can be stressful for some computers. Please be assured
-        you have enough memory and processing resources before executing this command.
+    :warning: WARNING: The next step can be stressful for some computers. Please be assured
+    you have enough memory and processing resources before executing this command.
 
     ```cmd
     docker-compose up -d
