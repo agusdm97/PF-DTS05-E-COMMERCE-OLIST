@@ -80,8 +80,8 @@ El proyecto ha sido desarrollado utilizando Docker, por lo que la instalación e
 
 3.  Ejecute el siguiente comando para levantar los contenedores de Docker:
 
-        :warning: ADVERTENCIA: El siguiente paso puede ser estresante para algunas computadoras. Por favor, asegúrese
-        de tener suficiente memoria y recursos de procesamiento antes de ejecutar este comando.
+    :warning: ADVERTENCIA: El siguiente paso puede ser estresante para algunas computadoras. Por favor, asegúrese
+    de tener suficiente memoria y recursos de procesamiento antes de ejecutar este comando.
 
     ```cmd
     docker-compose up -d
