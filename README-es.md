@@ -80,7 +80,7 @@ El proyecto ha sido desarrollado utilizando Docker, por lo que la instalación e
 
 3.  Ejecute el siguiente comando para levantar los contenedores de Docker:
 
-        ADVERTENCIA :warning:: El siguiente paso puede ser estresante para algunas computadoras. Por favor, asegúrese
+        :warning: ADVERTENCIA: El siguiente paso puede ser estresante para algunas computadoras. Por favor, asegúrese
         de tener suficiente memoria y recursos de procesamiento antes de ejecutar este comando.
 
     ```cmd
