@@ -1,15 +1,16 @@
+Other languages:
+[Spanish](README-es.md)
+
 <p align="center">
   <img src="etapas_del_proyecto/_src/logo_white.png" alt="Logo Data Insights">
 </p>
 
-Other languages:
-[Español](README-es.md)
-
-# PROJECT TITLE
+# FINAL PROJECT E-COMMERCE OLIST
 
 ## Introduction
 
 OList is a complete ecosystem of digital services for online sales. It's mission is to promote digital retail commerce and provide real growth opportunities to all types of companies, eliminating obstacles and helping entrepreneurs for their space on the internet.
+
 In this context, we are entrusted with consulting and product development work based on a set of data provided by Olist. These correspond to the period of time between 2016 and 2018 and contain information related to the Sales, Logistics and Marketing Departments.
 
 ## Problem
@@ -18,13 +19,11 @@ We assume the task of converting the raw company data into valuable information 
 
 ## Proposed solution
 
-We have implemented an automatized pipeline for the ETL process orchestrated with Minio and Apache Airflow, where each project component runs as a Docker container. Contributing to the scalability of the business and the portability of the system
+We have implemented an automated pipeline for the ETL process. In addition, each component of the project runs as a Docker container, contributing to the scalability and portability of the system.
 
-By using the python's library Streamlit, we have built a Dashboard to monitor KPI's and critical aspects of the business model, contributing to the make decision process
+By using the Streamlit framework in Python, we have built a dashboard to monitor KPIs and critical aspects of the business model, helping with the decision-making process.
 
-Also, in order to put in operation machine learning models we have designed a WebApp, responding to needs in the areas of sales, marketing and logistics.
-
-Especifically, we have implemented time series models for the predictions of sales, recommendation models based on content and with collaborative filtering and a regression model to estimate delivery time of the products.
+Additionally, to put machine learning models into operation, we have designed a web app to meet the needs in the areas of sales, marketing, and logistics. Specifically, we have implemented time series models for sales predictions, recommendation models based on content and collaborative filtering, and a regression model to estimate product delivery time.
 
 ## Repository structure
 

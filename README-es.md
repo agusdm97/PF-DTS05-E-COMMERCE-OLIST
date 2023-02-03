@@ -2,13 +2,25 @@
   <img src="etapas_del_proyecto/_src/logo_white.png" alt="Logo Data Insights">
 </p>
 
-# TITULO DEL PROYECTO
+# PROYECTO FINAL E-COMMERCE OLIST
 
 ## Introducción
 
-## Problemática del proyecto
+OList es un completo ecosistema de servicios digitales para la venta online. Su misión es promover el comercio minorista digital y brindar oportunidades reales de crecimiento a todo tipo de empresas, eliminando obstáculos y ayudando a los emprendedores a encontrar su espacio en internet.
+
+En este contexto, se nos encomienda una labor de consultoría y desarrollo de productos en base a un conjunto de datos proporcionados por Olist. Corresponden al periodo de tiempo entre 2016 y 2018 que contienen información relacionada con los departamentos de ventas, logística y marketing.
+
+## Problemática
+
+Asumimos la tarea de convertir los datos brutos de la empresa en información valiosa para mejorar la toma de decisiones, incrementar los beneficios y la calidad del servicio de la empresa.
 
 ## Solución propuesta
+
+Hemos implementado un pipeline automatizado para el proceso ETL. Ademas, cada componente del proyecto se ejecuta como un contenedor de Docker, contribuyendo a la escalabilidad y la portabilidad del sistema.
+
+Mediante el uso del framework Streamlit en Python, hemos creado un dashboard para monitorear los KPI y los aspectos críticos del modelo del negocio, ayudando con el proceso de la toma de decisiones.
+
+Adicionalmente, para poner en funcionamiento los modelos de aprendizaje automático, hemos diseñado una aplicación web para satisfacer las necesidades en las áreas de ventas, marketing y logística. En concreto, hemos implementado modelos de series temporales para la predicción de ventas, modelos de recomendación basados ​​en contenido y filtrado colaborativo, y un modelo de regresión para estimar el tiempo de entrega del producto.
 
 ## Estructura del repositorio
 
