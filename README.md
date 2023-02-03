@@ -8,14 +8,21 @@ Other languages:
 # PROJECT TITLE
 
 ## Introduction
+OList is a complete ecosystem of digital services for online sales. It's mission is to promote digital retail commerce and provide real growth opportunities to all types of companies, eliminating obstacles and helping entrepreneurs for their space on the internet.
+In this context, we are entrusted with consulting and product development work based on a set of data provided by Olist. These correspond to the period of time between 2016 and 2018 and contain information related to the Sales, Logistics and Marketing Departments.
+
 
 ## Problem
+
+
+
+
 
 ## Proposed solution
 
 We have implemented an automatized pipeline for the ETL process orchestrated with Minio and Apache Airflow, where each project component runs as a Docker container. Contributing to the scalability of the business and the portability of the system
 
-By using the python's library Streamlit, we have build a Dashboard to monitor KPI's and the critical points of the business model contributing to the make decision process
+By using the python's library Streamlit, we have built a Dashboard to monitor KPI's and critical aspects of the business model, contributing to the make decision process
 
 Also, in order to put in operation machine learning models we have designed a WebApp, responding to needs in the areas of sales, marketing and logistics.
  
