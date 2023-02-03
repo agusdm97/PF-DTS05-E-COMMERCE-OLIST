@@ -14,7 +14,7 @@ In this context, we are entrusted with consulting and product development work b
 
 ## Problem
 
-
+We assume the task of converting the raw company data into valuable information for improving decision-making process, increasing the profits and the quality of the company's service.
 
 
 
