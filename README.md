@@ -108,21 +108,16 @@ Once the containers are working correctly you must follow the following steps:
 
 1. Enter to MinIO and upload the datasets:
 
-This can be achieved by entering the following link [MinIO], you must enter with the user `root` and the password `password`. After logging in, a bucket called `airflow` has to be created and the datasets have to be loaded.
+This can be achieved by entering the following link [MinIO](http://localhost:9090), you must enter with the user `root` and the password `password`. After logging in, a bucket called `airflow` has to be created and the datasets have to be loaded.
 
 ![Minio GIF](etapas_del_proyecto/_src/MinIO.gif)
 
 2. Enter to Airflow and activate the DAG:
 
-This can be achieved by entering the following link [Airflow], you must enter with the user `root` and the password `password`. After entering, you have to enter the DAG called `initial_load` and activate it.
+This can be achieved by entering the following link [Airflow](http://localhost:8080), you must enter with the user `root` and the password `password`. After entering, you have to enter the DAG called `initial_load` and activate it.
 
 ![Airflow GIF](etapas_del_proyecto/_src/Airflow.gif)
 
 3. Enter to the Dashboard and the Machine Learning app:
 
-Once the previous step is finished, you can access the [Dashboard] to view the data and the [App-ML] to explore the ML models.
-
-[minio]: (http://localhost:9090)
-[airflow]: (http://localhost:8080)
-[dashboard]: (http://localhost:5050)
-[app-ml]: (http://localhost:5000)
+Once the previous step is finished, you can access the [Dashboard](http://localhost:5050) to view the data and the [App-ML](http://localhost:5000) to explore the ML models.
