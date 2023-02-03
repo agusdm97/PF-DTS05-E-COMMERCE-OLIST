@@ -86,3 +86,28 @@ El proyecto ha sido desarrollado utilizando Docker, por lo que la instalación e
     ```cmd
     docker-compose up -d
     ```
+
+## Uso
+
+Una vez que los contenedores se encuentran funcionando correctamente deberá seguir los siguientes pasos:
+
+1. Entrar a MinIO y subir los datasets:
+
+Esto se puede lograr entrando al siguiente enlace [MinIO], se debe ingresar con el usuario `root` y la contraseña `password`. Luego de ingresar se tiene que crear un bucket llamado `airflow` y se tienen que cargar los datasets.
+
+![Minio GIF](etapas_del_proyecto/_src/MinIO.gif)
+
+2. Entrar a Airflow y activar la DAG:
+
+Esto se puede lograr entrando al siguiente enlace [Airflow], se debe ingresar con el usuario `root` y la contraseña `password`. Luego de ingresar se tiene que ingresar en la DAG llamada `carga_inicial` y activarla.
+
+![Airflow GIF](etapas_del_proyecto/_src/Airflow.gif)
+
+3. Entrar al Dashboard y a la app de Machine Learning:
+
+Una vez terminado el paso anterior ya se puede acceder al [Dashboard] para visualizar los datos y a la [App-ML] para explorar los modelos de ML.
+
+[minio]: (http://localhost:9090)
+[airflow]: (http://localhost:8080)
+[dashboard]: (http://localhost:5050)
+[app-ml]: (http://localhost:5000)
